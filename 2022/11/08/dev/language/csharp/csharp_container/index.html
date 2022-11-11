@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>C#容器 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>C#容器</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2022-11-08T07:46:38.000Z" id="date"> 2022-11-08</time></div></span><br><span>Last Update: <div class="control"><time datetime="2022-11-11T04:17:43.927Z" id="updated"> 2022-11-11</time></div></span><br><span>Word Count: <div class="control">2.7k</div></span><br><span>Read Time: <div class="control">10 min</div></span></div></div><hr><div id="post-content"><h1 id="C-容器"><a href="#C-容器" class="headerlink" title="C#容器"></a>C#容器</h1><p>从使用的频率一个个来简单说一下。</p>
+<h3 id="Array-x2F-ArrayList-x2F-List-x2F-LinkedList"><a href="#Array-x2F-ArrayList-x2F-List-x2F-LinkedList" class="headerlink" title="Array&#x2F;ArrayList&#x2F;List&#x2F;LinkedList"></a>Array&#x2F;ArrayList&#x2F;List&#x2F;LinkedList</h3><p><strong>Array</strong></p>
+<p>数组在C#中最早出现的。在内存中是连续存储的，所以它的索引速度非常快，并且赋值与改动元素也非常easy。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">string[] s=new string[2]; <br><br>//赋值 <br>s[0]=&quot;a&quot;; <br>s[1]=&quot;b&quot;; <br>//改动 <br>s[1]=&quot;a1&quot;; <br></code></pre></td></tr></table></figure>
+
+
+
+
+<p>可是数组存在一些不足的地方。在数组的两个数据间插入数据是非常麻烦的，并且在声明数组的时候必须指定数组的长度。数组的长度过长，会造成内存浪费，过段会造成数据溢出的错误。假设在声明数组时我们不清楚数组的长度。就会变得非常麻烦。</p>
+<p>针对数组的这些缺点，C#中最先提供了ArrayList对象来克服这些缺点。 </p>
+<p>底层数据结构就是数组。</p>
+<p><strong>ArrayList</strong><br>ArrayList是命名空间System.Collections下的一部分。在使用该类时必须进行引用，同一时候继承了IList接口。提供了数据存储和检索。ArrayList对象的大小是依照当中存储的数据来动态扩充与收缩的。所以。在声明ArrayList对象时并不须要指定它的长度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ArrayList list1 = new ArrayList(); <br><br>//新增数据 <br>list1.Add(&quot;cde&quot;); <br>list1.Add(5678); <br><br>//改动数据 <br>list[2] = 34; <br><br>//移除数据 <br>list.RemoveAt(0); <br><br>//插入数据 <br>list.Insert(0, &quot;qwe&quot;); <br></code></pre></td></tr></table></figure>
+
+
+
+<p>从上面样例看。ArrayList好像是攻克了数组中全部的缺点，为什么又会有List？<br>我们从上面的样例看，在List中。我们不仅插入了字符串cde。并且插入了数字5678。</p>
+<p>这样在ArrayList中插入不同类型的数据是同意的。</p>
+<p>由于ArrayList会把全部插入当中的数据当作为object类型来处理，在我们使用ArrayList处理数据时。非常可能会报类型不匹配的错误，也就是ArrayList不是类型安全的。在存储或检索值类型时通常发生装箱和取消装箱操作，带来非常大的性能耗损。<br>装箱与拆箱的概念：<br>简单的说:<br>装箱：就是将值类型的数据打包到引用类型的实例中<br>比方将string类型的值abc赋给object对象obj</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">String i=”abc”; <br>object obj=(object)i; <br></code></pre></td></tr></table></figure>
+
+
+
+
+<p>拆箱：就是从引用数据中提取值类型<br>比方将object对象obj的值赋给string类型的变量i</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">object obj=”abc”; <br>string i=(string)obj; <br></code></pre></td></tr></table></figure>
+
+
+
+<p>装箱与拆箱的过程是非常损耗性能的。 </p>
+<p>底层数据结构就是数组。相似于C++里面没有泛型的Vector。</p>
+<p>**<br>泛型List**<br>由于ArrayList存在不安全类型与装箱拆箱的缺点。所以出现了泛型的概念。List类是ArrayList类的泛型等效类。它的大部分使用方法都与ArrayList相似。由于List类也继承了IList接口。</p>
+<p>最关键的差别在于，在声明List集合时，我们同一时候须要为其声明List集合内数据的对象类型。</p>
+<p>比方：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">List&lt;string&gt; list = new List&lt;string&gt;(); <br>//新增数据 <br>list.Add(“abc”); <br>//改动数据 <br>list[0] = “def”; <br>//移除数据 <br>list.RemoveAt(0); <br></code></pre></td></tr></table></figure>
+
+
+
+
+<p>上例中。假设我们往List集合中插入int数组123。IDE就会报错。且不能通过编译。这样就避免了前面讲的类型安全问题与装箱拆箱的性能问题了。</p>
+<p>底层数据结构就是数组。</p>
+<p>相似于C++里面的Vector。</p>
+<p><strong>LinkedList</strong></p>
+<p>用双链表实现的List。特点是插入删除快，查找慢</p>
+<p>LinkedList<T> 提供 LinkedListNode<T> 类型的单独节点，因此插入和移除的运算复杂度为 O(1)。</p>
+<p>能够移除节点，然后在同一列表或其它列表中又一次插入它们。这样在堆中便不会分配额外的对象。</p>
+<p>由于该列表还维护内部计数。因此获取 Count 属性的运算复杂度为 O(1)。<br>LinkedList<T> 对象中的每一个节点都属于 LinkedListNode<T> 类型。由于 LinkedList<T> 是双向链表，因此每一个节点向前指向 Next 节点，向后指向 Previous 节点。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">LinkedList&lt;string&gt; list = new LinkedList&lt;string&gt;();<br>list.AddFirst(&quot;Data Value 1&quot;);<br>list.AddLast(&quot;Data Value 6&quot;);<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>关于List和LonkedList的一个性能比較</p>
+<p><strong>添加 删除</strong><br>在List<T>中添加、删除节点的速度。大体上快于使用LinkedList<T>时的同样操作。将 List<T>.Add方法和LinkedList<T>的Add*方法相比較。真正的性能差别不在于Add操作，而在LinkedList<T>在给GC（垃圾回收机制）的压力上。一个List<T>本质上是将其数据保存在一个堆栈的数组上。而LinkedList<T>是将其全部节点保存在堆栈上（人家是一个，我是一系列）。这就使得GC须要很多其它地管理堆栈上LinkedList<T>的节点对象。</p>
+<p>注意，List<T>.Insert<em>方法比在LinkedList<T>中使用Add</em>方法在不论什么地方加入一个节点可能要慢。然而。这个依赖于List<T>插入对象的位置。Insert方法必须使全部在插入点后面的元素往后移动一位。假设新元素被插在List<T>最后或接近最后的位置，那么相对于GC维护LinkedList<T>节点的总的开销来说，其开销是能够被忽略的。</p>
+<p><strong>索引</strong><br>还有一个List<T>性能优于LinkedList<T>的地方是你在使用索引进行訪问的时候。</p>
+<p>在List<T>中，你能够使用索引值（indexer）直接定位到某个详细的元素位置。</p>
+<p>而在LinkedList<T>中，却没有这种奢侈品。在LinkedList<T>中，你必须通过Previous或Next属性遍历整个List，直到找到你想要的节点。</p>
+<h3 id="HashSet-x2F-HashTable-x2F-Dictionary"><a href="#HashSet-x2F-HashTable-x2F-Dictionary" class="headerlink" title="HashSet&#x2F;HashTable&#x2F;Dictionary"></a>HashSet&#x2F;HashTable&#x2F;Dictionary</h3><p>这三个容器的底层都是Hash表。</p>
+<p><strong>HashSet</strong></p>
+<p>MSDN非常easy的解释：表示值的集。</p>
+<p>HashSet<T> 类提供了高性能的集运算。一组是一个集合，不包括不论什么反复的元素，且的元素顺序不分先后。</p>
+<p>用了hash table来储存数据。是为了用O(n)的space来换取O(n)的时间。也就是查找元素的时间是O(1)。</p>
+<p>它包括一些集合的运算</p>
+<p>HashSet<T> 提供了很多数学设置操作比如，组加入 （联合），并设置减法。下表列出了所提供 HashSet<T> 操作和及其数学等效项。</p>
+<p>UnionWith - Union 或将其设置的加入<br>IntersectWith - 交集<br>ExceptWith - Set 减法<br>SymmetricExceptWith - 余集</p>
+<p>列出的集操作中，除了 HashSet<T> 类还提供了方法来确定 set 是否相等、 重叠的集，以及一组是否为子集或还有一个集的超集。</p>
+<p>example</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"> HashSet&lt;int&gt; evenNumbers = new HashSet&lt;int&gt;();<br>HashSet&lt;int&gt; oddNumbers = new HashSet&lt;int&gt;();<br><br>for (int i = 0; i &lt; 5; i++)<br>&#123;<br>     // Populate numbers with just even numbers.<br>      evenNumbers.Add(i * 2);<br>     // Populate oddNumbers with just odd numbers.<br>     oddNumbers.Add((i * 2) + 1);<br>&#125;<br> // Create a new HashSet populated with even numbers.<br>HashSet&lt;int&gt; numbers = new HashSet&lt;int&gt;(evenNumbers);<br> numbers.UnionWith(oddNumbers);<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<p><strong>HashTable</strong></p>
+<p>表示依据键的哈希代码进行组织的键&#x2F;值对的集合。</p>
+<p>Hashtable是System.Collections命名空间提供的一个容器，用于处理和表现相似key&#x2F;value的键值对，当中key通常可用来高速查找，同一时候key是区分大写和小写。value用于存储相应于key的值。Hashtable中key&#x2F;value键值对均为object类型，所以Hashtable能够支持不论什么类型的key&#x2F;value键值对.</p>
+<p>他内部维护非常多对Key-Value键值对，其还有一个相似索引的值叫做散列值(HashCode)，它是依据GetHashCode方法对Key通过一定算法获取得到的。全部的查找操作定位操作都是基于散列值来实现找到相应的Key和Value值的</p>
+<p>当前HashTable中的被占用空间达到一个百分比的时候就将该空间自己主动扩容。在.net中这个百分比是72%,也叫.net中HashTable的填充因子为0.72。</p>
+<p>比如有一个HashTable的空间大小是100。当它须要加入第73个值的时候将会扩容此HashTable.</p>
+<p>这个自己主动扩容的大小是多少呢？答案是当前空间大小的两倍最接近的素数，比如当前HashTable所占空间为素数71，假设扩容，则扩容大小为素数131.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"> Hashtable openWith = new Hashtable();<br><br>// Add some elements to the hash table. There are no <br>// duplicate keys, but some of the values are duplicates.<br>openWith.Add(&quot;txt&quot;, &quot;notepad.exe&quot;);<br>openWith.Add(&quot;bmp&quot;, &quot;paint.exe&quot;);<br>openWith.Add(&quot;dib&quot;, &quot;paint.exe&quot;);<br>openWith.Add(&quot;rtf&quot;, &quot;wordpad.exe&quot;);<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<p>HashTable也有Boxing和Unboxing的开销。</p>
+<p>然后就有了</p>
+<p><strong>Dictionary</strong></p>
+<p>Dictionary也是键值容器。存入对象是须要与[key]值一一相应的存入该泛型。相对于HashTable，相似于List和ArrayList的关系。它是类型安全的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Dictionary&lt;string, string&gt; myDic = new Dictionary&lt;string, string&gt;();<br>myDic.Add(&quot;aaa&quot;, &quot;111&quot;);<br>myDic.Add(&quot;bbb&quot;, &quot;222&quot;);<br>myDic.Add(&quot;ccc&quot;, &quot;333&quot;);<br>myDic.Add(&quot;ddd&quot;, &quot;444&quot;);<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a><strong>小结</strong></h3><p>数组的容量是固定的，您仅仅能一次获取或设置一个元素的值，而ArrayList或List<T>的容量可依据须要自己主动扩充、改动、删除或插入数据。<br>数组能够具有多个维度，而 ArrayList或 List&lt; T&gt; 始终仅仅具有一个维度。可是，您能够轻松创建数组列表或列表的列表。特定类型（Object 除外）的数组 的性能优于 ArrayList的性能。 这是由于 ArrayList的元素属于 Object 类型；所以在存储或检索值类型时通常发生装箱和取消装箱操作。</p>
+<p>只是，在不须要又一次分配时（即最初的容量十分接近列表的最大容量），List&lt; T&gt; 的性能与同类型的数组十分相近。<br>在决定使用 List<T> 还是使用ArrayList 类（两者具有相似的功能）时，记住List<T> 类在大多数情况下运行得更好并且是类型安全的。</p>
+<p>假设对List&lt; T&gt; 类的类型T 使用引用类型，则两个类的行为是全然同样的。可是，假设对类型T使用值类型，则须要考虑实现和装箱问题。</p>
+<p>所以基本不怎么用ArrayList.</p>
+<p>还要注意的一点</p>
+<p>在单线程的时候使用Dictionary更好一些。多线程的时候使用HashTable更好。</p>
+<p>由于HashTable能够通过Hashtable tab &#x3D; Hashtable.Synchronized(new Hashtable());获得线程安全的对象。</p>
+<p>最后贴一个SOF上面的一个关于Dictionary和hashtable的问题…</p>
+<p><em><strong>Why is Dictionary preferred over hashtable?</strong></em></p>
+<ul>
+<li></li>
+<li></li>
+</ul>
+<p>*FWIW, a Dictionary is a hash table.</p>
+<p>If you meant “why do we use the Dictionary class instead of the Hashtable class?*</p>
+<p><em>“, then it’s an easy answer: Dictionary is a generic type, Hashtable is not. That means you get type safety with Dictionary, because you can’t insert any random object into it, and you don’t have to cast the values you take out.</em> </p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2022/11/09/dev/game/u3d/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF%E6%B5%81%E7%A8%8B/">← Next 渲染管线流程</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2022/11/08/dev/language/csharp/csharp%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/">C# 知识点总结 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E5%AE%B9%E5%99%A8"><span class="toc-text">C#容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-x2F-ArrayList-x2F-List-x2F-LinkedList"><span class="toc-text">Array&#x2F;ArrayList&#x2F;List&#x2F;LinkedList</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HashSet-x2F-HashTable-x2F-Dictionary"><span class="toc-text">HashSet&#x2F;HashTable&#x2F;Dictionary</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-text">小结</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>
