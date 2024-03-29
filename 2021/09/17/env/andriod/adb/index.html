@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ADB调试安卓 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>ADB调试安卓</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-09-17T09:23:25.000Z" id="date"> 2021-09-17</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.033Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">267</div></span><br><span>Read Time: <div class="control">1 min</div></span></div></div><hr><div id="post-content"><h1 id="ADB调试安卓"><a href="#ADB调试安卓" class="headerlink" title="ADB调试安卓"></a>ADB调试安卓</h1><p>Install:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo pacman -S adb<br></code></pre></td></tr></table></figure>
+
+
+
+<p>在手机上设置开发者模式，usb调试安装等。</p>
+<p>redmi note9设置: <a target="_blank" rel="noopener" href="https://zhidao.baidu.com/question/206891065776523485.html">https://zhidao.baidu.com/question/206891065776523485.html</a></p>
+<p>设置好后发现adb devices下没有权限，</p>
+<p>通过lsusb查看usb id号:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">lsusb<br></code></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub<br>Bus 003 Device 003: ID 04f2:b67c Chicony Electronics Co., Ltd Integrated Camera<br>Bus 003 Device 002: ID 0cf3:e300 Qualcomm Atheros Communications QCA61x4 Bluetooth 4.0<br>Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub<br>Bus 002 Device 002: ID 2109:0817 VIA Labs, Inc. USB3.0 Hub             <br>Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub<br>Bus 001 Device 009: ID 18d1:4ee7 Google Inc. Nexus/Pixel Device (charging + debug)<br>Bus 001 Device 004: ID 0bda:8152 Realtek Semiconductor Corp. RTL8152 Fast Ethernet Adapter<br>Bus 001 Device 003: ID 2109:2817 VIA Labs, Inc. USB2.0 Hub             <br>Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub<br><br></code></pre></td></tr></table></figure>
+
+<p>这里就是18d1:4ee7</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo vim /etc/udev/rules.d/51-android.rules<br></code></pre></td></tr></table></figure>
+
+<p>添加:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">SUBSYSTEM==“usb”, ATTRS&#123;idVendor&#125;“0bb4”,ATTRS&#123;idProduct&#125;“0c87”,MODE=&quot;0666&quot;<br></code></pre></td></tr></table></figure>
+
+<p>其中0bb4和0c87替换成之前我们记下的id就可以；</p>
+<p>给予权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo chmod a+rx /etc/udev/rules.d/51-android.rules<br></code></pre></td></tr></table></figure>
+
+
+
+<p>拔掉设备，重启adb</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo adb kill-server<br>sudo adb start-server<br></code></pre></td></tr></table></figure>
+
+
+
+<p>ref: </p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/09/27/env/linux/vmware/">← Next Install vmware on arch linux</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/08/28/env/linux/memcache/">Memcache Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ADB%E8%B0%83%E8%AF%95%E5%AE%89%E5%8D%93"><span class="toc-text">ADB调试安卓</span></a></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

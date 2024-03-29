@@ -1,0 +1,390 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>rsync用法详细解释 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>rsync用法详细解释</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-07-10T02:54:51.000Z" id="date"> 2021-07-10</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.049Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">5.9k</div></span><br><span>Read Time: <div class="control">26 min</div></span></div></div><hr><div id="post-content"><h1 id="rsync用法详细解释"><a href="#rsync用法详细解释" class="headerlink" title="rsync用法详细解释"></a>rsync用法详细解释</h1><p>提要</p>
+<ol>
+<li>熟悉 rsync 的功能及其特点</li>
+<li>掌握 rsync 语法及常用选项的功能</li>
+<li>掌握 rsync 命令的三种基本使用方法</li>
+<li>掌握如何筛选 rsync 的传输目标</li>
+<li>掌握使用 rsync 进行镜像和增量备份的方法</li>
+</ol>
+<h2 id="rsync-简介"><a href="#rsync-简介" class="headerlink" title="rsync 简介"></a>rsync 简介</h2><p>rsync（remote synchronize）是一个远程数据同步工具，可通过 LAN&#x2F;WAN 快速同步多台主机之间的文件。也可以使用 rsync 同步本地硬盘中的不同目录。<br>rsync 是用于替代 rcp 的一个工具，rsync 使用所谓的 rsync算法 进行数据同步，这种算法只传送两个文件的不同部分，而不是每次都整份传送，因此速度相当快。 您可以参考 How Rsync Works A Practical Overview 进一步了解 rsync 的运作机制。<br>rsync 的初始作者是 Andrew Tridgell 和 Paul Mackerras，目前由 <a target="_blank" rel="noopener" href="http://rsync.samba.org/">http://rsync.samba.org</a> 维护。<br>rsync 支持大多数的类 Unix 系统，无论是 Linux、Solaris 还是 BSD上 都经过了良好的测试。 CentOS系统默认就安装了 rsync 软件包。 此外，在 windows 平台下也有相应的版本，如 cwrsync 和DeltaCopy 等。<br>rsync 具有如下的基本特性：</p>
+<ol>
+<li>可以镜像保存整个目录树和文件系统</li>
+<li>可以很容易做到保持原来文件的权限、时间、软硬链接等</li>
+<li>无须特殊权限即可安装</li>
+<li>优化的流程，文件传输效率高</li>
+<li>可以使用 rsh、ssh 方式来传输文件，当然也可以通过直接的 socket 连接</li>
+<li>支持匿名传输，以方便进行网站镜象</li>
+</ol>
+<p>在使用 rsync 进行远程同步时，可以使用两种方式：远程 Shell 方式（建议使用 ssh，用户验证由 ssh 负责）和 C&#x2F;S 方式（即客户连接远程 rsync 服务器，用户验证由 rsync 服务器负责）。<br>无论本地同步目录还是远程同步数据，首次运行时将会把全部文件拷贝一次，以后再运行时将只拷贝有变化的文件（对于新文件）或文件的变化部分（对于原有文件）。<br>本节重点介绍 rsync 客户命令的使用，有关 rsync 服务器的配置和使用请参见<a target="_blank" rel="noopener" href="http://www.howtocn.org/rsync:use_rsync_server">下节</a>。<br>rsync 在首次复制时没有速度优势，速度不如 tar，因此当数据量很大时您可以考虑先使用 tar 进行首次复制，然后再使用 rsync 进行数据同步。</p>
+<h2 id="镜像、备份和归档"><a href="#镜像、备份和归档" class="headerlink" title="镜像、备份和归档"></a>镜像、备份和归档</h2><p>实施备份的两种情况：</p>
+<ul>
+<li>需保留备份历史归档：在备份时保留历史的备份归档，是为了在系统出现错误后能恢复到从前正确的状态。这可以使用完全备份和增量备份来完成。<ul>
+<li>可以使用 tar 命令保存归档文件。</li>
+<li>为了提高备份效率，也可以使用 rsync 结合 tar 来完成。</li>
+</ul>
+</li>
+<li>无需保留备份历史归档：若无需从历史备份恢复到正确状态，则只备份系统最“新鲜”的状态即可。这可以简单地使用 rsync 同步来完成。此时通常称为镜像。镜像可以分为两种：<ul>
+<li>被镜像的目录在各个主机上保持相同的位置。此时一般是为了实施负载均衡而对多个主机进行同步镜像。例如：将主机 A 的 &#x2F;srv&#x2F;www 目录同步到主机 B 的 &#x2F;srv&#x2F;www 目录等。</li>
+<li>被镜像的目录在各个主机上不保持相同的位置。例如：主机 A 和主机 B 都运行着各自的业务，同时又互为镜像备份。此时主机 A 的 &#x2F;srv&#x2F;www 目录同步到主机 B 的 &#x2F;backups&#x2F;hosta&#x2F;www 目录；主机 B 的 &#x2F;srv&#x2F;www 目录同步到主机 A 的 &#x2F;backups&#x2F;hostb&#x2F;www 目录等。</li>
+</ul>
+</li>
+</ul>
+<h2 id="rsync-命令"><a href="#rsync-命令" class="headerlink" title="rsync 命令"></a>rsync 命令</h2><p>rsync 是一个功能非常强大的工具，其命令也有很多功能选项。rsync 的命令格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">1）本地使用：<br>rsync [OPTION...] SRC... [DEST]<br><br>2）通过远程 Shell 使用：<br>拉: rsync [OPTION...] [USER@]HOST:SRC... [DEST]<br>推: rsync [OPTION...] SRC... [USER@]HOST:DEST<br><br>3）访问 rsync 服务器:<br>拉: rsync [OPTION...] [USER@]HOST::SRC... [DEST]<br>推: rsync [OPTION...] SRC... [USER@]HOST::DEST<br>拉: rsync [OPTION...] rsync://[USER@]HOST[:PORT]/SRC... [DEST]<br>推: rsync [OPTION...] SRC... rsync://[USER@]HOST[:PORT]/DEST<br></code></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li>SRC: 是要复制的源位置</li>
+<li>DEST: 是复制目标位置</li>
+<li>若本地登录用户与远程主机上的用户一致，可以省略 USER@</li>
+<li>使用远程 shell 同步时，主机名与资源之间使用单个冒号“:”作为分隔符</li>
+<li>使用 rsync 服务器同步时，主机名与资源之间使用两个冒号“::”作为分隔符</li>
+<li>当访问 rsync 服务器时也可以使用 rsync:&#x2F;&#x2F; URL</li>
+<li>“拉”复制是指从远程主机复制文件到本地主机</li>
+<li>“推”复制是指从本地主机复制文件到远程主机</li>
+<li>当进行“拉”复制时，若指定一个 SRC 且省略 DEST，则只列出资源而不进行复制</li>
+</ul>
+<p>下面列出常用选项：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-a, ––archive</td>
+<td>归档模式，表示以递归方式传输文件，并保持所有文件属性，等价于 -rlptgoD (注意不包括 -H)</td>
+</tr>
+<tr>
+<td>-r, ––recursive</td>
+<td>对子目录以递归模式处理</td>
+</tr>
+<tr>
+<td>-l, ––links</td>
+<td>保持符号链接文件</td>
+</tr>
+<tr>
+<td>-H, ––hard-links</td>
+<td>保持硬链接文件</td>
+</tr>
+<tr>
+<td>-p, ––perms</td>
+<td>保持文件权限</td>
+</tr>
+<tr>
+<td>-t, ––times</td>
+<td>保持文件时间信息</td>
+</tr>
+<tr>
+<td>-g, ––group</td>
+<td>保持文件属组信息</td>
+</tr>
+<tr>
+<td>-o, ––owner</td>
+<td>保持文件属主信息 (super-user only)</td>
+</tr>
+<tr>
+<td>-D</td>
+<td>保持设备文件和特殊文件 (super-user only)</td>
+</tr>
+<tr>
+<td>-z, ––compress</td>
+<td>在传输文件时进行压缩处理</td>
+</tr>
+<tr>
+<td>––exclude&#x3D;PATTERN</td>
+<td>指定排除一个不需要传输的文件匹配模式</td>
+</tr>
+<tr>
+<td>––exclude-from&#x3D;FILE</td>
+<td>从 FILE 中读取排除规则</td>
+</tr>
+<tr>
+<td>––include&#x3D;PATTERN</td>
+<td>指定需要传输的文件匹配模式</td>
+</tr>
+<tr>
+<td>––include-from&#x3D;FILE</td>
+<td>从 FILE 中读取包含规则</td>
+</tr>
+<tr>
+<td>––copy-unsafe-links</td>
+<td>拷贝指向SRC路径目录树以外的链接文件</td>
+</tr>
+<tr>
+<td>––safe-links</td>
+<td>忽略指向SRC路径目录树以外的链接文件（默认）</td>
+</tr>
+<tr>
+<td>––existing</td>
+<td>仅仅更新那些已经存在于接收端的文件，而不备份那些新创建的文件</td>
+</tr>
+<tr>
+<td>––ignore-existing</td>
+<td>忽略那些已经存在于接收端的文件，仅备份那些新创建的文件</td>
+</tr>
+<tr>
+<td>-b, ––backup</td>
+<td>当有变化时，对目标目录中的旧版文件进行备份</td>
+</tr>
+<tr>
+<td>––backup-dir&#x3D;DIR</td>
+<td>与 -b 结合使用，将备份的文件存到 DIR 目录中</td>
+</tr>
+<tr>
+<td>––link-dest&#x3D;DIR</td>
+<td>当文件未改变时基于 DIR 创建硬链接文件</td>
+</tr>
+<tr>
+<td>––delete</td>
+<td>删除那些接收端还有而发送端已经不存在的文件</td>
+</tr>
+<tr>
+<td>––delete-before</td>
+<td>接收者在传输之前进行删除操作 (默认)</td>
+</tr>
+<tr>
+<td>––delete-during</td>
+<td>接收者在传输过程中进行删除操作</td>
+</tr>
+<tr>
+<td>––delete-after</td>
+<td>接收者在传输之后进行删除操作</td>
+</tr>
+<tr>
+<td>––delete-excluded</td>
+<td>在接收方同时删除被排除的文件</td>
+</tr>
+<tr>
+<td>-e, ––rsh&#x3D;COMMAND</td>
+<td>指定替代 rsh 的 shell 程序</td>
+</tr>
+<tr>
+<td>––ignore-errors</td>
+<td>即使出现 I&#x2F;O 错误也进行删除</td>
+</tr>
+<tr>
+<td>––partial</td>
+<td>保留那些因故没有完全传输的文件，以是加快随后的再次传输</td>
+</tr>
+<tr>
+<td>––progress</td>
+<td>在传输时显示传输过程</td>
+</tr>
+<tr>
+<td>-P</td>
+<td>等价于 ––partial ––progress</td>
+</tr>
+<tr>
+<td>––delay-updates</td>
+<td>将正在更新的文件先保存到一个临时目录（默认为 “.<del>tmp</del>”），待传输完毕再更新目标文件</td>
+</tr>
+<tr>
+<td>-v, ––verbose</td>
+<td>详细输出模式</td>
+</tr>
+<tr>
+<td>-q, ––quiet</td>
+<td>精简输出模式</td>
+</tr>
+<tr>
+<td>-h, ––human-readable</td>
+<td>输出文件大小使用易读的单位（如，K，M等）</td>
+</tr>
+<tr>
+<td>-n, ––dry-run</td>
+<td>显示哪些文件将被传输</td>
+</tr>
+<tr>
+<td>––list-only</td>
+<td>仅仅列出文件而不进行复制</td>
+</tr>
+<tr>
+<td>––rsyncpath&#x3D;PROGRAM</td>
+<td>指定远程服务器上的 rsync 命令所在路径</td>
+</tr>
+<tr>
+<td>––password-file&#x3D;FILE</td>
+<td>从 FILE 中读取口令，以避免在终端上输入口令，通常在 cron 中连接 rsync 服务器时使用</td>
+</tr>
+<tr>
+<td>-4, ––ipv4</td>
+<td>使用 IPv4</td>
+</tr>
+<tr>
+<td>-6, ––ipv6</td>
+<td>使用 IPv6</td>
+</tr>
+<tr>
+<td>––version</td>
+<td>打印版本信息</td>
+</tr>
+<tr>
+<td>––help</td>
+<td>显示帮助信息</td>
+</tr>
+</tbody></table>
+<ul>
+<li>若使用普通用户身份运行 rsync 命令，同步后的文件的属主将改变为这个普通用户身份。</li>
+<li>若使用超级用户身份运行 rsync 命令，同步后的文件的属主将保持原来的用户身份。</li>
+</ul>
+<h2 id="rsync-的基本使用"><a href="#rsync-的基本使用" class="headerlink" title="rsync 的基本使用"></a>rsync 的基本使用</h2><h3 id="在本地磁盘同步数据"><a href="#在本地磁盘同步数据" class="headerlink" title="在本地磁盘同步数据"></a>在本地磁盘同步数据</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># rsync -a --delete /home /backups<br># rsync -a --delete /home/ /backups/home.0<br></code></pre></td></tr></table></figure>
+
+<p>在指定复制源时，路径是否有最后的 “&#x2F;” 有不同的含义，例如：</p>
+<ul>
+<li>&#x2F;home ： 表示将整个 &#x2F;home 目录复制到目标目录</li>
+<li>&#x2F;home&#x2F; ： 表示将 &#x2F;home 目录中的所有内容复制到目标目录</li>
+</ul>
+<h3 id="使用基于-ssh-的-rsync-远程同步数据"><a href="#使用基于-ssh-的-rsync-远程同步数据" class="headerlink" title="使用基于 ssh 的 rsync 远程同步数据"></a>使用基于 ssh 的 rsync 远程同步数据</h3><ol>
+<li>同步静态主机表文件</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 执行“推”复制同步（centos5 是可解析的远程主机名）<br>[root@soho ~]# rsync /etc/hosts centos5:/etc/hosts<br><br># 执行“拉”复制同步（soho 是可解析的远程主机名）<br>[root@centos5 ~]# rsync soho:/etc/hosts /etc/hosts<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>同步用户的环境文件</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 执行“推”复制同步<br>[osmond@soho ~]$ rsync ~/.bash* centos5:<br><br># 执行“拉”复制同步<br>[osmond@cnetos5 ~]$ rsync soho:~/.bash* .<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>同步站点根目录</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 执行“推”复制同步<br>[osmond@soho ~]$ rsync -avz --delete /var/www root@192.168.0.101:/var/www<br><br># 执行“拉”复制同步<br>[osmond@cnetos5 ~]$ rsync -avz --delete root@192.168.0.55:/var/www /var/www<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>使用基于 ssh 的 rsync 同步数据可以使用 -e ssh 参数，当前的 CentOS 默认指定使用 ssh 作为远程Shell。若您在其他系统上执行 rsync 命令，为确保使用 ssh 作为远程 Shell，请添加 -e ssh 参数。</li>
+<li>通常 rsync 命令在后台以 cron 任务形式执行，为了避免从终端上输入口令需要设置 ssh。ssh 的设置方法请参考 安全登录守护进程。</li>
+</ul>
+<h3 id="使用-rsync-从远程-rsync-服务器同步数据"><a href="#使用-rsync-从远程-rsync-服务器同步数据" class="headerlink" title="使用 rsync 从远程 rsync 服务器同步数据"></a>使用 rsync 从远程 rsync 服务器同步数据</h3><p>下面以镜像 CentOS 和 Ubuntu 的软件库为例来说明。<br>您可以到如下站点查找离自己最近的提供 rsync 服务的镜像站点</p>
+<ul>
+<li>CentOS — <a target="_blank" rel="noopener" href="http://www.centos.org/modules/tinycontent/index.php?id=13">http://www.centos.org/modules/tinycontent/index.php?id=13</a></li>
+<li>Ubuntu — <a target="_blank" rel="noopener" href="https://launchpad.net/ubuntu/+archivemirrors">https://launchpad.net/ubuntu/+archivemirrors</a></li>
+</ul>
+<p>然后执行类似如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">rsync -aqzH --delete --delay-updates \<br>rsync://mirror.centos.net.cn/centos /var/www/mirror/centos<br>rsync -azH --progress --delete --delay-updates \<br>rsync://ubuntu.org.cn/ubuntu /var/www/mirror/ubuntu/<br>rsync -azH --progress --delete --delay-updates \<br>rsync://ubuntu.org.cn/ubuntu-cn /var/www/mirror/ubuntu-cn/<br></code></pre></td></tr></table></figure>
+
+<p>为了每天不断更新，可以安排一个 cron 任务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># crontab -e<br># mirror centos at 0:10AM everyday<br>10 0 * * * rsync -aqzH --delete --delay-updates rsync://mirror.centos.net.cn/centos /var/www/mirror/centos/<br># mirror ubuntu at 2:10AM everyday<br>10 2 * * * rsync -azH --progress --delete --delay-updates rsync://ubuntu.org.cn/ubuntu /var/www/mirror/ubuntu/<br># mirror ubuntu-cn at 4:10AM everyday<br>10 4 * * * rsync -azH --progress --delete --delay-updates rsync://ubuntu.org.cn/ubuntu-cn /var/www/mirror/ubuntu-cn/<br></code></pre></td></tr></table></figure>
+
+<p>如果您安装了自己的匿名 rsync 服务器请相应地更改 rsync URL。有关如何配置匿名 rsync 服务器的内容请参见下节。</p>
+<h2 id="筛选-rsync-的传输目标"><a href="#筛选-rsync-的传输目标" class="headerlink" title="筛选 rsync 的传输目标"></a>筛选 rsync 的传输目标</h2><h3 id="使用-–exclude-x2F-–include-选项"><a href="#使用-–exclude-x2F-–include-选项" class="headerlink" title="使用 –exclude&#x2F;–include 选项"></a>使用 –exclude&#x2F;–include 选项</h3><p>可以使用 ––exclude 选项排除源目录中要传输的文件；同样地，也可以使用 ––include 选项指定要传输的文件。<br>例如：下面的 rsync 命令将 192.168.0.101 主机上的 &#x2F;www 目录（不包含 &#x2F;www&#x2F;logs 和 &#x2F;www&#x2F;conf子目录）复制到本地的 &#x2F;backup&#x2F;www&#x2F; 。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># rsync -vzrtopg --delete --exclude &quot;logs/&quot; --exclude &quot;conf/&quot; --progress \<br>backup@192.168.0.101:/www/ /backup/www/<br></code></pre></td></tr></table></figure>
+
+<p>又如：下面的 rsync 命令仅复制目录结构而忽略掉目录中的文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># rsync -av --include &#x27;*/&#x27; --exclude &#x27;*&#x27; \<br>backup@192.168.0.101:/www/ /backup/www-tree/<br></code></pre></td></tr></table></figure>
+
+<p>选项 ––include 和 ––exclude 都不能使用间隔符。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">--exclude &quot;logs/&quot; --exclude &quot;conf/&quot;<br></code></pre></td></tr></table></figure>
+
+<p>不能写成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">--exclude &quot;logs/ conf/&quot;<br></code></pre></td></tr></table></figure>
+
+<h3 id="使用-–exclude-from-x2F-–include-from-选项"><a href="#使用-–exclude-from-x2F-–include-from-选项" class="headerlink" title="使用 –exclude-from&#x2F;–include-from 选项"></a>使用 –exclude-from&#x2F;–include-from 选项</h3><p>当 include&#x2F;exclude 的规则较复杂时，可以将规则写入规则文件。使用规则文件可以灵活地选择传输哪些文件（include）以及忽略哪些文件（exclude）。</p>
+<ul>
+<li>若文件&#x2F;目录在剔除列表中，则忽略传输</li>
+<li>若文件&#x2F;目录在包含列表中，则传输之</li>
+<li>若文件&#x2F;目录未被提及，也传输之</li>
+</ul>
+<p>在 rsync 的命令行中使用 ––exclude-from&#x3D;FILE 或 ––include-from&#x3D;FILE 读取规则文件。<br>规则文件 FILE 的书写约定：</p>
+<ul>
+<li>每行书写一条规则 RULE</li>
+<li>以 # 或 ; 开始的行为注释行</li>
+</ul>
+<p>包含（include）和排除（exclude）规则的语法如下：</p>
+<ul>
+<li>include PATTERN 或简写为 + PATTERN</li>
+<li>exclude PATTERN 或简写为 - PATTERN</li>
+</ul>
+<p>PATTERN 的书写规则如下：</p>
+<ul>
+<li>以 &#x2F; 开头：匹配被传输的跟路径上的文件或目录</li>
+<li>以 &#x2F; 结尾：匹配目录而非普通文件、链接文件或设备文件</li>
+<li>使用通配符</li>
+<li>*：匹配非空目录或文件（遇到 &#x2F; 截止）</li>
+<li>**：匹配任何路径（包含 &#x2F; ）</li>
+<li>?：匹配除了 &#x2F; 的任意单个字符</li>
+<li>[：匹配字符集中的任意一个字符，如 [a-z] 或 [[:alpha:]]</li>
+<li>可以使用转义字符 \ 将上述通配符还原为字符本身含义</li>
+</ul>
+<p>下面给出几个使用规则的例子：<br>例1：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 不传输所有后缀为 .o 的文件<br>- *.o<br><br># 不传输传输根目录下名为 foo 的文件或目录<br>- /foo<br><br># 不传输名为 foo 的目录<br>- foo/<br><br># 不传输 /foo 目录下的名为 bar 的文件或目录<br>- /foo/bar<br></code></pre></td></tr></table></figure>
+
+<p>例2：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 传输所有目录和C语言源文件并禁止传输其他文件<br>+ */<br>+ *.c<br>- *<br></code></pre></td></tr></table></figure>
+
+<p>例3：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 仅传输 foo 目录和其下的 bar.c 文件<br>+ foo/<br>+ foo/bar.c<br>- *<br></code></pre></td></tr></table></figure>
+
+<p>将规则写入规则文件之后，如何在命令行上使用它呢？下面给出一个例子：<br>首先将下面的规则存入名为 www-rsync-rules 的文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 不传输 logs 目录<br>- logs/<br><br># 不传输后缀为 .tmp 的文件<br>- *.tmp<br><br># 传输 Apache 虚拟主机文档目录（/*/ 匹配域名）<br>+ /srv/www/<br>+ /srv/www/*/<br>+ /srv/www/*/htdocs/<br>+ /srv/www/*/htdocs/**<br><br># 传输每个用户的 public_html 目录（/*/ 匹配用户名）<br>+ /home/<br>+ /home/*/<br>+ /home/*/public_html/<br>+ /home/*/public_html/**<br># 禁止传输其他<br>- *<br></code></pre></td></tr></table></figure>
+
+<p>然后即可使用类似如下的 rsync 命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">rsync -av --delete --exclude-from=www-rsync-rules / remotehost:/dest/dir<br></code></pre></td></tr></table></figure>
+
+<h2 id="rsync-应用示例"><a href="#rsync-应用示例" class="headerlink" title="rsync 应用示例"></a>rsync 应用示例</h2><h3 id="使用-rsync-镜像"><a href="#使用-rsync-镜像" class="headerlink" title="使用 rsync 镜像"></a>使用 rsync 镜像</h3><p>使用 rsync 对目录做镜像实际上就是做无历史归档的完全备份。下面给出一个镜像远程 Web 站点例子。<br>笔者在 dreamhost 上维护了3个 Dokuwiki 站点。为了备份这3个站点笔者使用 rsync 进行镜像。远程站点的目录结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">~<br>|-- sinosmond.com<br>| `-- dokuwiki<br>|-- smartraining.cn<br>| `-- dokuwiki<br>`-- symfony-project.cn<br>`-- dokuwiki<br></code></pre></td></tr></table></figure>
+
+<p>每个 Dokuwiki 的目录结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">dokuwiki<br>|-- bin<br>|-- inc<br>|-- conf --- 存放配置文件的目录<br>| |-- acl.auth.php --- 访问控制配置文件 ★<br>| |-- local.php --- 本地配置文件 ★<br>| |-- users.auth.php --- 用户口令文件 ★<br>| `-- ………………<br>|-- data --- 存放数据的目录<br>| |-- attic --- 存放WIKI版本信息 ★<br>| |-- cache --- 存放数据缓存<br>| |-- index --- 存放站内索引<br>| |-- locks --- 存放编辑页面时的锁定文件<br>| |-- media --- 存放图片等 ★<br>| |-- meta --- 存放 meta 以便系统读取这些信息生成页面 ★<br>| `-- pages --- 存放 wiki 页面 ★<br>`-- lib<br>|-- plugins --- 存放插件的目录 ☆<br>|-- tpl --- 存放模版的目录 ☆<br>`-- ………………<br></code></pre></td></tr></table></figure>
+
+<p>为了减少网络流量，只同步标有 ★ 的目录或文件。若在站点运行过程中新安装了插件或更换了模板，也应该同步标有 ☆ 的目录。为此编写如下的规则文件 &#x2F;root&#x2F;bin&#x2F;backup&#x2F;dw-exclude.txt：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">- dokuwiki/bin/<br>- dokuwiki/inc/<br>- dokuwiki/data/cache/<br>- dokuwiki/data/locks/<br>- dokuwiki/data/index/<br>+ dokuwiki/conf/acl.auth.php<br>+ dokuwiki/conf/local.php<br>+ dokuwiki/conf/users.auth.php<br>- dokuwiki/conf/*<br>+ dokuwiki/lib/plugins/<br><br># 不同步系统默认安装的插件<br>- dokuwiki/lib/plugins/acl/<br>- dokuwiki/lib/plugins/config/<br>- dokuwiki/lib/plugins/importoldchangelog/<br>- dokuwiki/lib/plugins/importoldindex/<br>- dokuwiki/lib/plugins/info/<br>- dokuwiki/lib/plugins/plugin/<br>- dokuwiki/lib/plugins/revert/<br>- dokuwiki/lib/plugins/usermanager/<br>- dokuwiki/lib/plugins/action.php<br>- dokuwiki/lib/plugins/admin.php<br>- dokuwiki/lib/plugins/syntax.php<br>+ dokuwiki/lib/tpl<br><br># 不同步系统默认安装的模板<br>- dokuwiki/lib/tpl/default/<br>- dokuwiki/lib/*<br>- dokuwiki/COPYING<br>- dokuwiki/doku.php<br>- dokuwiki/feed.php<br>- dokuwiki/index.php<br>- dokuwiki/install*<br>- dokuwiki/README<br>- dokuwiki/VERSION<br></code></pre></td></tr></table></figure>
+
+<p>下面是同步脚本 &#x2F;root&#x2F;bin&#x2F;backup&#x2F;rsync-dw.sh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#!/bin/bash<br>#####################################<br># mirror dokuwiki website<br># $1 --- domain (ex: smartraining.cn)<br># $2 --- full or update<br>#####################################<br># declare some variable<br>RmtUser=osmond<br>RmtIP=208.113.163.110<br>RmtPath=$1/dokuwiki<br>BackupRoot=/backups/$1<br>Excludes=&quot;--exclude-from=/root/bin/backup/dw-exclude.txt&quot;<br><br># use rsync for mirror<br>if [ &quot;$2&quot; == &quot;full&quot; ]<br>then<br><br>[ -d /backups/$1 ] || mkdir -p /backups/$1<br>excludesfile=&quot;/tmp/first-excludes&quot;<br>cat &gt; $&#123;excludesfile&#125; &lt;&lt; EOF<br>+ dokuwiki/data/cache/_dummy<br>- dokuwiki/data/cache/*<br>+ dokuwiki/data/locks/_dummy<br>- dokuwiki/data/locks/*<br>+ dokuwiki/data/index/_dummy<br>- dokuwiki/data/index/*<br>EOF<br>/usr/bin/rsync -avzP --exclude-from=$&#123;excludesfile&#125; \<br>$RmtUser@$RmtIP:$RmtPath $BackupRoot<br><br>else<br>/usr/bin/rsync -avzP --delete $Excludes \<br>$RmtUser@$RmtIP:$RmtPath $BackupRoot<br><br>fi<br></code></pre></td></tr></table></figure>
+
+<p>首次备份可以使用类似如下的命令（为了在本地保留一个完整复本）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># /root/bin/backup/rsync-dw.sh smartraining.cn full<br># /root/bin/backup/rsync-dw.sh sinosmond.com full<br># /root/bin/backup/rsync-dw.sh symfony-project.cn full<br></code></pre></td></tr></table></figure>
+
+<p>可以安排 cron 任务以便日后更新：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># crontab -e<br>05 1 * * * /root/bin/backup/rsync-dw.sh smartraining.cn<br>25 1 * * * /root/bin/backup/rsync-dw.sh sinosmond.com<br>45 1 * * * /root/bin/backup/rsync-dw.sh symfony-project.cn<br></code></pre></td></tr></table></figure>
+
+<h3 id="普通型增量备份"><a href="#普通型增量备份" class="headerlink" title="普通型增量备份"></a>普通型增量备份</h3><p>使用 rsync 可以做增量备份。rsync 提供了 -b ––backup-dir 选项，使用这个选项可以将有变化的文件进行更新同时将其旧版本保存在指定的目录中，从而实现增量备份。 下面是对 &#x2F;home 进行增量备份的步骤说明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 第0次备份<br># 首先复制 /home 目录的内容到备份目录 /backups/daily/home.0，<br># rsync -a /home/ /backups/daily/home.0<br># /backups/daily/home.0 总是同步到最新的状态，可以每隔一段时间（如一周）<br># 对其内容进行打包压缩生成归档文件（完全备份）存在 /backups/archive/。<br><br># 第1次备份（此为核心操作）<br># 将 /home 目录的内容同步到目录 /backups/daily/home.0，<br># 并将有变化的文件的旧版本保存到 /backups/daily/home.1，<br># 若每天执行一次，则目录 /backups/daily/home.1 保存了有变化文件一天前的状态。<br># rsync -a --delete -b --backup-dir=/backups/daily/home.1 /home/ /backups/daily/home.0<br><br># 第2次备份<br># 将备份目录 /backups/daily/home.1 更名为 /backups/daily/home.2<br># mv /backups/daily/home.1 /backups/daily/home.2<br># 执行第1次备份的核心操作<br><br># 第n次备份<br># 将早先的备份目录 /backups/daily/home.n 到 /backups/daily/home.1<br># 依次更名为 /backups/daily/home.(n+1) 到 /backups/daily/home.2<br># 执行第1次备份的核心操作<br></code></pre></td></tr></table></figure>
+
+<p>下面给出一个增量备份示例脚本。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#!/bin/bash<br>#========================<br># 您可以安排 cron 任务执行本脚本<br># &gt; crontab -e<br>#<br># daily : 1 1 * * * /path/to/script/rsync-backup.sh<br>#========================<br>mydate=&quot;`date &#x27;+%Y%m%d.%H%M&#x27;`&quot;<br><br># Define rmt location<br>RmtUser=root<br>RmtHost=192.168.0.55<br>RmtPath=/home/<br>BackupSource=&quot;$&#123;RmtUser&#125;@$&#123;RmtHost&#125;:$&#123;RmtPath&#125;&quot;<br>#BackupSource=&quot;/home/&quot;             # 若进行本地备份则用本地路径替换上面的行<br># Define location of backup<br>BackupRoot=&quot;/backups/$RmtHost/&quot;<br># BackupRoot=&quot;/backups/localhost/&quot; # 若进行本地备份则用本地路径替换上面的行<br>LogFile=&quot;$&#123;BackupRoot&#125;/backup.log&quot;<br>ExcludeList=&quot;/root/backup/backup-exclude-list.txt&quot;<br>BackupName=&#x27;home&#x27;<br>BackupNum=&quot;7&quot;                      # 指定保留多少个增量备份（适用于每周生成归档文件）<br>#BackupNum=&quot;31&quot;                    # 指定保留多少个增量备份（适用于每月生成归档文件）<br><br># 定义函数检查目录 $1 是否存在，若不存在创建之<br>checkDir() &#123;<br>    if [ ! -d &quot;$&#123;BackupRoot&#125;/$1&quot; ] ; then<br>        mkdir -p &quot;$&#123;BackupRoot&#125;/$1&quot;<br>    fi<br>&#125;<br># 定义函数实现目录滚动<br># $1 -&gt; 备份路径<br># $2 -&gt; 备份名称<br># $3 -&gt; 增量备份的数量<br>rotateDir() &#123;<br>    for i in `seq $(($3 - 1)) -1 1`<br>    do<br>        if [ -d &quot;$1/$2.$i&quot; ] ; then<br>            /bin/rm -rf &quot;$1/$2.$((i + 1))&quot;<br>            mv &quot;$1/$2.$i&quot; &quot;$1/$2.$((i + 1))&quot;<br>        fi<br>    done<br>&#125;<br><br># 调用函数 checkDir ，确保目录存在<br>checkDir &quot;archive&quot;<br>checkDir &quot;daily&quot;<br><br>#======= Backup Begin =================<br># S1: Rotate daily.<br>rotateDir &quot;$&#123;BackupRoot&#125;/daily&quot; &quot;$BackupName&quot; &quot;$BackupNum&quot;<br><br>checkDir &quot;daily/$&#123;BackupName&#125;.0/&quot;<br>checkDir &quot;daily/$&#123;BackupName&#125;.1/&quot;<br><br>mv $&#123;LogFile&#125; $&#123;BackupRoot&#125;/daily/$&#123;BackupName&#125;.1/<br><br>cat &gt;&gt; $&#123;LogFile&#125; &lt;&lt;_EOF<br>===========================================<br>    Backup done on: $mydate<br>===========================================<br>_EOF<br><br># S2: Do the backup and save difference in $&#123;BackupName&#125;.1<br>rsync -av --delete \<br>    -b --backup-dir=$&#123;BackupRoot&#125;/daily/$&#123;BackupName&#125;.1 \<br>    --exclude-from=$&#123;ExcludeList&#125; \<br>    $BackupSource $&#123;BackupRoot&#125;/daily/$&#123;BackupName&#125;.0 \<br>    1&gt;&gt; $&#123;LogFile&#125; 2&gt;&amp;1<br><br># S3: Create an archive backup every week<br>if [ `date +%w` == &quot;0&quot; ] # 每周日做归档<br># if [ `date +%d` == &quot;01&quot; ] # 每月1日做归档<br>then<br>    tar -cjf $&#123;BackupRoot&#125;/archive/$&#123;BackupName&#125;-$&#123;mydate&#125;.tar.bz2 \<br>      -C $&#123;BackupRoot&#125;/daily/$&#123;BackupName&#125;.0 .<br>fi<br></code></pre></td></tr></table></figure>
+
+<p>您可以适当修该上述脚本中变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">RmtPath=&quot;$1/&quot;<br>#BackupSource=&quot;$1/&quot;<br>BackupName=&quot;$1&quot;<br></code></pre></td></tr></table></figure>
+
+<p>然后传递脚本参数备份其他目录，例如要备份 &#x2F;www 可以使用如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">./rsync-backup.sh /www<br></code></pre></td></tr></table></figure>
+
+<h3 id="快照型增量备份"><a href="#快照型增量备份" class="headerlink" title="快照型增量备份"></a>快照型增量备份</h3><p>使用 rsync 可以做快照（Snapshot）型增量备份。每一个快照都相当于一个完全备份。其核心思想是：对有变化的文件进行复制；对无变化的文件创建硬链接以减少磁盘占用。<br>下面是对 &#x2F;home 进行快照型增量备份的步骤说明：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 第0次备份<br># 首先复制 /home 目录的内容到备份目录 /backups/home.0<br># rsync -a /home/ /backups/home.0<br><br># 第1次备份（此为核心操作）<br># 以硬链接形式复制 /backups/home.0 到 /backups/home.1<br># cp -al /backups/home.0 /backups/home.1<br># 将 /home 目录的内容同步到目录 /backups/home.0<br># （rsync 在发现变化的文件时，先删除之，然后在创建该文件）<br># rsync -a --delete /home/ /backups/home.0<br><br># 第2次备份<br># 将备份目录 /backups/home.1 更名为 /backups/home.2<br># mv /backups/home.1 /backups/home.2<br># 执行第1次备份的核心操作<br><br># 第n次备份<br># 将早先的备份目录 /backups/home.n 到 /backups/home.1<br># 依次更名为 /backups/home.(n+1) 到 /backups/home.2<br># 执行第1次备份的核心操作<br></code></pre></td></tr></table></figure>
+
+<p>rsync 2.5.6 版本之后提供了 ––link-dest 选项，如下两条核心操作命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cp -al /backups/home.0 /backups/home.1<br>rsync -a --delete /home/ /backups/home.0<br></code></pre></td></tr></table></figure>
+
+<p>可以简化为如下的一条命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">rsync -a --delete --link-dest=/backups/home.1 /home/ /backups/home.0<br></code></pre></td></tr></table></figure>
+
+<p>下面给出一个快照型增量备份示例脚本，该脚本来自http:&#x2F;&#x2F;<a target="_blank" rel="noopener" href="http://www.mikerubel.org/computers/rsync_snapshots/contributed/peter_schneider-kamp">www.mikerubel.org/computers/rsync_snapshots&#x2F;contributed&#x2F;peter_schneider-kamp</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#!/bin/bash<br># ----------------------------------------------------------------------<br># mikes handy rotating-filesystem-snapshot utility<br># ----------------------------------------------------------------------<br># RCS info: $Id: make_snapshot.sh,v 1.6 2002/04/06 04:20:00 mrubel Exp $<br># ----------------------------------------------------------------------<br># this needs to be a lot more general, but the basic idea is it makes<br># rotating backup-snapshots of /home whenever called<br># ----------------------------------------------------------------------<br><br># ------------- system commands used by this script --------------------<br>ID=&#x27;/usr/bin/id&#x27;;<br>ECHO=&#x27;/bin/echo&#x27;;<br><br>MOUNT=&#x27;/bin/mount&#x27;;<br>RM=&#x27;/bin/rm&#x27;;<br>MV=&#x27;/bin/mv&#x27;;<br>CP=&#x27;/bin/cp&#x27;;<br>TOUCH=&#x27;/usr/bin/touch&#x27;;<br><br>RSYNC=&#x27;/usr/bin/rsync&#x27;;<br><br># ------------- file locations -----------------------------------------<br><br>MOUNT_DEVICE=/dev/hdb1;<br>SNAPSHOT_RW=/root/snapshots;<br>EXCLUDES=/etc/snapshot_exclude;<br><br># ------------- backup configuration------------------------------------<br><br>BACKUP_DIRS=&quot;/etc /home&quot;<br>NUM_OF_SNAPSHOTS=3<br>BACKUP_INTERVAL=hourly<br><br># ------------- the script itself --------------------------------------<br><br># make sure we&#x27;re running as root<br>if (( `$ID -u` != 0 )); then &#123; $ECHO &quot;Sorry, must be root. Exiting...&quot;; exit; &#125; fi<br><br>echo &quot;Starting snapshot on &quot;`date`<br><br># attempt to remount the RW mount point as RW; else abort<br>$MOUNT -o remount,rw $MOUNT_DEVICE $SNAPSHOT_RW ;<br>if (( $? )); then<br>&#123;<br>	$ECHO &quot;snapshot: could not remount $SNAPSHOT_RW readwrite&quot;;<br>	exit;<br>&#125;<br>fi;<br><br># rotating snapshots<br>for BACKUP_DIR in $BACKUP_DIRS<br>do<br>	NUM=$NUM_OF_SNAPSHOTS<br>	# step 1: delete the oldest snapshot, if it exists:<br>	if [ -d $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.$NUM ] ; then \<br>	$RM -rf $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.$NUM ; \<br>	fi ;<br>	NUM=$(($NUM-1))<br>	# step 2: shift the middle snapshots(s) back by one, if they exist<br>	while [[ $NUM -ge 1 ]]<br>	do<br>		if [ -d $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.$NUM ] ; then \<br>			$MV $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.$NUM $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_IN&#125;<br>		fi;<br>		NUM=$(($NUM-1))<br>	done<br><br>	# step 3: make a hard-link-only (except for dirs) copy of the latest snapshot,<br>	# if that exists<br>	if [ -d $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.0 ] ; then \<br>		$CP -al $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.0 $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;<br>	fi;<br>	# step 4: rsync from the system into the latest snapshot (notice that<br>	# rsync behaves like cp --remove-destination by default, so the destination<br>	# is unlinked first. If it were not so, this would copy over the other<br>	# snapshot(s) too!<br>	$RSYNC \<br>		-va --delete --delete-excluded \<br>		--exclude-from=&quot;$EXCLUDES&quot; \<br>		$&#123;BACKUP_DIR&#125;/ $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.0 ;<br>	# step 5: update the mtime of $&#123;BACKUP_INTERVAL&#125;.0 to reflect the snapshot time<br>	$TOUCH $&#123;SNAPSHOT_RW&#125;$&#123;BACKUP_DIR&#125;/$&#123;BACKUP_INTERVAL&#125;.0 ;<br>done<br><br># now remount the RW snapshot mountpoint as readonly<br><br>$MOUNT -o remount,ro $MOUNT_DEVICE $SNAPSHOT_RW ;<br>if (( $? )); then<br>&#123;<br>	$ECHO &quot;snapshot: could not remount $SNAPSHOT_RW readonly&quot;;<br>	exit;<br>&#125; fi;<br></code></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://rsync.samba.org/examples.html">http://rsync.samba.org/examples.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://sial.org/howto/rsync/">http://sial.org/howto/rsync/</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.linuxsir.org/main/?q=node/256">http://www.linuxsir.org/main/?q=node/256</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.dbanotes.net/techmemo/rsync_openssh.html">http://www.dbanotes.net/techmemo/rsync_openssh.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.mikerubel.org/computers/rsync_snapshots/index.html">http://www.mikerubel.org/computers/rsync_snapshots/index.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://howtoforge.com/rsync_incremental_snapshot_backups">http://howtoforge.com/rsync_incremental_snapshot_backups</a></li>
+<li><a target="_blank" rel="noopener" href="http://mirror.actusa.net/pub/sample-files/mirror.dist">http://mirror.actusa.net/pub/sample-files/mirror.dist</a></li>
+<li><a target="_blank" rel="noopener" href="http://wiki.splitbrain.org/wiki:tips:backup_script">http://wiki.splitbrain.org/wiki:tips:backup_script</a></li>
+</ul>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/07/13/dev/code/leetcode/">← Next LeetCode</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/07/05/dev/game/server/gsky-2/">Gsky游戏服务器框架介绍 2 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#rsync%E7%94%A8%E6%B3%95%E8%AF%A6%E7%BB%86%E8%A7%A3%E9%87%8A"><span class="toc-text">rsync用法详细解释</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#rsync-%E7%AE%80%E4%BB%8B"><span class="toc-text">rsync 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E3%80%81%E5%A4%87%E4%BB%BD%E5%92%8C%E5%BD%92%E6%A1%A3"><span class="toc-text">镜像、备份和归档</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rsync-%E5%91%BD%E4%BB%A4"><span class="toc-text">rsync 命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rsync-%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="toc-text">rsync 的基本使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E6%9C%AC%E5%9C%B0%E7%A3%81%E7%9B%98%E5%90%8C%E6%AD%A5%E6%95%B0%E6%8D%AE"><span class="toc-text">在本地磁盘同步数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9F%BA%E4%BA%8E-ssh-%E7%9A%84-rsync-%E8%BF%9C%E7%A8%8B%E5%90%8C%E6%AD%A5%E6%95%B0%E6%8D%AE"><span class="toc-text">使用基于 ssh 的 rsync 远程同步数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-rsync-%E4%BB%8E%E8%BF%9C%E7%A8%8B-rsync-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%8C%E6%AD%A5%E6%95%B0%E6%8D%AE"><span class="toc-text">使用 rsync 从远程 rsync 服务器同步数据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AD%9B%E9%80%89-rsync-%E7%9A%84%E4%BC%A0%E8%BE%93%E7%9B%AE%E6%A0%87"><span class="toc-text">筛选 rsync 的传输目标</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%E2%80%93exclude-x2F-%E2%80%93include-%E9%80%89%E9%A1%B9"><span class="toc-text">使用 –exclude&#x2F;–include 选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-%E2%80%93exclude-from-x2F-%E2%80%93include-from-%E9%80%89%E9%A1%B9"><span class="toc-text">使用 –exclude-from&#x2F;–include-from 选项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#rsync-%E5%BA%94%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="toc-text">rsync 应用示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-rsync-%E9%95%9C%E5%83%8F"><span class="toc-text">使用 rsync 镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%AE%E9%80%9A%E5%9E%8B%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD"><span class="toc-text">普通型增量备份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BF%AB%E7%85%A7%E5%9E%8B%E5%A2%9E%E9%87%8F%E5%A4%87%E4%BB%BD"><span class="toc-text">快照型增量备份</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

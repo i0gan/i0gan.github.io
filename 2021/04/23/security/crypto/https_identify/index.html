@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>HTTPS单项认证与双向认证 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>HTTPS单项认证与双向认证</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-04-23T06:32:06.000Z" id="date"> 2021-04-23</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.069Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">1.5k</div></span><br><span>Read Time: <div class="control">5 min</div></span></div></div><hr><div id="post-content"><h1 id="HTTPS单项认证与双向认证"><a href="#HTTPS单项认证与双向认证" class="headerlink" title="HTTPS单项认证与双向认证"></a>HTTPS单项认证与双向认证</h1><p>HTTP（HyperText Transfer Protocol，超文本传输协议）被用于在Web浏览器和网站服务器之间传递信息，在TCP&#x2F;IP中处于应用层。这里提一下TCP&#x2F;IP的分层共分为四层：<strong>应用层、传输层、网络层、数据链路层</strong>; 分层的目的是：<strong>分层能够解耦，动态替换层内协议</strong></p>
+<p>然而HTTP也有以下明显缺点：</p>
+<ol>
+<li>通信使用明文，内容可能被窃听</li>
+<li>不验证通信方的身份，因此有可能遭遇伪装</li>
+<li>无法证明报文的完整性，所以有可能遭到篡改</li>
+</ol>
+<p>这样，HTTPS就出现来弥补HTTP的不足。HTTPS中的S表示SSL或者TLS，就是在原HTTP的基础上加上一层用于数据加密、解密、身份认证的安全层，即</p>
+<ul>
+<li><strong>HTTP + 加密 + 认证 + 完整性保护 &#x3D; HTTPS</strong></li>
+</ul>
+<p>加密相关的预备知识：对称加密和非对称加密。</p>
+<ol>
+<li><strong>对称加密</strong> ： 加密和解密数据使用同一个密钥。这种加密方式的特点是速度很快，常见对称加密的算法有 AES；</li>
+<li><strong>非对称加密</strong>： 加密和解密使用不同的密钥，这两个密钥形成有且仅有唯一的配对，叫公钥和私钥。数据用公钥加密后必须用私钥解密，数据用私钥加密后必须用公钥解密。一般来说私钥自己保留好，把公钥公开给别人（一般公钥不会单独出现，而是会写进证书中），让别人拿自己的公钥加密数据后发给自己，这样只有自己才能解密。 这种加密方式的特点是速度慢，CPU 开销大，常见非对称加密算法有 RSA。</li>
+</ol>
+<p>CA证书的相关知识： CA证书是由CA（Certification Authority）机构发布的数字证书。其内容包含：电子签证机关的信息、公钥用户信息、<strong>公钥</strong>、<strong>签名</strong>和有效期。这里的公钥服务端的公钥，这里的签名是指：用hash散列函数计算公开的明文信息的信息摘要，然后采用CA的私钥对信息摘要进行加密，加密完的密文就是签名。 即：<strong>证书 &#x3D; 公钥 + 签名 +申请者和颁发者的信息</strong>。 客户端中因为在操作系统中就预置了CA的公钥，所以支持解密签名（因为签名使用CA的私钥加密的）</p>
+<h2 id="单项认证"><a href="#单项认证" class="headerlink" title="单项认证"></a>单项认证</h2><ol>
+<li><p>客户端发起HTTPS请求，将SSL协议版本的信息发送给服务端。</p>
+</li>
+<li><p>服务端去CA机构申请来一份CA证书，在前面提过，证书里面有<strong>服务端公钥和签名</strong>。将CA证书发送给客户端</p>
+</li>
+<li><p>客户端读取CA证书的明文信息，采用相同的hash散列函数计算得到信息摘要（hash目的：验证防止内容被修改），然后用操作系统带的CA的公钥去解密签名（因为签名是用CA的私钥加密的），对比证书中的信息摘要。如果一致，则证明证书是可信的，然后取出了服务端公钥</p>
+</li>
+<li><p>客户端生成一个随机数（密钥F），用刚才等到的服务端B_公钥去加密这个随机数形成密文，发送给服务端。</p>
+</li>
+<li><p>服务端用自己的B_私钥去解密这个密文，得到了密钥F</p>
+</li>
+<li><p>服务端和客户端在后续通讯过程中就使用这个密钥F进行通信了。和之前的非对称加密不同，这里开始就是一种对称加密的方式</p>
+</li>
+</ol>
+<h2 id="双向认证"><a href="#双向认证" class="headerlink" title="双向认证"></a>双向认证</h2><p>双向认证和单向认证原理基本差不多，单向认证客户端需要认证服务端，而在双向认证中增加了服务端对客户端的认证</p>
+<ol>
+<li><p>客户端发起HTTPS请求，将SSL协议版本的信息发送给服务端。</p>
+</li>
+<li><p>服务端去CA机构申请来一份CA证书，在前面提过，证书里面有<strong>服务端公钥和签名</strong>。将CA证书发送给客户端</p>
+</li>
+<li><p>客户端读取CA证书的明文信息，采用相同的hash散列函数计算得到信息摘要（hash目的：验证防止内容被修改），然后用操作系统带的CA的公钥去解密签名（因为签名是用CA的私钥加密的），对比证书中的信息摘要。如果一致，则证明证书是可信的，然后取出了服务端公钥</p>
+</li>
+<li><p>客户端发送自己的客户端证书给服务端，证书里面有客户端的公钥：C_公钥**</p>
+</li>
+<li><p>客户端发送支持的对称加密方案给服务端，供其选择**</p>
+</li>
+<li><p>服务端选择完加密方案后，用刚才得到的C_公钥去加密选好的加密方案</p>
+</li>
+<li><p>客户端用自己的C_私钥去解密选好的加密方案**，客户端生成一个随机数（密钥F），用刚才等到的服务端B_公钥去加密这个随机数形成密文，发送给服务端。</p>
+</li>
+<li><p>服务端和客户端在后续通讯过程中就使用这个密钥F进行通信了。和之前的非对称加密不同，这里开始就是一种对称加密的方式</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>保证数据安全传输上使用对称加密和非对称加密相结合的方式来进行的，简单来说就是通过一次非对称加密算法进行了<strong>最终通信密钥</strong>的生成、确认和交换，然后在后续的通信过程中使用<strong>最终通信密钥</strong>进行对称加密通信。之所以不是全程非对称加密，是因为非对称加密的计算量大，影响通信效率。</p>
+<p>ref: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/kai-/p/13652284.html">https://www.cnblogs.com/kai-/p/13652284.html</a></p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/04/24/dev/language/cpp/croutine/">← Next C++协程实现</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/04/22/life/%E8%A7%89%E9%86%92%E4%B9%8B%E8%B7%AF/">觉醒之路 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTPS%E5%8D%95%E9%A1%B9%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%8F%8C%E5%90%91%E8%AE%A4%E8%AF%81"><span class="toc-text">HTTPS单项认证与双向认证</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E9%A1%B9%E8%AE%A4%E8%AF%81"><span class="toc-text">单项认证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8C%E5%90%91%E8%AE%A4%E8%AF%81"><span class="toc-text">双向认证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-text">总结</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

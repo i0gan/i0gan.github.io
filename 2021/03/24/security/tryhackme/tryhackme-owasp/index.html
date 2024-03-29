@@ -1,0 +1,168 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TryHackMe OWASP | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>TryHackMe OWASP</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-03-24T03:53:08.000Z" id="date"> 2021-03-24</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.170Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">2.5k</div></span><br><span>Read Time: <div class="control">15 min</div></span></div></div><hr><div id="post-content"><h1 id="TryHackMe-OWASP"><a href="#TryHackMe-OWASP" class="headerlink" title="TryHackMe OWASP"></a>TryHackMe OWASP</h1><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>This room breaks each OWASP topic down and includes details on what the vulnerability is, how it occurs and how you can exploit it. You will put the theory into practise by completing supporting challenges.</p>
+<ul>
+<li>Injection</li>
+<li>Broken Authentication</li>
+<li>Sensitive Data Exposure</li>
+<li>XML External Entity</li>
+<li>Broken Access Control</li>
+<li>Security Misconfiguration</li>
+<li>Cross-site Scripting</li>
+<li><strong>I</strong>nsecure Deserialization</li>
+<li>Components with Known Vulnerabilities</li>
+<li>Insufficent Logging &amp; Monitoring</li>
+</ul>
+<p>The room has been designed for beginners and assume no previous knowledge of security.</p>
+<h2 id="Severity-1-Injection"><a href="#Severity-1-Injection" class="headerlink" title="[Severity 1] Injection"></a>[Severity 1] Injection</h2><p>Injection flaws are very common in applications today. These flaws occur because user controlled input is interpreted as actual commands or parameters by the application. Injection attacks depend on what technologies are being used and how exactly the input is interpreted by these technologies. Some common examples include:</p>
+<ul>
+<li>SQL Injection: This occurs when user controlled input is passed to SQL queries. As a result, an attacker can pass in SQL queries to manipulate the outcome of such queries. </li>
+<li>Command Injection: This occurs when user input is passed to system commands. As a result, an attacker is able to execute arbitrary system commands on application servers.</li>
+</ul>
+<p>If an attacker is able to successfully pass input that is interpreted correctly, they would be able to do the following:</p>
+<ul>
+<li>Access, Modify and Delete information in a database when this input is passed into database queries. This would mean that an attacker can steal sensitive information such as personal details and credentials.</li>
+<li>Execute Arbitrary system commands on a server that would allow an attacker to gain access to users’ systems. This would enable them to steal sensitive data and carry out more attacks against infrastructure linked to the server on which the command is executed.</li>
+</ul>
+<p>The main defence for preventing injection attacks is ensuring that user controlled input is not interpreted as queries or commands. There are different ways of doing this:</p>
+<ul>
+<li>Using an allow list: when input is sent to the server, this input is compared to a list of safe input or characters. If the input is marked as safe, then it is processed. Otherwise, it is rejected and the application throws an error.</li>
+<li>Stripping input: If the input contains dangerous characters, these characters are removed before they are processed.</li>
+</ul>
+<p>Dangerous characters or input is classified as any input that can change how the underlying data is processed. Instead of manually constructing allow lists or even just stripping input, there are various libraries that perform these actions for you.</p>
+<h2 id="Severity-1-OS-Command-Injection"><a href="#Severity-1-OS-Command-Injection" class="headerlink" title="[Severity 1] OS Command Injection"></a>[Severity 1] OS Command Injection</h2><p>Command Injection occurs when server-side code (like PHP) in a web application makes a system call on the hosting machine. It is a web vulnerability that allows an attacker to take advantage of that made system call to execute operating system commands on the server. Sometimes this won’t always end in something malicious, like a <code>whoami</code> or just reading of files. That isn’t too bad. But the thing about command injection is it opens up many options for the attacker. The worst thing they could do would be to spawn a reverse shell to become the user that the web server is running as. A simple <code>;nc -e /bin/bash</code> is all that’s needed and they own your server; <strong>some variants of netcat don’t support the -e option.</strong> You can use a list of [these](<a target="_blank" rel="noopener" href="https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology">https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology</a> and Resources&#x2F;Reverse Shell Cheatsheet.md) reverse shells as an alternative. </p>
+<p>Once the attacker has a foothold on the web server, they can start the usual enumeration of your systems and start looking for ways to pivot around. Now that we know what command injection is, we’ll start going into the different types and how to test for them.</p>
+<h2 id="Severity-1-Command-Injection-Practical"><a href="#Severity-1-Command-Injection-Practical" class="headerlink" title="[Severity 1] Command Injection Practical"></a>[Severity 1] Command Injection Practical</h2><p><strong>What is Active Command Injection?</strong></p>
+<p>Blind command injection occurs when the system command made to the server does not return the response to the user in the HTML document. Active command injection will return the response to the user. It can be made visible through several HTML elements. </p>
+<p>Let’s consider a scenario: EvilCorp has started development on a web based shell but has accidentally left it exposed to the Internet. It’s nowhere near finished but contains the same command injection vulnerability as before! But this time, the response from the system call can be seen on the page! They’ll never learn!</p>
+<p>Just like before, let’s look at the sample code from evilshell.php and go over what it’s doing and why it makes it active command injection. See if you can figure it out. I’ll go over it below just as before.</p>
+<p><strong>EvilShell (evilshell.php) Code Example</strong></p>
+<p><img src="https://i.imgur.com/KcGizdo.png" alt="img"></p>
+<p>In pseudocode, the above snippet is doing the following:</p>
+<ol>
+<li><p>Checking if the parameter “commandString” is set</p>
+</li>
+<li><p>If it is, then the variable <code>$command_string</code> gets what was passed into the input field</p>
+</li>
+<li><p>The program then goes into a try block to execute the function <code>passthru($command_string)</code>. You can read the docs on <code>passthru()</code> on <a target="_blank" rel="noopener" href="https://www.php.net/manual/en/function.passthru.php">PHP’s website</a>, but in general, it is executing what gets entered into the input then passing the output directly back to the browser.</p>
+</li>
+<li><p>If the try does not succeed, output the error to page. Generally this won’t output anything because you can’t output stderr but PHP doesn’t let you have a try without a catch.</p>
+</li>
+</ol>
+<p><strong>Ways to Detect Active Command Injection</strong></p>
+<p>We know that active command injection occurs when you can see the response from the system call. In the above code, the function <code>passthru()</code> is actually what’s doing all of the work here. It’s passing the response directly to the document so you can see the fruits of your labor right there. Since we know that, we can go over some useful commands to try to enumerate the machine a bit further. The function call here to <code>passthru()</code> may not always be what’s happening behind the scenes, but I felt it was the easiest and least complicated way to demonstrate the vulnerability. </p>
+<p><strong>Commands to try</strong></p>
+<p><strong>Linux</strong></p>
+<ul>
+<li>whoami</li>
+<li>id</li>
+<li>ifconfig&#x2F;ip addr</li>
+<li>uname -a</li>
+<li>ps -ef</li>
+<li></li>
+</ul>
+<p><strong>Windows</strong></p>
+<ul>
+<li>whoami</li>
+<li>ver</li>
+<li>ipconfig</li>
+<li>tasklist</li>
+<li>netstat -an</li>
+</ul>
+<h3 id="chall-1"><a href="#chall-1" class="headerlink" title="chall 1"></a>chall 1</h3><p>What strange text file is in the website root directory?</p>
+<p>input</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ls<br></code></pre></td></tr></table></figure>
+
+<p>output</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">css drpepper.txt evilshell.php index.php js<br></code></pre></td></tr></table></figure>
+
+<p>so anwser is drpepper.txt</p>
+<h3 id="chall2"><a href="#chall2" class="headerlink" title="chall2"></a>chall2</h3><p>How many non-root&#x2F;non-service&#x2F;non-daemon users are there?</p>
+<h3 id="chall3"><a href="#chall3" class="headerlink" title="chall3"></a>chall3</h3><p>What user is this app running as?</p>
+<p>input</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">whoami<br></code></pre></td></tr></table></figure>
+
+<p>output</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">www-data<br></code></pre></td></tr></table></figure>
+
+<p>anwser: www-data</p>
+<h3 id="chall4"><a href="#chall4" class="headerlink" title="chall4"></a>chall4</h3><p>What is the user’s shell set as?</p>
+<p>input</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cat /etc/passwd | grep www-data<br></code></pre></td></tr></table></figure>
+
+<p>output:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin<br></code></pre></td></tr></table></figure>
+
+<p>anwser: &#x2F;usr&#x2F;sbin&#x2F;nologin</p>
+<h3 id="chall5"><a href="#chall5" class="headerlink" title="chall5"></a>chall5</h3><p>What version of Ubuntu is running?</p>
+<p>input</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">lsb_release -a<br></code></pre></td></tr></table></figure>
+
+<p>output</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Distributor ID: Ubuntu Description: Ubuntu 18.04.4 LTS Release: 18.04 Codename: bionic<br></code></pre></td></tr></table></figure>
+
+<p>anwser: 18.04.4</p>
+<h3 id="chall6"><a href="#chall6" class="headerlink" title="chall6"></a>chall6</h3><p>Print out the MOTD. What favorite beverage is shown?</p>
+<p>input</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cat drpepper.txt<br></code></pre></td></tr></table></figure>
+
+<p>output</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">I love Dr Pepper<br></code></pre></td></tr></table></figure>
+
+<p>anwser: Dr Pepper</p>
+<h2 id="Severity-2-Broken-Authentication"><a href="#Severity-2-Broken-Authentication" class="headerlink" title="[Severity 2] Broken Authentication"></a>[Severity 2] Broken Authentication</h2><p>Authentication and session management constitute core components of modern web applications. Authentication allows users to gain access to web applications by verifying their identities. The most common form of authentication is using a username and password mechanism. A user would enter these credentials, the server would verify them. If they are correct, the server would then provide the users’ browser with a session cookie. A session cookie is needed because web servers use HTTP(S) to communicate which is stateless. Attaching session cookies means that the server will know who is sending what data. The server can then keep track of users’ actions. </p>
+<p>If an attacker is able to find flaws in an authentication mechanism, they would then successfully gain access to other users’ accounts. This would allow the attacker to access sensitive data (depending on the purpose of the application). Some common flaws in authentication mechanisms include:</p>
+<ul>
+<li>Brute force attacks: If a web application uses usernames and passwords, an attacker is able to launch brute force attacks that allow them to guess the username and passwords using multiple authentication attempts. </li>
+<li>Use of weak credentials: web applications should set strong password policies. If applications allow users to set passwords such as ‘password1’ or common passwords, then an attacker is able to easily guess them and access user accounts. They can do this without brute forcing and without multiple attempts.</li>
+<li>Weak Session Cookies: Session cookies are how the server keeps track of users. If session cookies contain predictable values, an attacker can set their own session cookies and access users’ accounts.</li>
+</ul>
+<p>There can be various mitigation for broken authentication mechanisms depending on the exact flaw:</p>
+<ul>
+<li>To avoid password guessing attacks, ensure the application enforces a strong password policy. </li>
+<li>To avoid brute force attacks, ensure that the application enforces an automatic lockout after a certain number of attempts. This would prevent an attacker from launching more brute force attacks.</li>
+<li>Implement Multi Factor Authentication - If a user has multiple methods of authentication, for example, using username and passwords and receiving a code on their mobile device, then it would be difficult for an attacker to get access to both credentials to get access to their account.</li>
+</ul>
+<h2 id="Severity-2-Broken-Authentication-Practical"><a href="#Severity-2-Broken-Authentication-Practical" class="headerlink" title="[Severity 2] Broken Authentication Practical"></a>[Severity 2] Broken Authentication Practical</h2><p>For this example, we’ll be looking at a logic flaw within the authentication mechanism.</p>
+<p>A lot of times what happens is that developers forgets to sanitize the input(username &amp; password) given by the user in the code of their application, which can make them vulnerable to attacks like SQL injection. However, we are going to focus on a vulnerability that happens because of a developer’s mistake but is very easy to exploit i.e re-registration of an existing user.</p>
+<p>Let’s understand this with the help of an example, say there is an existing user with the name <strong>admin</strong> and now we want to get access to their account so what we can do is try to re-register that username but with slight modification. We are going to enter “ admin”(notice the space in the starting). Now when you enter that in the username field and enter other required information like email id or password and submit that data. It will actually register a new user but that user will have the same right as normal admin. That new user will also be able to see all the content presented under the user <strong>admin</strong>.</p>
+<p>To see this in action go to <a target="_blank" rel="noopener" href="http://machine_ip:8888/">http://MACHINE_IP:</a><strong><a target="_blank" rel="noopener" href="http://machine_ip:8888/">8888</a></strong> and try to register a user name <strong>darren</strong>, you’ll see that user already exists so then try to register a user <strong>“</strong> darren**”** and you’ll see that you are now logged in and will be able to see the content present only in Darren’s account which in our case is the flag that you need to retrieve.</p>
+<h3 id="chall1"><a href="#chall1" class="headerlink" title="chall1"></a>chall1</h3><p>We can add {space} in the username. Make an account then it will give us the existing user’s account.so I followed the same methodology &amp; made an account with <strong>darren</strong> username.</p>
+<p>register: [space] darren, then login to get flag</p>
+<p>anwser: fe86079416a21a3c99937fea8874b667  </p>
+<h3 id="chall2-1"><a href="#chall2-1" class="headerlink" title="chall2"></a>chall2</h3><p>Now try to do the same trick and see if you can login as <strong>arthur.</strong> What is the flag that you found in arthur’s account?</p>
+<p>anwser: d9ac0f7db4fda460ac3edeb75d75e16e</p>
+<h2 id="Severity-3-Sensitive-Data-Exposure-Introduction"><a href="#Severity-3-Sensitive-Data-Exposure-Introduction" class="headerlink" title="[Severity 3] Sensitive Data Exposure (Introduction)"></a>[Severity 3] Sensitive Data Exposure (Introduction)</h2><p>When a webapp accidentally divulges sensitive data, we refer to it as “Sensitive Data Exposure”. This is often data directly linked to customers (e.g. names, dates-of-birth, financial information, etc), but could also be more technical information, such as usernames and passwords. At more complex levels this often involves techniques such as a “Man in The Middle Attack”, whereby the attacker would force user connections through a device which they control, then take advantage of weak encryption on any transmitted data to gain access to the intercepted information (if the data is even encrypted in the first place…). Of course, many examples are much simpler, and vulnerabilities can be found in web apps which can be exploited without any advanced networking knowledge. Indeed, in some cases, the sensitive data can be found directly on the webserver itself…</p>
+<p>The web application in this box contains one such vulnerability. Deploy the machine, then read through the supporting material in the following tasks as the box boots up.</p>
+<h2 id="Severity-3-Sensitive-Data-Exposure-Supporting-Material-1"><a href="#Severity-3-Sensitive-Data-Exposure-Supporting-Material-1" class="headerlink" title="[Severity 3] Sensitive Data Exposure (Supporting Material 1)"></a>[Severity 3] Sensitive Data Exposure (Supporting Material 1)</h2><p>The most common way to store a large amount of data in a format that is easily accessible from many locations at once is in a database. This is obviously perfect for something like a web application, as there may be many users interacting with the website at any one time. Database engines usually follow the <strong>S</strong>tructured <strong>Q</strong>uery <strong>L</strong>anguage (SQL) syntax; however, alternative formats (such as NoSQL) are rising in popularity.</p>
+<p>In a production environment it is common to see databases set up on dedicated servers, running a database service such as MySQL or MariaDB; however, databases can also be stored as files. These databases are referred to as “flat-file” databases, as they are stored as a single file on the computer. This is much easier than setting up a full database server, and so could potentially be seen in smaller web applications. Accessing a database server is outwith the scope of today’s task, so let’s focus instead on flat-file databases.</p>
+<p>As mentioned previously, flat-file databases are stored as a file on the disk of a computer. Usually this would not be a problem for a webapp, but what happens if the database is stored underneath the root directory of the website (i.e. one of the files that a user connecting to the website is able to access)? Well, we can download it and query it on our own machine, with full access to everything in the database. Sensitive Data Exposure indeed!</p>
+<p>That is a big hint for the challenge, so let’s briefly cover some of the syntax we would use to query a flat-file database.</p>
+<p>The most common (and simplest) format of flat-file database is an <em>sqlite</em> database. These can be interacted with in most programming languages, and have a dedicated client for querying them on the command line. This client is called “<em>sqlite3</em>“, and is installed by default on Kali.</p>
+<p>Let’s suppose we have successfully managed to download a database:</p>
+<p><img src="https://i.imgur.com/tmRhcRE.png" alt="img"></p>
+<p>We can see that there is an SQlite database in the current folder.</p>
+<p>To access it we use: <code>sqlite3 &lt;database-name&gt;</code>:</p>
+<p><img src="https://i.imgur.com/KJHAdI3.png" alt="img"></p>
+<p>From here we can see the tables in the database by using the <code>.tables</code> command:</p>
+<p><img src="https://i.imgur.com/kyIWl1q.png" alt="img"></p>
+<p>At this point we can dump all of the data from the table, but we won’t necessarily know what each column means unless we look at the table information. First let’s use <code>PRAGMA table_info(customers);</code> to see the table information, then we’ll use <code>SELECT * FROM customers;</code> to dump the information from the table:</p>
+<p><img src="https://i.imgur.com/wVvHk7a.png" alt="img"></p>
+<p>We can see from the table information that there are four columns: custID, custName, creditCard and password. You may notice that this matches up with the results. Take the first row:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">0|Joy Paulson|4916 9012 2231 7905|5f4dcc3b5aa765d61d8327deb882cf99<br></code></pre></td></tr></table></figure>
+
+<p>We have the custID (0), the custName (Joy Paulson), the creditCard (4916 9012 2231 7905) and a password hash (5f4dcc3b5aa765d61d8327deb882cf99).</p>
+<p>In the next task we’ll look at cracking this hash.</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/03/24/dev/language/jsp/jsp_env/">← Next JSP环境搭建</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/03/21/security/ctf/buu/buu-others/">BUU OTHERS Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TryHackMe-OWASP"><span class="toc-text">TryHackMe OWASP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-1-Injection"><span class="toc-text">[Severity 1] Injection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-1-OS-Command-Injection"><span class="toc-text">[Severity 1] OS Command Injection</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-1-Command-Injection-Practical"><span class="toc-text">[Severity 1] Command Injection Practical</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#chall-1"><span class="toc-text">chall 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chall2"><span class="toc-text">chall2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chall3"><span class="toc-text">chall3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chall4"><span class="toc-text">chall4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chall5"><span class="toc-text">chall5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chall6"><span class="toc-text">chall6</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-2-Broken-Authentication"><span class="toc-text">[Severity 2] Broken Authentication</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-2-Broken-Authentication-Practical"><span class="toc-text">[Severity 2] Broken Authentication Practical</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#chall1"><span class="toc-text">chall1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chall2-1"><span class="toc-text">chall2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-3-Sensitive-Data-Exposure-Introduction"><span class="toc-text">[Severity 3] Sensitive Data Exposure (Introduction)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Severity-3-Sensitive-Data-Exposure-Supporting-Material-1"><span class="toc-text">[Severity 3] Sensitive Data Exposure (Supporting Material 1)</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

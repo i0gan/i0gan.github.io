@@ -1,0 +1,458 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Binary fuzzing way of american fuzzy lop | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>Binary fuzzing way of american fuzzy lop</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-03-31T02:00:43.000Z" id="date"> 2021-03-31</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.158Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">6.2k</div></span><br><span>Read Time: <div class="control">38 min</div></span></div></div><hr><div id="post-content"><h1 id="Binary-fuzzing-way-of-american-fuzzy-lop"><a href="#Binary-fuzzing-way-of-american-fuzzy-lop" class="headerlink" title="Binary fuzzing way of american fuzzy lop"></a>Binary fuzzing way of american fuzzy lop</h1><h2 id="Intro"><a href="#Intro" class="headerlink" title="Intro"></a>Intro</h2><p>The github project is here: <a target="_blank" rel="noopener" href="https://github.com/google/AFL">https://github.com/google/AFL</a></p>
+<p>This paper refer to the official document: <a target="_blank" rel="noopener" href="https://afl-1.readthedocs.io/">https://afl-1.readthedocs.io/</a></p>
+<h3 id="What-is-AFL"><a href="#What-is-AFL" class="headerlink" title="What is AFL?"></a>What is AFL?</h3><p>American fuzzy lop is a security-oriented fuzzer that employs a novel type of compile-time instrumentation and genetic algorithms to automatically discover clean, interesting test cases that trigger new internal states in the targeted binary. This substantially improves the functional coverage for the fuzzed code. The compact synthesized corpora produced by the tool are also useful for seeding other, more labor- or resource-intensive testing regimes down the road.</p>
+<h2 id="How-to-install-env"><a href="#How-to-install-env" class="headerlink" title="How to install env"></a>How to install env</h2><h3 id="Method-1"><a href="#Method-1" class="headerlink" title="Method 1"></a>Method 1</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo pacman -S afl-utils<br>sudo pacman -S afl<br></code></pre></td></tr></table></figure>
+
+<p>Input afl and press Tab Tab output as follows:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sh: afl-<br>afl-analyze       afl-clang-fast++  afl-fuzz          afl-minimize      afl-showmap       afl-vcrash      <br>afl-clang         afl-cmin          afl-g++           afl-multicore     afl-stats         afl-whatsup     <br>afl-clang++       afl-collect       afl-gcc           afl-multikill     afl-sync                          <br>afl-clang-fast    afl-cron          afl-gotcpu        afl-plot          afl-tmin <br></code></pre></td></tr></table></figure>
+
+<p>So you can use these tools to start fuzzing.</p>
+<h3 id="Method-2"><a href="#Method-2" class="headerlink" title="Method 2"></a>Method 2</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git clone https://github.com/google/AFL.git<br>cd afl-master<br>make -j<br>sudo make install<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="How-it-works"><a href="#How-it-works" class="headerlink" title="How it works?"></a>How it works?</h2><p>Copy from official doc: click <a target="_blank" rel="noopener" href="https://afl-1.readthedocs.io/en/latest/about_afl.html#how-afl-works">here</a> to show all details.</p>
+<h3 id="0x00-Technical"><a href="#0x00-Technical" class="headerlink" title="0x00 Technical"></a>0x00 Technical</h3><p>Technical “whitepaper” for afl-fuzz.</p>
+<h3 id="0x01-Coverage-measurements"><a href="#0x01-Coverage-measurements" class="headerlink" title="0x01 Coverage measurements"></a>0x01 Coverage measurements</h3><p>The instrumentation injected into complied programs captures branch (edge) coverage, along with coarse branch-taken (采取粗分枝) hit counts. The code injected at branch points is essentially equivalent to</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cur_location = &lt;COMPILE_TIME_RANDOM&gt;;<br>shared_mem[cur_location ^ prev_location]++;<br>prev_location = cur_location &gt;&gt; 1;<br></code></pre></td></tr></table></figure>
+
+<p>The cur_location value is generated randomly to simplify the process of linking complex projects and keep the XOR output distributed uniformly.</p>
+<p>The <code>shared_mem[]</code> array is a 64 KB <code>SHM</code> region passed to the instrumented binary by the caller. Every byte set in the output map can be thought of as a hit for a particular <code>(branch_src, branch_dst)</code> tuple in the instrumented code.</p>
+<p>The size of the map is chosen so that collisions are sporadic with almost all of the intended targets, which usually sport between 2k and 10k discoverable branch points:</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Branch cnt</th>
+<th align="left">Colliding tuples</th>
+<th align="left">Example targets</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">1,000</td>
+<td align="left">0.75%</td>
+<td align="left">giflib, lzo</td>
+</tr>
+<tr>
+<td align="left">2,000</td>
+<td align="left">1.5%</td>
+<td align="left">zlib, tar, xz</td>
+</tr>
+<tr>
+<td align="left">5,000</td>
+<td align="left">3.5%</td>
+<td align="left">libpng, libwebp</td>
+</tr>
+<tr>
+<td align="left">10,000</td>
+<td align="left">7%</td>
+<td align="left">libxml</td>
+</tr>
+<tr>
+<td align="left">20,000</td>
+<td align="left">14%</td>
+<td align="left">sqlite</td>
+</tr>
+<tr>
+<td align="left">50,000</td>
+<td align="left">30%</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+</blockquote>
+<p>At the same time, its size is small enough to allow the map to be analyzed in a matter of microseconds on the receiving end, and to effortlessly fit within L2 cache.</p>
+<p>This form of coverage provides considerably more insight into the execution path of the program than simple block coverage. In particular, it trivially distinguishes between the following execution traces:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">A -&gt; B -&gt; C -&gt; D -&gt; E (tuples: AB, BC, CD, DE)<br>A -&gt; B -&gt; D -&gt; C -&gt; E (tuples: AB, BD, DC, CE)<br></code></pre></td></tr></table></figure>
+
+<p>This aids the discovery of subtle fault conditions in the underlying code, because security vulnerabilities are more often associated with unexpected or incorrect state transitions than with merely reaching a new basic block.</p>
+<p>The reason for the shift operation in the last line of the pseudocode shown earlier in this section is to preserve the directionality of tuples (without this, A ^ B would be indistinguishable from B ^ A) and to retain the identity of tight loops (otherwise, A ^ A would be obviously equal to B ^ B).</p>
+<p>The absence of simple saturating arithmetic opcodes on Intel CPUs means that the hit counters can sometimes wrap around to zero. Since this is a fairly unlikely and localized event, it’s seen as an acceptable performance trade-off.</p>
+<h3 id="0x02-Detecting-new-behaviors"><a href="#0x02-Detecting-new-behaviors" class="headerlink" title="0x02 Detecting new behaviors"></a>0x02 Detecting new behaviors</h3><p>The fuzzer maintains a global map of tuples seen in previous executions; this data can be rapidly compared with individual traces and updated in just a couple of dword- or qword-wide instructions and a simple loop.</p>
+<p>When a mutated input produces an execution trace containing new tuples, the corresponding input file is preserved and routed for additional processing later on (see section #3). Inputs that do not trigger new local-scale state transitions in the execution trace (i.e., produce no new tuples) are discarded, even if their overall control flow sequence is unique.</p>
+<p>This approach allows for a very fine-grained and long-term exploration of program state while not having to perform any computationally intensive and fragile global comparisons of complex execution traces, and while avoiding the scourge of path explosion.</p>
+<p>To illustrate the properties of the algorithm, consider that the second trace shown below would be considered substantially new because of the presence of new tuples (CA, AE):</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#1: A -&gt; B -&gt; C -&gt; D -&gt; E<br>#2: A -&gt; B -&gt; C -&gt; A -&gt; E<br></code></pre></td></tr></table></figure>
+
+<p>At the same time, with #2 processed, the following pattern will not be seen as unique, despite having a markedly different overall execution path:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#3: A -&gt; B -&gt; C -&gt; A -&gt; B -&gt; C -&gt; A -&gt; B -&gt; C -&gt; D -&gt; E<br></code></pre></td></tr></table></figure>
+
+<p>In addition to detecting new tuples, the fuzzer also considers coarse tuple hit counts. These are divided into several buckets:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">1, 2, 3, 4-7, 8-15, 16-31, 32-127, 128+<br></code></pre></td></tr></table></figure>
+
+<p>To some extent, the number of buckets is an implementation artifact: it allows an in-place mapping of an 8-bit counter generated by the instrumentation to an 8-position bitmap relied on by the fuzzer executable to keep track of the already-seen execution counts for each tuple.</p>
+<p>Changes within the range of a single bucket are ignored; transition from one bucket to another is flagged as an interesting change in program control flow, and is routed to the evolutionary process outlined in the section below.</p>
+<p>The hit count behavior provides a way to distinguish between potentially interesting control flow changes, such as a block of code being executed twice when it was normally hit only once. At the same time, it is fairly insensitive to empirically less notable changes, such as a loop going from 47 cycles to 48. The counters also provide some degree of “accidental” immunity against tuple collisions in dense trace maps.</p>
+<p>The execution is policed fairly heavily through memory and execution time limits; by default, the timeout is set at 5x the initially-calibrated execution speed, rounded up to 20 ms. The aggressive timeouts are meant to prevent dramatic fuzzer performance degradation by descending into tarpits that, say, improve coverage by 1% while being 100x slower; we pragmatically reject them and hope that the fuzzer will find a less expensive way to reach the same code. Empirical testing strongly suggests that more generous time limits are not worth the cost.</p>
+<h3 id="0x03-Evolving-the-input-queue"><a href="#0x03-Evolving-the-input-queue" class="headerlink" title="0x03 Evolving the input queue"></a>0x03 Evolving the input queue</h3><p>Mutated test cases that produced new state transitions within the program are added to the input queue and used as a starting point for future rounds of fuzzing. They supplement, but do not automatically replace, existing finds.</p>
+<p>In contrast to more greedy genetic algorithms, this approach allows the tool to progressively explore various disjoint and possibly mutually incompatible features of the underlying data format, as shown in this image:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://lcamtuf.coredump.cx/afl/afl_gzip.png">http://lcamtuf.coredump.cx/afl/afl_gzip.png</a></p>
+</blockquote>
+<p>Several practical examples of the results of this algorithm are discussed here:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://lcamtuf.blogspot.com/2014/11/pulling-jpegs-out-of-thin-air.html">http://lcamtuf.blogspot.com/2014/11/pulling-jpegs-out-of-thin-air.html</a> <a target="_blank" rel="noopener" href="http://lcamtuf.blogspot.com/2014/11/afl-fuzz-nobody-expects-cdata-sections.html">http://lcamtuf.blogspot.com/2014/11/afl-fuzz-nobody-expects-cdata-sections.html</a></p>
+</blockquote>
+<p>The synthetic corpus produced by this process is essentially a compact collection of “hmm, this does something new!” input files, and can be used to seed any other testing processes down the line (for example, to manually stress-test resource-intensive desktop apps).</p>
+<p>With this approach, the queue for most targets grows to somewhere between 1k and 10k entries; approximately 10-30% of this is attributable to the discovery of new tuples, and the remainder is associated with changes in hit counts.</p>
+<p>The following table compares the relative ability to discover file syntax and explore program states when using several different approaches to guided fuzzing. The instrumented target was GNU patch 2.7.3 compiled with -O3 and seeded with a dummy text file; the session consisted of a single pass over the input queue with afl-fuzz:</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Fuzzer guidance strategy used</th>
+<th align="left">Blocks reached</th>
+<th align="left">Edges reached</th>
+<th align="left">Edge hit cnt var</th>
+<th align="left">Highest-coverage test case generated</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">(Initial file)</td>
+<td align="left">156</td>
+<td align="left">163</td>
+<td align="left">1.00</td>
+<td align="left">(none)</td>
+</tr>
+<tr>
+<td align="left">Blind fuzzing S</td>
+<td align="left">182</td>
+<td align="left">205</td>
+<td align="left">2.23</td>
+<td align="left">First 2 B of RCS diff</td>
+</tr>
+<tr>
+<td align="left">Blind fuzzing L</td>
+<td align="left">228</td>
+<td align="left">265</td>
+<td align="left">2.23</td>
+<td align="left">First 4 B of -c mode diff</td>
+</tr>
+<tr>
+<td align="left">Block coverage</td>
+<td align="left">855</td>
+<td align="left">1,130</td>
+<td align="left">1.57</td>
+<td align="left">Almost-valid RCS diff</td>
+</tr>
+<tr>
+<td align="left">Edge coverage</td>
+<td align="left">1,452</td>
+<td align="left">2,070</td>
+<td align="left">2.18</td>
+<td align="left">One-chunk -c mode diff</td>
+</tr>
+<tr>
+<td align="left">AFL model</td>
+<td align="left">1,765</td>
+<td align="left">2,597</td>
+<td align="left">4.99</td>
+<td align="left">Four-chunk -c mode diff</td>
+</tr>
+</tbody></table>
+</blockquote>
+<p>The first entry for blind fuzzing (“S”) corresponds to executing just a single round of testing; the second set of figures (“L”) shows the fuzzer running in a loop for a number of execution cycles comparable with that of the instrumented runs, which required more time to fully process the growing queue.</p>
+<p>Roughly similar results have been obtained in a separate experiment where the fuzzer was modified to compile out all the random fuzzing stages and leave just a series of rudimentary, sequential operations such as walking bit flips. Because this mode would be incapable of altering the size of the input file, the sessions were seeded with a valid unified diff:</p>
+<blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Queue extension strategy used</th>
+<th align="left">Blocks reached</th>
+<th align="left">Edges reached</th>
+<th align="left">Edge hit cnt var</th>
+<th align="left">Number of unique crashes found</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">(Initial file)</td>
+<td align="left">624</td>
+<td align="left">717</td>
+<td align="left">1.00</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">Blind fuzzing</td>
+<td align="left">1,101</td>
+<td align="left">1,409</td>
+<td align="left">1.60</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">Block coverage</td>
+<td align="left">1,255</td>
+<td align="left">1,649</td>
+<td align="left">1.48</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">Edge coverage</td>
+<td align="left">1,259</td>
+<td align="left">1,734</td>
+<td align="left">1.72</td>
+<td align="left">0</td>
+</tr>
+<tr>
+<td align="left">AFL model</td>
+<td align="left">1,452</td>
+<td align="left">2,040</td>
+<td align="left">3.16</td>
+<td align="left">1</td>
+</tr>
+</tbody></table>
+</blockquote>
+<p>At noted earlier on, some of the prior work on genetic fuzzing relied on maintaining a single test case and evolving it to maximize coverage. At least in the tests described above, this “greedy” approach appears to confer no substantial benefits over blind fuzzing strategies.</p>
+<h3 id="0x04-Culling-the-corpus"><a href="#0x04-Culling-the-corpus" class="headerlink" title="0x04 Culling the corpus"></a>0x04 Culling the corpus</h3><p>The progressive state exploration approach outlined above means that some of the test cases synthesized later on in the game may have edge coverage that is a strict superset of the coverage provided by their ancestors.</p>
+<p>To optimize the fuzzing effort, AFL periodically re-evaluates the queue using a fast algorithm that selects a smaller subset of test cases that still cover every tuple seen so far, and whose characteristics make them particularly favorable to the tool.</p>
+<p>The algorithm works by assigning every queue entry a score proportional to its execution latency and file size; and then selecting lowest-scoring candidates for each tuple.</p>
+<p>The tuples are then processed sequentially using a simple workflow:</p>
+<blockquote>
+<ol>
+<li>Find next tuple not yet in the temporary working set,</li>
+<li>Locate the winning queue entry for this tuple,</li>
+<li>Register <em>all</em> tuples present in that entry’s trace in the working set,</li>
+<li>Go to #1 if there are any missing tuples in the set.</li>
+</ol>
+</blockquote>
+<p>The generated corpus of “favored” entries is usually 5-10x smaller than the starting data set. Non-favored entries are not discarded, but they are skipped with varying probabilities when encountered in the queue:</p>
+<blockquote>
+<ul>
+<li>If there are new, yet-to-be-fuzzed favorites present in the queue, 99% of non-favored entries will be skipped to get to the favored ones.</li>
+<li>If there are no new favorites:<ul>
+<li>If the current non-favored entry was fuzzed before, it will be skipped 95% of the time.</li>
+<li>If it hasn’t gone through any fuzzing rounds yet, the odds of skipping drop down to 75%.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>Based on empirical testing, this provides a reasonable balance between queue cycling speed and test case diversity.</p>
+<p>Slightly more sophisticated but much slower culling can be performed on input or output corpora with afl-cmin. This tool permanently discards the redundant entries and produces a smaller corpus suitable for use with afl-fuzz or external tools.</p>
+<h3 id="0x05-Trimming-input-files"><a href="#0x05-Trimming-input-files" class="headerlink" title="0x05 Trimming input files"></a>0x05 Trimming input files</h3><p>File size has a dramatic impact on fuzzing performance, both because large files make the target binary slower, and because they reduce the likelihood that a mutation would touch important format control structures, rather than redundant data blocks. This is discussed in more detail in <a target="_blank" rel="noopener" href="https://afl-1.readthedocs.io/en/latest/tips.html#performance-tips">Performance Tips</a>.</p>
+<p>The possibility that the user will provide a low-quality starting corpus aside, some types of mutations can have the effect of iteratively increasing the size of the generated files, so it is important to counter this trend.</p>
+<p>Luckily, the instrumentation feedback provides a simple way to automatically trim down input files while ensuring that the changes made to the files have no impact on the execution path.</p>
+<p>The built-in trimmer in afl-fuzz attempts to sequentially remove blocks of data with variable length and stepover; any deletion that doesn’t affect the checksum of the trace map is committed to disk. The trimmer is not designed to be particularly thorough; instead, it tries to strike a balance between precision and the number of execve() calls spent on the process, selecting the block size and stepover to match. The average per-file gains are around 5-20%.</p>
+<p>The standalone afl-tmin tool uses a more exhaustive, iterative algorithm, and also attempts to perform alphabet normalization on the trimmed files. The operation of afl-tmin is as follows.</p>
+<p>First, the tool automatically selects the operating mode. If the initial input crashes the target binary, afl-tmin will run in non-instrumented mode, simply keeping any tweaks that produce a simpler file but still crash the target. If the target is non-crashing, the tool uses an instrumented mode and keeps only the tweaks that produce exactly the same execution path.</p>
+<p>The actual minimization algorithm is:</p>
+<blockquote>
+<ol>
+<li>Attempt to zero large blocks of data with large stepovers. Empirically, this is shown to reduce the number of execs by preempting finer-grained efforts later on.</li>
+<li>Perform a block deletion pass with decreasing block sizes and stepovers, binary-search-style.</li>
+<li>Perform alphabet normalization by counting unique characters and trying to bulk-replace each with a zero value.</li>
+<li>As a last result, perform byte-by-byte normalization on non-zero bytes.</li>
+</ol>
+</blockquote>
+<p>Instead of zeroing with a 0x00 byte, afl-tmin uses the ASCII digit ‘0’. This is done because such a modification is much less likely to interfere with text parsing, so it is more likely to result in successful minimization of text files.</p>
+<p>The algorithm used here is less involved than some other test case minimization approaches proposed in academic work, but requires far fewer executions and tends to produce comparable results in most real-world applications.</p>
+<h3 id="0x06-Fuzzing-strategies"><a href="#0x06-Fuzzing-strategies" class="headerlink" title="0x06 Fuzzing strategies"></a>0x06 Fuzzing strategies</h3><p>The feedback provided by the instrumentation makes it easy to understand the value of various fuzzing strategies and optimize their parameters so that they work equally well across a wide range of file types. The strategies used by afl-fuzz are generally format-agnostic and are discussed in more detail here:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html">http://lcamtuf.blogspot.com/2014/08/binary-fuzzing-strategies-what-works.html</a></p>
+</blockquote>
+<p>It is somewhat notable that especially early on, most of the work done by afl-fuzz is actually highly deterministic, and progresses to random stacked modifications and test case splicing only at a later stage. The deterministic strategies include:</p>
+<blockquote>
+<ul>
+<li>Sequential bit flips with varying lengths and stepovers,</li>
+<li>Sequential addition and subtraction of small integers,</li>
+<li>Sequential insertion of known interesting integers (0, 1, INT_MAX, etc),</li>
+</ul>
+</blockquote>
+<p>The purpose of opening with deterministic steps is related to their tendency to produce compact test cases and small diffs between the non-crashing and crashing inputs.</p>
+<p>With deterministic fuzzing out of the way, the non-deterministic steps include stacked bit flips, insertions, deletions, arithmetics, and splicing of different test cases.</p>
+<p>The relative yields and execve() costs of all these strategies have been investigated and are discussed in the aforementioned blog post.</p>
+<p>For the reasons discussed in <a target="_blank" rel="noopener" href="https://afl-1.readthedocs.io/en/latest/about_afl.html#history">History</a> (chiefly, performance, simplicity, and reliability), AFL generally does not try to reason about the relationship between specific mutations and program states; the fuzzing steps are nominally blind, and are guided only by the evolutionary design of the input queue.</p>
+<p>That said, there is one (trivial) exception to this rule: when a new queue entry goes through the initial set of deterministic fuzzing steps, and tweaks to some regions in the file are observed to have no effect on the checksum of the execution path, they may be excluded from the remaining phases of deterministic fuzzing - and the fuzzer may proceed straight to random tweaks. Especially for verbose, human-readable data formats, this can reduce the number of execs by 10-40% or so without an appreciable drop in coverage. In extreme cases, such as normally block-aligned tar archives, the gains can be as high as 90%.</p>
+<p>Because the underlying “effector maps” are local every queue entry and remain in force only during deterministic stages that do not alter the size or the general layout of the underlying file, this mechanism appears to work very reliably and proved to be simple to implement.</p>
+<h3 id="0x07-Dictionaries"><a href="#0x07-Dictionaries" class="headerlink" title="0x07 Dictionaries"></a>0x07 Dictionaries</h3><p>The feedback provided by the instrumentation makes it easy to automatically identify syntax tokens in some types of input files, and to detect that certain combinations of predefined or auto-detected dictionary terms constitute a valid grammar for the tested parser.</p>
+<p>A discussion of how these features are implemented within afl-fuzz can be found here:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://lcamtuf.blogspot.com/2015/01/afl-fuzz-making-up-grammar-with.html">http://lcamtuf.blogspot.com/2015/01/afl-fuzz-making-up-grammar-with.html</a></p>
+</blockquote>
+<p>In essence, when basic, typically easily-obtained syntax tokens are combined together in a purely random manner, the instrumentation and the evolutionary design of the queue together provide a feedback mechanism to differentiate between meaningless mutations and ones that trigger new behaviors in the instrumented code - and to incrementally build more complex syntax on top of this discovery.</p>
+<p>The dictionaries have been shown to enable the fuzzer to rapidly reconstruct the grammar of highly verbose and complex languages such as JavaScript, SQL, or XML; several examples of generated SQL statements are given in the blog post mentioned above.</p>
+<p>Interestingly, the AFL instrumentation also allows the fuzzer to automatically isolate syntax tokens already present in an input file. It can do so by looking for run of bytes that, when flipped, produce a consistent change to the program’s execution path; this is suggestive of an underlying atomic comparison to a predefined value baked into the code. The fuzzer relies on this signal to build compact “auto dictionaries” that are then used in conjunction with other fuzzing strategies.</p>
+<h3 id="0x08-De-duping-crashes"><a href="#0x08-De-duping-crashes" class="headerlink" title="0x08 De-duping crashes"></a>0x08 De-duping crashes</h3><p>De-duplication of crashes is one of the more important problems for any competent fuzzing tool. Many of the naive approaches run into problems; in particular, looking just at the faulting address may lead to completely unrelated issues being clustered together if the fault happens in a common library function (say, strcmp, strcpy); while checksumming call stack backtraces can lead to extreme crash count inflation if the fault can be reached through a number of different, possibly recursive code paths.</p>
+<p>The solution implemented in afl-fuzz considers a crash unique if any of two conditions are met:</p>
+<blockquote>
+<ul>
+<li>The crash trace includes a tuple not seen in any of the previous crashes,</li>
+<li>The crash trace is missing a tuple that was always present in earlier faults.</li>
+</ul>
+</blockquote>
+<p>The approach is vulnerable to some path count inflation early on, but exhibits a very strong self-limiting effect, similar to the execution path analysis logic that is the cornerstone of afl-fuzz.</p>
+<h3 id="Investigating-crashes"><a href="#Investigating-crashes" class="headerlink" title="Investigating crashes"></a>Investigating crashes</h3><p>The exploitability of many types of crashes can be ambiguous; afl-fuzz tries to address this by providing a crash exploration mode where a known-faulting test case is fuzzed in a manner very similar to the normal operation of the fuzzer, but with a constraint that causes any non-crashing mutations to be thrown away.</p>
+<p>A detailed discussion of the value of this approach can be found here:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://lcamtuf.blogspot.com/2014/11/afl-fuzz-crash-exploration-mode.html">http://lcamtuf.blogspot.com/2014/11/afl-fuzz-crash-exploration-mode.html</a></p>
+</blockquote>
+<p>The method uses instrumentation feedback to explore the state of the crashing program to get past the ambiguous faulting condition and then isolate the newly-found inputs for human review.</p>
+<p>On the subject of crashes, it is worth noting that in contrast to normal queue entries, crashing inputs are <em>not</em> trimmed; they are kept exactly as discovered to make it easier to compare them to the parent, non-crashing entry in the queue. That said, afl-tmin can be used to shrink them at will.</p>
+<h3 id="0x09-The-fork-server"><a href="#0x09-The-fork-server" class="headerlink" title="0x09 The fork server"></a>0x09 The fork server</h3><p>To improve performance, afl-fuzz uses a “fork server”, where the fuzzed process goes through execve(), linking, and libc initialization only once, and is then cloned from a stopped process image by leveraging copy-on-write. The implementation is described in more detail here:</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html">http://lcamtuf.blogspot.com/2014/10/fuzzing-binaries-without-execve.html</a></p>
+</blockquote>
+<p>The fork server is an integral aspect of the injected instrumentation and simply stops at the first instrumented function to await commands from afl-fuzz.</p>
+<p>With fast targets, the fork server can offer considerable performance gains, usually between 1.5x and 2x. It is also possible to:</p>
+<blockquote>
+<ul>
+<li>Use the fork server in manual (“deferred”) mode, skipping over larger, user-selected chunks of initialization code. It requires very modest code changes to the targeted program, and With some targets, can produce 10x+ performance gains.</li>
+<li>Enable “persistent” mode, where a single process is used to try out multiple inputs, greatly limiting the overhead of repetitive fork() calls. This generally requires some code changes to the targeted program, but can improve the performance of fast targets by a factor of 5 or more - approximating the benefits of in-process fuzzing jobs while still maintaining very robust isolation between the fuzzer process and the targeted binary.</li>
+</ul>
+</blockquote>
+<h3 id="0x0A-Parallelization"><a href="#0x0A-Parallelization" class="headerlink" title="0x0A Parallelization"></a>0x0A Parallelization</h3><p>The parallelization mechanism relies on periodically examining the queues produced by independently-running instances on other CPU cores or on remote machines, and then selectively pulling in the test cases that, when tried out locally, produce behaviors not yet seen by the fuzzer at hand.</p>
+<p>This allows for extreme flexibility in fuzzer setup, including running synced instances against different parsers of a common data format, often with synergistic effects.</p>
+<p>For more information about this design, see <a target="_blank" rel="noopener" href="https://afl-1.readthedocs.io/en/latest/user_guide.html#parallel-fuzzing">Tips for parallel fuzzing</a>.</p>
+<h3 id="0x0B-Binary-only-instrumentation"><a href="#0x0B-Binary-only-instrumentation" class="headerlink" title="0x0B Binary-only instrumentation"></a>0x0B Binary-only instrumentation</h3><p>Instrumentation of black-box, binary-only targets is accomplished with the help of a separately-built version of QEMU in “user emulation” mode. This also allows the execution of cross-architecture code - say, ARM binaries on x86.</p>
+<p>QEMU uses basic blocks as translation units; the instrumentation is implemented on top of this and uses a model roughly analogous to the compile-time hooks:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">if (block_address &gt; elf_text_start &amp;&amp; block_address &lt; elf_text_end) &#123;<br><br>  cur_location = (block_address &gt;&gt; 4) ^ (block_address &lt;&lt; 8);<br>  shared_mem[cur_location ^ prev_location]++;<br>  prev_location = cur_location &gt;&gt; 1;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>The shift-and-XOR-based scrambling in the second line is used to mask the effects of instruction alignment.</p>
+<p>The start-up of binary translators such as QEMU, DynamoRIO, and PIN is fairly slow; to counter this, the QEMU mode leverages a fork server similar to that used for compiler-instrumented code, effectively spawning copies of an already-initialized process paused at _start.</p>
+<p>First-time translation of a new basic block also incurs substantial latency. To eliminate this problem, the AFL fork server is extended by providing a channel between the running emulator and the parent process. The channel is used to notify the parent about the addresses of any newly-encountered blocks and to add them to the translation cache that will be replicated for future child processes.</p>
+<p>As a result of these two optimizations, the overhead of the QEMU mode is roughly 2-5x, compared to 100x+ for PIN.</p>
+<h3 id="0x0C-Others"><a href="#0x0C-Others" class="headerlink" title="0x0C Others"></a>0x0C Others</h3><h4 id="The-afl-analyze-tool"><a href="#The-afl-analyze-tool" class="headerlink" title="The afl-analyze tool"></a>The afl-analyze tool</h4><p>The file format analyzer is a simple extension of the minimization algorithm discussed earlier on; instead of attempting to remove no-op blocks, the tool performs a series of walking byte flips and then annotates runs of bytes in the input file.</p>
+<p>It uses the following classification scheme:</p>
+<blockquote>
+<ul>
+<li>“No-op blocks” - segments where bit flips cause no apparent changes to control flow. Common examples may be comment sections, pixel data within a bitmap file, etc.</li>
+<li>“Superficial content” - segments where some, but not all, bitflips produce some control flow changes. Examples may include strings in rich documents (e.g., XML, RTF).</li>
+<li>“Critical stream” - a sequence of bytes where all bit flips alter control flow in different but correlated ways. This may be compressed data, non-atomically compared keywords or magic values, etc.</li>
+<li>“Suspected length field” - small, atomic integer that, when touched in any way, causes a consistent change to program control flow, suggestive of a failed length check.</li>
+<li>“Suspected cksum or magic int” - an integer that behaves similarly to a length field, but has a numerical value that makes the length explanation unlikely. This is suggestive of a checksum or other “magic” integer.</li>
+<li>“Suspected checksummed block” - a long block of data where any change always triggers the same new execution path. Likely caused by failing a checksum or a similar integrity check before any subsequent parsing takes place.</li>
+<li>“Magic value section” - a generic token where changes cause the type of binary behavior outlined earlier, but that doesn’t meet any of the other criteria. May be an atomically compared keyword or so.</li>
+</ul>
+</blockquote>
+<h2 id="How-to-use"><a href="#How-to-use" class="headerlink" title="How to use?"></a>How to use?</h2><h3 id="The-AFL-approach"><a href="#The-AFL-approach" class="headerlink" title="The AFL approach"></a>The AFL approach</h3><p>American Fuzzy Lop is a brute-force fuzzer coupled with an exceedingly simple but rock-solid instrumentation-guided genetic algorithm. It uses a modified form of edge coverage to effortlessly pick up subtle, local-scale changes to program control flow.</p>
+<p>Simplifying a bit, the overall algorithm can be summed up as:</p>
+<blockquote>
+<ol>
+<li>Load user-supplied initial test cases into the queue,</li>
+<li>Take next input file from the queue,</li>
+<li>Attempt to trim the test case to the smallest size that doesn’t alter the measured behavior of the program,</li>
+<li>Repeatedly mutate the file using a balanced and well-researched variety of traditional fuzzing strategies,</li>
+<li>If any of the generated mutations resulted in a new state transition recorded by the instrumentation, add mutated output as a new entry in the queue.</li>
+<li>Go to 2.</li>
+</ol>
+</blockquote>
+<p>The discovered test cases are also periodically culled to eliminate ones that have been obsoleted by newer, higher-coverage finds; and undergo several other instrumentation-driven effort minimization steps.</p>
+<p>As a side result of the fuzzing process, the tool creates a small, self-contained corpus of interesting test cases. These are extremely useful for seeding other, labor- or resource-intensive testing regimes - for example, for stress-testing browsers, office applications, graphics suites, or closed-source tools.</p>
+<p>The fuzzer is thoroughly tested to deliver out-of-the-box performance far superior to blind fuzzing or coverage-only tools.</p>
+<h3 id="Example-1"><a href="#Example-1" class="headerlink" title="Example 1"></a>Example 1</h3><p>vul.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdlib.h&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string.h&gt;</span> </span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;signal.h&gt;</span> </span><br><br><span class="hljs-type">int</span> <span class="hljs-title function_">vuln_3</span><span class="hljs-params">(<span class="hljs-type">char</span> *str)</span> &#123;<br>    <span class="hljs-type">int</span> len = <span class="hljs-built_in">strlen</span>(str);<br>    <span class="hljs-keyword">if</span>(str[<span class="hljs-number">0</span>] == <span class="hljs-string">&#x27;A&#x27;</span> &amp;&amp; len == <span class="hljs-number">66</span>) &#123;<br>        raise(SIGSEGV);<br>    &#125;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(str[<span class="hljs-number">0</span>] == <span class="hljs-string">&#x27;F&#x27;</span> &amp;&amp; len == <span class="hljs-number">6</span>) &#123;<br>        raise(SIGSEGV);<br>    &#125;<br>    <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;it is good!\n&quot;</span>);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">char</span> *argv[])</span> &#123;<br>    <span class="hljs-type">char</span> buf[<span class="hljs-number">100</span>]=&#123;<span class="hljs-number">0</span>&#125;;<br>    gets(buf);   <span class="hljs-comment">// vul1</span><br>    <span class="hljs-built_in">printf</span>(buf); <span class="hljs-comment">// vul2</span><br>    vuln_3(buf);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="Compile-source-code"><a href="#Compile-source-code" class="headerlink" title="Compile source code"></a>Compile source code</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-gcc vul.c -o vul<br></code></pre></td></tr></table></figure>
+
+<h4 id="Test-program"><a href="#Test-program" class="headerlink" title="Test program"></a>Test program</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-showmap -m none -o /dev/null -- ./vul<br></code></pre></td></tr></table></figure>
+
+<p>output:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-showmap 2.57b by &lt;lcamtuf@google.com&gt;<br>[*] Executing &#x27;./vul&#x27;...<br><br>-- Program output begins --<br>AAAAAAAAAABBBBBBBBBBBBBBBB<br>AAAAAAAAAABBBBBBBBBBBBBBBBit is good!<br>-- Program output ends --<br>[+] Captured 3 tuples in &#x27;/dev/null&#x27;.<br></code></pre></td></tr></table></figure>
+
+<p>Test two:</p>
+<p>To trigger signal raise</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[i0gan@arch example_1]$ afl-showmap -m none -o /dev/null -- ./vul<br>afl-showmap 2.57b by &lt;lcamtuf@google.com&gt;<br>[*] Executing &#x27;./vul&#x27;...<br><br>-- Program output begins --<br>Faaaaa<br>-- Program output ends --<br><br>+++ Program killed by signal 11 +++<br>[+] Captured 5 tuples in &#x27;/dev/null&#x27;.<br></code></pre></td></tr></table></figure>
+
+<p>Using different input, under normal circumstances, <code>afl-showmap</code> cmd will capture different tuples, which shows that our instrumentation is effective. In addition, the previously mentioned <code>afl-cmin</code> uses this tool to remove duplicate input files.</p>
+<h4 id="Close-core-pattern"><a href="#Close-core-pattern" class="headerlink" title="Close  core pattern"></a>Close  core pattern</h4><p>Before executing <code>afl-fuzz</code>, if the system is configured to send core dump notification to an external program. As a result, the delay between sending crash information to fuzzer will increase, and the crash may be misreported as timeout, so we have to modify the core_pattern file, run command with root user as follows:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">echo core &gt;/proc/sys/kernel/core_pattern<br></code></pre></td></tr></table></figure>
+
+<p>Create a output dir</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">mkdir out<br></code></pre></td></tr></table></figure>
+
+<h4 id="Starting-fuzz"><a href="#Starting-fuzz" class="headerlink" title="Starting fuzz"></a>Starting fuzz</h4><p>For target binaries that accept input directly from stdin, the usual syntax is:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-fuzz -i testcase_dir -o findings_dir /path/to/program [params]<br></code></pre></td></tr></table></figure>
+
+<p>So our fuzzing cmd is</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-fuzz -i ./testcases/ -o out ./vul<br></code></pre></td></tr></table></figure>
+
+<p>Breaking the above command into parts:</p>
+<ul>
+<li><code>-i afl_in</code> specifies the directory to take the seed test cases from</li>
+<li><code>-o afl_out</code> specifies the directory where AFL can store all result files for crashes, hangs and queue</li>
+</ul>
+<p>The testcases dir is given by github afl project, you just copy that directory to here or run commands as follows:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">mkdir testcases<br>cp /bin/sh ./testcases # copy random seeds to testcases<br></code></pre></td></tr></table></figure>
+
+<p>May be  comming some error</p>
+<p>Whoops, your system uses on-demand CPU frequency scaling, adjusted<br>   between 1367 and 2050 MHz. Unfortunately, the scaling algorithm in the<br>   kernel is imperfect and can miss the short-lived processes spawned by<br>   afl-fuzz. To keep things moving, run these commands as root: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cd /sys/devices/system/cpu<br>echo performance | tee cpu*/cpufreq/scaling_governor<br></code></pre></td></tr></table></figure>
+
+
+
+<p>output:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[i0gan@arch example_1]$ afl-fuzz -i ./testcases/ -o out ./vul @@<br>afl-fuzz 2.57b by &lt;lcamtuf@google.com&gt;<br>[+] You have 8 CPU cores and 1 runnable tasks (utilization: 12%).<br>[+] Try parallel jobs - see /usr/share/doc/afl/parallel_fuzzing.txt.<br>[*] Checking CPU core loadout...<br>[+] Found a free CPU core, binding to #0.<br>[*] Checking core_pattern...<br>[*] Checking CPU scaling governor...<br>[*] Setting up output directories...<br>[+] Output directory exists but deemed OK to reuse.<br>[*] Deleting old session data...<br>[+] Output dir cleanup successful.<br>[*] Scanning &#x27;./testcases/&#x27;...<br>[+] No auto-generated dictionary tokens to reuse.<br>[*] Creating hard links for all input files...<br>[*] Validating target binary...<br>[*] Attempting dry run with &#x27;id:000000,orig:README.testcases&#x27;...<br>[*] Spinning up the fork server...<br>[+] All right - fork server is up.<br>    len = 828, map size = 4, exec speed = 225 us<br>[+] All test cases processed.<br><br>[+] Here are some useful stats:<br><br>    Test case count : 1 favored, 0 variable, 1 total<br>       Bitmap range : 4 to 4 bits (average: 4.00 bits)<br>        Exec timing : 225 to 225 us (average: 225 us)<br><br>[*] No -t option specified, so I&#x27;ll use exec timeout of 20 ms.<br>[+] All set and ready to roll!<br></code></pre></td></tr></table></figure>
+
+<p>MENU UI</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">                         american fuzzy lop 2.57b (vul)<br><br>┌─ process timing ─────────────────────────────────────┬─ overall results ─────┐<br>│        run time : 0 days, 0 hrs, 1 min, 9 sec        │  cycles done : 172    │<br>│   last new path : 0 days, 0 hrs, 1 min, 8 sec        │  total paths : 3      │<br>│ last uniq crash : 0 days, 0 hrs, 0 min, 48 sec       │ uniq crashes : 4      │<br>│  last uniq hang : none seen yet                      │   uniq hangs : 0      │<br>├─ cycle progress ────────────────────┬─ map coverage ─┴───────────────────────┤<br>│  now processing : 1 (33.33%)        │    map density : 0.00% / 0.01%         │<br>│ paths timed out : 0 (0.00%)         │ count coverage : 1.00 bits/tuple       │<br>├─ stage progress ────────────────────┼─ findings in depth ────────────────────┤<br>│  now trying : splice 14             │ favored paths : 3 (100.00%)            │<br>│ stage execs : 31/32 (96.88%)        │  new edges on : 3 (100.00%)            │<br>│ total execs : 363k                  │ total crashes : 588 (4 unique)         │<br>│  exec speed : 5736/sec              │  total tmouts : 2 (1 unique)           │<br>├─ fuzzing strategy yields ───────────┴───────────────┬─ path geometry ────────┤<br>│   bit flips : 0/128, 0/125, 0/119                   │    levels : 2          │<br>│  byte flips : 0/16, 0/13, 0/7                       │   pending : 0          │<br>│ arithmetics : 1/893, 0/220, 0/2                     │  pend fav : 0          │<br>│  known ints : 0/82, 0/334, 0/308                    │ own finds : 2          │<br>│  dictionary : 0/0, 0/0, 0/0                         │  imported : n/a        │<br>│       havoc : 4/158k, 1/202k                        │ stability : 100.00%    │<br>│        trim : 98.56%/17, 0.00%                      ├────────────────────────┘<br>^C────────────────────────────────────────────────────┘          [cpu000: 40%]<br></code></pre></td></tr></table></figure>
+
+<p>We found 4 unique crashes just tack some seconds.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tree out/crashes<br>out/crashes<br>├── id:000000,sig:06,src:000000,op:havoc,rep:128<br>├── id:000001,sig:06,src:000002,op:havoc,rep:64<br>├── id:000002,sig:11,src:000000+000002,op:splice,rep:32<br>├── id:000003,sig:06,src:000001,op:havoc,rep:32<br>└── README.txt<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cat out/crashes/id:000002,sig:11,src:000000+000002,op:splice,rep:32<br>F+�Ft<br></code></pre></td></tr></table></figure>
+
+<p>test crashes</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cat out/crashes/id:000002,sig:11,src:000000+000002,op:splice,rep:32 | ./vul <br>[1]    1213401 done                              cat out/crashes/id:000002,sig:11,src:000000+000002,op:splice,rep:32 | <br>1213402 segmentation fault (core dumped)  ./vul<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Example-2-fuzzgat"><a href="#Example-2-fuzzgat" class="headerlink" title="Example 2 (fuzzgat)"></a>Example 2 (fuzzgat)</h3><h4 id="Target"><a href="#Target" class="headerlink" title="Target"></a>Target</h4><p>ref: <a target="_blank" rel="noopener" href="https://medium.com/@ayushpriya10/fuzzing-applications-with-american-fuzzy-lop-afl-54facc65d102">https://medium.com/@ayushpriya10/fuzzing-applications-with-american-fuzzy-lop-afl-54facc65d102</a></p>
+<p>modify CC as alf-gcc</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git clone https://github.com/fuzzstati0n/fuzzgoat<br>cd fuzzgoat<br>make<br></code></pre></td></tr></table></figure>
+
+<p>Get fuzzgoat vul file</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-command-line  fuzzgoat_ASAN  fuzzgoat.h         in           LICENSE  Makefile   seed<br>fuzzgoat          fuzzgoat.c     fuzzgoatNoVulns.c  input-files  main.c   README.md<br>[i0gan@arch fuzzgoat]$ ./fuzzgoat<br>./fuzzgoat &lt;file_json<br></code></pre></td></tr></table></figure>
+
+<p>Create test_in and test_out directories</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">mkdir test_in test_out<br></code></pre></td></tr></table></figure>
+
+<p>Copy seed to test_in</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cp /bin/ls ./test_in<br></code></pre></td></tr></table></figure>
+
+<p>Before we start fuzz, we should set some environments. login as root, run commands as follows:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">su - root<br>echo core &gt;/proc/sys/kernel/core_pattern<br>cd /sys/devices/system/cpu<br>echo performance | tee cpu*/cpufreq/scaling_governor<br>exit<br></code></pre></td></tr></table></figure>
+
+<h4 id="Fuzzing"><a href="#Fuzzing" class="headerlink" title="Fuzzing"></a>Fuzzing</h4><p>Finally, to fuzz the application we use the following command </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">afl-fuzz -i test_in -o test_out -- ./fuzzgoat @@<br></code></pre></td></tr></table></figure>
+
+<p>Breaking the above command into parts:</p>
+<ul>
+<li><code>--</code> separates the target’s command structure. The left side of the separation is where AFL’s flags are passed and the right side is where the target’s run command is, in this case, <code>./fuzzgoat</code></li>
+<li><code>@@</code> defines the position where AFL is supposed to insert the test file in the target application’s command structure</li>
+</ul>
+<blockquote>
+<p><em><strong>Note:*</strong> <em>Using</em> <code>*@@*</code> <em>is not mandatory. AFL can also pass input to the target through</em> <code>*STDIN*</code></em>.*</p>
+</blockquote>
+<p>Running AFL should yield the following interface on your terminal:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">                      american fuzzy lop 2.57b (fuzzgoat)<br><br>┌─ process timing ─────────────────────────────────────┬─ overall results ─────┐<br>│        run time : 0 days, 0 hrs, 1 min, 5 sec        │  cycles done : 0      │<br>│   last new path : 0 days, 0 hrs, 0 min, 0 sec        │  total paths : 165    │<br>│ last uniq crash : 0 days, 0 hrs, 0 min, 18 sec       │ uniq crashes : 10     │<br>│  last uniq hang : none seen yet                      │   uniq hangs : 0      │<br>├─ cycle progress ────────────────────┬─ map coverage ─┴───────────────────────┤<br>│  now processing : 100 (60.61%)      │    map density : 0.16% / 0.55%         │<br>│ paths timed out : 0 (0.00%)         │ count coverage : 2.28 bits/tuple       │<br>├─ stage progress ────────────────────┼─ findings in depth ────────────────────┤<br>│  now trying : arith 8/8             │ favored paths : 53 (32.12%)            │<br>│ stage execs : 243/1404 (17.31%)     │  new edges on : 74 (44.85%)            │<br>│ total execs : 258k                  │ total crashes : 1317 (10 unique)       │<br>│  exec speed : 4082/sec              │  total tmouts : 0 (0 unique)           │<br>├─ fuzzing strategy yields ───────────┴───────────────┬─ path geometry ────────┤<br>│   bit flips : 7/1064, 1/1027, 1/953                 │    levels : 4          │<br>│  byte flips : 0/133, 0/96, 0/41                     │   pending : 129        │<br>│ arithmetics : 15/6243, 0/983, 0/71                  │  pend fav : 22         │<br>│  known ints : 1/621, 1/1939, 0/975                  │ own finds : 164        │<br>│  dictionary : 0/0, 0/0, 0/0                         │  imported : n/a        │<br>│       havoc : 146/242k, 0/0                         │ stability : 100.00%    │<br>│        trim : 100.00%/61, 0.00%                     ├────────────────────────┘<br>^C────────────────────────────────────────────────────┘          [cpu000: 41%]<br><br></code></pre></td></tr></table></figure>
+
+<p>Let the fuzzer run till it has at least 50 <code>cycles done</code></p>
+<h4 id="Analysing-Results"><a href="#Analysing-Results" class="headerlink" title="Analysing Results"></a>Analysing Results</h4><p>All that’s left is looking at the results. Let’s navigate to the directory where AFL has kept all the test cases that resulted in crashes or hangs:</p>
+<p>Looking inside <code>/crashes</code> or <code>/hangs</code> directories should have files with names resembling (but not the same) as depicted below:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[i0gan@arch fuzzgoat]$ tree test_out/<br>test_out/<br>├── crashes<br>│   ├── id:000000,sig:06,src:000000,op:havoc,rep:8<br>│   ├── id:000001,sig:11,src:000000,op:havoc,rep:128<br>│   ├── id:000002,sig:06,src:000035,op:havoc,rep:4<br>│   ├── id:000003,sig:06,src:000055,op:flip1,pos:0<br>│   ├── id:000004,sig:06,src:000055,op:flip1,pos:2<br>│   ├── id:000005,sig:06,src:000055,op:arith8,pos:0,val:-21<br>│   ├── id:000006,sig:06,src:000055,op:arith8,pos:0,val:-24<br>│   ├── id:000007,sig:06,src:000055,op:arith8,pos:0,val:-25<br>│   ├── id:000008,sig:06,src:000055,op:arith8,pos:2,val:-21<br>│   ├── id:000009,sig:06,src:000055,op:arith8,pos:2,val:-24<br>│   └── README.txt<br>├── fuzz_bitmap<br>├── fuzzer_stats<br>├── hangs<br>├── plot_data<br>└── queue<br>    ├── id:000000,orig:sh<br>    ├── id:000001,src:000000,op:flip1,pos:0,+cov<br>    ├── id:000002,src:000000,op:flip1,pos:0,+cov<br>    ├── id:000003,src:000000,op:flip1,pos:0,+cov<br>    ├── id:000004,src:000000,op:arith8,pos:0,val:-11,+cov<br>    ├── id:000005,src:000000,op:arith8,pos:0,val:-17,+cov<br>    ...<br></code></pre></td></tr></table></figure>
+
+<p>Now, we can take a look in these files to see what exactly AFL mutated the seed input to and then figure out why it made the application crash or hang. Finally, it’s on us what we want to do with the bugs we found with AFL.</p>
+<h4 id="Test-results"><a href="#Test-results" class="headerlink" title="Test results"></a>Test results</h4><h5 id="Test-1"><a href="#Test-1" class="headerlink" title="Test 1"></a>Test 1</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">./fuzzgoat test_out/crashes/id:000000,sig:06,src:000000,op:havoc,rep:8 <br>&quot;&quot;<br>--------------------------------<br><br>string: <br>free(): invalid pointer<br>[1]    848244 abort (core dumped)  ./fuzzgoat test_out/crashes/id:000000,sig:06,src:000000,op:havoc,rep:8<br><br></code></pre></td></tr></table></figure>
+
+<h5 id="Test-2"><a href="#Test-2" class="headerlink" title="Test 2"></a>Test 2</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">./fuzzgoat test_out/crashes/id:000009,sig:06,src:000055,op:arith8,pos:2,val:-24 <br>&quot;&quot;<br><br>--------------------------------<br><br>string: <br>free(): invalid pointer<br>[1]    848263 abort (core dumped)  ./fuzzgoat<br></code></pre></td></tr></table></figure>
+
+<p>Show file content as hex</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hexedit test_out/crashes/id:000000,sig:06,src:000000,op:havoc,rep:8 <br>22 22<br><br>hexedit test_out/crashes/id:000008,sig:06,src:000055,op:arith8,pos:2,val:-21 <br>22 22 0D<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>This paper will continue to write later.</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/03/31/security/ctf/pwn/auto-pwn/">← Next AUTO PWN</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/03/30/security/v8-01/">V8 EXPLOIT ONE Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Binary-fuzzing-way-of-american-fuzzy-lop"><span class="toc-text">Binary fuzzing way of american fuzzy lop</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Intro"><span class="toc-text">Intro</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#What-is-AFL"><span class="toc-text">What is AFL?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-to-install-env"><span class="toc-text">How to install env</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Method-1"><span class="toc-text">Method 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Method-2"><span class="toc-text">Method 2</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-it-works"><span class="toc-text">How it works?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x00-Technical"><span class="toc-text">0x00 Technical</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-Coverage-measurements"><span class="toc-text">0x01 Coverage measurements</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-Detecting-new-behaviors"><span class="toc-text">0x02 Detecting new behaviors</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x03-Evolving-the-input-queue"><span class="toc-text">0x03 Evolving the input queue</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x04-Culling-the-corpus"><span class="toc-text">0x04 Culling the corpus</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x05-Trimming-input-files"><span class="toc-text">0x05 Trimming input files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x06-Fuzzing-strategies"><span class="toc-text">0x06 Fuzzing strategies</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x07-Dictionaries"><span class="toc-text">0x07 Dictionaries</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x08-De-duping-crashes"><span class="toc-text">0x08 De-duping crashes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Investigating-crashes"><span class="toc-text">Investigating crashes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x09-The-fork-server"><span class="toc-text">0x09 The fork server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x0A-Parallelization"><span class="toc-text">0x0A Parallelization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x0B-Binary-only-instrumentation"><span class="toc-text">0x0B Binary-only instrumentation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x0C-Others"><span class="toc-text">0x0C Others</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#The-afl-analyze-tool"><span class="toc-text">The afl-analyze tool</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-to-use"><span class="toc-text">How to use?</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#The-AFL-approach"><span class="toc-text">The AFL approach</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-1"><span class="toc-text">Example 1</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Compile-source-code"><span class="toc-text">Compile source code</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Test-program"><span class="toc-text">Test program</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Close-core-pattern"><span class="toc-text">Close  core pattern</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Starting-fuzz"><span class="toc-text">Starting fuzz</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Example-2-fuzzgat"><span class="toc-text">Example 2 (fuzzgat)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Target"><span class="toc-text">Target</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Fuzzing"><span class="toc-text">Fuzzing</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Analysing-Results"><span class="toc-text">Analysing Results</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Test-results"><span class="toc-text">Test results</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Test-1"><span class="toc-text">Test 1</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Test-2"><span class="toc-text">Test 2</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Conclusion"><span class="toc-text">Conclusion</span></a></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

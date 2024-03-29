@@ -1,0 +1,69 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Debian 安装 docker | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>Debian 安装 docker</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2020-09-09T05:51:50.000Z" id="date"> 2020-09-09</time></div></span><br><span>Last Update: <div class="control"><time datetime="2022-10-24T09:08:13.813Z" id="updated"> 2022-10-24</time></div></span><br><span>Word Count: <div class="control">617</div></span><br><span>Read Time: <div class="control">2 min</div></span></div></div><hr><div id="post-content"><h1 id="Debian-安装-docker"><a href="#Debian-安装-docker" class="headerlink" title="Debian 安装 docker"></a>Debian 安装 docker</h1><h2 id="卸载旧版"><a href="#卸载旧版" class="headerlink" title="卸载旧版"></a>卸载旧版</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt-get remove docker docker-engine docker.io containerd runc<br></code></pre></td></tr></table></figure>
+
+<h2 id="设置仓库"><a href="#设置仓库" class="headerlink" title="设置仓库"></a>设置仓库</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">apt update<br></code></pre></td></tr></table></figure>
+
+
+
+
+<h1 id="安装-apt-依赖包"><a href="#安装-apt-依赖包" class="headerlink" title="安装 apt 依赖包"></a>安装 apt 依赖包</h1><p>用于通过 HTTPS 来获取仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt-get install \<br>   apt-transport-https \<br>   ca-certificates \<br>   curl \<br>   gnupg2 \<br>   software-properties-common<br></code></pre></td></tr></table></figure>
+
+
+
+<h1 id="添加-Docker-的官方-GPG-密钥"><a href="#添加-Docker-的官方-GPG-密钥" class="headerlink" title="添加 Docker 的官方 GPG 密钥"></a>添加 Docker 的官方 GPG 密钥</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -<br></code></pre></td></tr></table></figure>
+
+<p>9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88 通过搜索指纹的后8个字符，验证您现在是否拥有带有指纹的密钥</p>
+<p>查看密匙 (9DC8 5822 9FC7 DD38 854A E2D8 8D81 803C 0EBF CD88 通过搜索指纹的后8个字符，验证您现在是否拥有带有指纹的密钥)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt-key fingerprint 0EBFCD88<br></code></pre></td></tr></table></figure>
+
+<p>输出:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">pub   4096R/0EBFCD88 2017-02-22<br>      Key fingerprint = 9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD88<br>uid                  Docker Release (CE deb) &lt;docker@docker.com&gt;<br>sub   4096R/F273FCD8 2017-02-22<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用以下指令设置稳定版仓库"><a href="#使用以下指令设置稳定版仓库" class="headerlink" title="使用以下指令设置稳定版仓库"></a>使用以下指令设置稳定版仓库</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo add-apt-repository \<br>  &quot;deb [arch=amd64] https://download.docker.com/linux/debian \<br>  $(lsb_release -cs) \<br>  stable&quot;<br></code></pre></td></tr></table></figure>
+
+<h2 id="安装-Docker-Engine-Community"><a href="#安装-Docker-Engine-Community" class="headerlink" title="安装 Docker Engine-Community"></a>安装 Docker Engine-Community</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt update<br></code></pre></td></tr></table></figure>
+
+<p>安装最新版本的 Docker Engine-Community 和 containerd ，或者转到下一步安装特定版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt-get install docker-ce docker-ce-cli containerd.io<br></code></pre></td></tr></table></figure>
+
+
+<p>要安装特定版本的 Docker Engine-Community 请在仓库中列出可用版本,然后选择一种安装,列出您的仓库中可用的版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt-cache madison docker-ce<br></code></pre></td></tr></table></figure>
+
+<p>使用第二列中的版本字符串安装特定版本，例如 5:18.09.1<del>3-0</del>debian-stretch</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo apt-get install docker-ce=&lt;VERSION_STRING&gt; docker-ce-cli=&lt;VERSION_STRING&gt; containerd.io<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="测试-Docker-是否安装成功"><a href="#测试-Docker-是否安装成功" class="headerlink" title="测试 Docker 是否安装成功"></a>测试 Docker 是否安装成功</h2><p>输入以下指令，打印出以下信息则安装成功：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo docker run hello-world<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h2><h3 id="配置用户"><a href="#配置用户" class="headerlink" title="配置用户"></a>配置用户</h3><p>默认情况下，docker 命令会使用 Unix socket 与 Docker 引擎通讯, 而只有 root 用户和 docker 组的用户才可以访问 </p>
+<p>Docker 引擎的 Unix socket 出于安全考虑，一般 Linux 系统上不会直接使用 root 用户 因此，可将需要使用 docker 的用户加入 docker 用户组</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">usermod -aG docker $&#123;USER&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="应用新的组成员身份"><a href="#应用新的组成员身份" class="headerlink" title="应用新的组成员身份"></a>应用新的组成员身份</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">su - $&#123;USER&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置国内镜像"><a href="#配置国内镜像" class="headerlink" title="配置国内镜像"></a>配置国内镜像</h3><p>鉴于国内网络问题，后续拉取 Docker 镜像十分缓慢，我们可以需要配置加速器来解决，我使用的是网易的镜像地址：<a target="_blank" rel="noopener" href="http://hub-mirror.c.163.com/">http://hub-mirror.c.163.com</a><br>新版的 Docker 使用 &#x2F;etc&#x2F;docker&#x2F;daemon.json来配置 Daemon<br>请在该配置文件中加入（没有该文件的话，请先建一个）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&#123;<br>	&quot;registry-mirrors&quot;: [<br>		&quot;http://hub-mirror.c.163.com&quot;<br>	]<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>重启docker</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo systemctl restart docker<br></code></pre></td></tr></table></figure><div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2020/09/09/env/linux/myarch/pacman/">← Next pacman 命令参数</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2020/09/07/security/reverse/android/android-revese-0/">Android 逆向入门 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Debian-%E5%AE%89%E8%A3%85-docker"><span class="toc-text">Debian 安装 docker</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%B8%E8%BD%BD%E6%97%A7%E7%89%88"><span class="toc-text">卸载旧版</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E4%BB%93%E5%BA%93"><span class="toc-text">设置仓库</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-apt-%E4%BE%9D%E8%B5%96%E5%8C%85"><span class="toc-text">安装 apt 依赖包</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0-Docker-%E7%9A%84%E5%AE%98%E6%96%B9-GPG-%E5%AF%86%E9%92%A5"><span class="toc-text">添加 Docker 的官方 GPG 密钥</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BB%A5%E4%B8%8B%E6%8C%87%E4%BB%A4%E8%AE%BE%E7%BD%AE%E7%A8%B3%E5%AE%9A%E7%89%88%E4%BB%93%E5%BA%93"><span class="toc-text">使用以下指令设置稳定版仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-Docker-Engine-Community"><span class="toc-text">安装 Docker Engine-Community</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95-Docker-%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F"><span class="toc-text">测试 Docker 是否安装成功</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%A1%E7%90%86"><span class="toc-text">管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E7%94%A8%E6%88%B7"><span class="toc-text">配置用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BA%94%E7%94%A8%E6%96%B0%E7%9A%84%E7%BB%84%E6%88%90%E5%91%98%E8%BA%AB%E4%BB%BD"><span class="toc-text">应用新的组成员身份</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F"><span class="toc-text">配置国内镜像</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

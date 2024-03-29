@@ -1,0 +1,47 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ARMx86学习 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>ARMx86学习</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2020-11-13T02:31:32.000Z" id="date"> 2020-11-13</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.165Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">290</div></span><br><span>Read Time: <div class="control">1 min</div></span></div></div><hr><div id="post-content"><h1 id="ARMx86学习"><a href="#ARMx86学习" class="headerlink" title="ARMx86学习"></a>ARMx86学习</h1><h2 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h2><p>r0</p>
+<p>r1</p>
+<p>r2</p>
+<p>r3</p>
+<p>r4</p>
+<p>r5</p>
+<p>r6</p>
+<p>r7</p>
+<p>r8</p>
+<p>r9</p>
+<p>r10</p>
+<p>r11</p>
+<p>r12</p>
+<p>sp</p>
+<p>pc</p>
+<h2 id="指令"><a href="#指令" class="headerlink" title="指令"></a>指令</h2><p>bl 相当于x86 call</p>
+<p>b 相当于x86 return</p>
+<p>add</p>
+<p>sub</p>
+<p>ldr</p>
+<p>mov</p>
+<p>beq</p>
+<p>cmp</p>
+<p>bne</p>
+<h3 id="str"><a href="#str" class="headerlink" title="str"></a>str</h3><p>STR{条件} 源寄存器，&lt;存储器地址&gt;</p>
+<p>STR指令用亍从源寄存器中将一个32位的字数据传送到存储器中。该指令在程序设计中比较常</p>
+<p>用，寻址方式灵活多样，使用方式可参考指令LDR。</p>
+<p>指令示例：</p>
+<p>STR R0，[R1]，＃8       ；将R0中的字数据写入以R1为地址的存储器中，并将新地址R1＋8写入R1。</p>
+<p>STR R0，[R1，＃8]       ；将R0中的字数据写入以R1＋8为地址的存储器中。”</p>
+<p>str   r1, [r0]            ；将r1寄存器的值，传送到地址值为r0的（存储器）内存中</p>
+<h2 id="堆栈结构"><a href="#堆栈结构" class="headerlink" title="堆栈结构"></a>堆栈结构</h2><p>当一个函数调用使用少量参数(ARM上是少于等于4个)时，参数是通过寄存器进行传值(ARM上是通过r0,r1,r2,r3)，而当参数多于4个时，会将多出的参数压入栈中进行传递(其实在函数调用过程中也会把r0,r1,r2,r3传递的参数压入栈)</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2020/11/15/env/linux/issues/">← Next issues</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2020/11/13/security/cve/CVE-2018-18708/">CVE-2018-18708 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ARMx86%E5%AD%A6%E4%B9%A0"><span class="toc-text">ARMx86学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-text">寄存器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E4%BB%A4"><span class="toc-text">指令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#str"><span class="toc-text">str</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A0%86%E6%A0%88%E7%BB%93%E6%9E%84"><span class="toc-text">堆栈结构</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

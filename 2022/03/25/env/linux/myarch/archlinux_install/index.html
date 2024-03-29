@@ -1,0 +1,284 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>安装 ArchLinux | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>安装 ArchLinux</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2022-03-25T04:25:32.000Z" id="date"> 2022-03-25</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.042Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">2.7k</div></span><br><span>Read Time: <div class="control">12 min</div></span></div></div><hr><div id="post-content"><h1 id="安装-ArchLinux"><a href="#安装-ArchLinux" class="headerlink" title="安装 ArchLinux"></a>安装 ArchLinux</h1><h2 id="目前硬件信息"><a href="#目前硬件信息" class="headerlink" title="目前硬件信息"></a>目前硬件信息</h2><p>时间： 2022-03-25</p>
+<p>Platform : Y900P 2022  i7 3070Ti   [EFI]<br>制作Archlinux U盘启动器.开机进入Linux</p>
+<h2 id="准备系统"><a href="#准备系统" class="headerlink" title="准备系统"></a>准备系统</h2><p>从<a target="_blank" rel="noopener" href="https://archlinux.org/">arch linux</a>官网下载镜像，刷到U盘里，重启进入U盘系统，具体方法，这里不过多解释，请自行百度一下。</p>
+<h2 id="安装系统"><a href="#安装系统" class="headerlink" title="安装系统"></a>安装系统</h2><p>这里是进入到u盘里arch linux之后的操作。安装命令比较多，建议采用另一台电脑通过ssh连接方式复制粘贴命令。</p>
+<h3 id="连接网络"><a href="#连接网络" class="headerlink" title="连接网络"></a>连接网络</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#这里采用连接wifi的形式</span><br>rfkill unblock all (解除内核对设备的锁定)<br>ip <span class="hljs-built_in">link</span> <span class="hljs-built_in">set</span> wlan0 up<br>iw dev wlan0 scan | less<br>iw dev wlan0 connect [名称] key 0:[密码]<br><br>dhclient <span class="hljs-comment"># 获取ip 或者dhcpcd</span><br><span class="hljs-comment"># 发现配置dns解析有误</span><br>ping baidu.com <span class="hljs-comment"># 测试网络</span><br></code></pre></td></tr></table></figure>
+
+<p>若连接好wifi后，不能ping通百度这些，可能是DNS解析有误。</p>
+<p>请配置</p>
+<p>打开&#x2F;etc&#x2F;resolv.conf第一行添加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">nameserver 8.8.8.8<br></code></pre></td></tr></table></figure>
+
+<p>打开 &#x2F;etc&#x2F;nsswitch.conf 找到hosts那行，将其改为如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hosts:    files dns <br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="查看是否支持uefi"><a href="#查看是否支持uefi" class="headerlink" title="查看是否支持uefi"></a>查看是否支持uefi</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ls</span> /sys/firmware/efi/ <br></code></pre></td></tr></table></figure>
+
+<p>显示的话，就说明是支持的。</p>
+<h4 id="对时"><a href="#对时" class="headerlink" title="对时"></a>对时</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">timedatectl set-ntp <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="磁盘分区"><a href="#磁盘分区" class="headerlink" title="磁盘分区"></a>磁盘分区</h4><p>这里需要你对磁盘分区有一定了解。</p>
+<p>执行  lsblk 或者 fdisk -l 查看硬盘设备名</p>
+<p>这里采用lsblk查看自己的硬盘设备名称，比如我的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">nvme1n1     259:0    0 476.9G  0 disk <br>├─nvme1n1p1 259:1    0   260M  0 part  # Windows默认EFI<br>├─nvme1n1p2 259:2    0    16M  0 part  # Windows保留分区<br>├─nvme1n1p3 259:3    0   200G  0 part  # Windows系统分区<br>├─nvme1n1p4 259:4    0    64M  0 part  # Linux EFI分区<br>├─nvme1n1p5 259:5    0   150G  0 part  # Arch Linux系统分区<br>└─nvme1n1p6 259:6    0 126.6G  0 part  # Linux 数据分区<br></code></pre></td></tr></table></figure>
+
+<p>需要分两个区,一个根目录 &#x2F;,另一个是开机系统的&#x2F;boot&#x2F;efi</p>
+<p>执行 fdisk &#x2F;dev&#x2F;nvme1n1 开始分区, dev&#x2F;nvme1n1 是硬盘设备名</p>
+<p>磁盘类型参数:</p>
+<p>我分区的如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">nvme1n1p4 # 64M,用于储存efi<br>nvme1n1p5 : 150G, 用于根分区<br>nvme1n1p6 : left, 用于数据分区<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">/boot/efi分区不能ext4格式:<br>mkfs.ext4 /dev/nvme1n1p5<br>mkfs.vfat -F32  /dev/nvme1n1p4<br></code></pre></td></tr></table></figure>
+
+<h4 id="挂载"><a href="#挂载" class="headerlink" title="挂载"></a>挂载</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">mount /dev/nvme1n1p5 /mnt<br><span class="hljs-built_in">mkdir</span> -p /mnt/boot/efi<br>mount /dev/nvme1n1p4 /mnt/boot/efi<br></code></pre></td></tr></table></figure>
+
+<h4 id="修改镜像地址"><a href="#修改镜像地址" class="headerlink" title="修改镜像地址"></a>修改镜像地址</h4><p>可能默认是国外的，下载比较慢，跟换为国内的。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cp</span> /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak<br></code></pre></td></tr></table></figure>
+
+<p>打开&#x2F;etc&#x2F;pacman.d&#x2F;mirrorlist 增加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">## China<br>Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="安装基础包"><a href="#安装基础包" class="headerlink" title="安装基础包:"></a>安装基础包:</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -Sy <span class="hljs-comment">#同步</span><br>pacstrap /mnt base  base-devel linux linux-firmware linux-headers vim<br><span class="hljs-comment"># linux 是Linux内核</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="生成-genfstab"><a href="#生成-genfstab" class="headerlink" title="生成 genfstab:"></a>生成 genfstab:</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">genfstab -U /mnt &gt;&gt; /mnt/etc/fstab<br></code></pre></td></tr></table></figure>
+
+<h4 id="进入新系统"><a href="#进入新系统" class="headerlink" title="进入新系统:"></a>进入新系统:</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">arch-chroot /mnt /bin/bash<br></code></pre></td></tr></table></figure>
+
+<h4 id="设置时区"><a href="#设置时区" class="headerlink" title="设置时区"></a>设置时区</h4><p>设置为国内上海时区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ln</span> -sf /usr/share/zoneinfo/Asia/Shanghai  /etc/localtime<br></code></pre></td></tr></table></figure>
+<h4 id="同步硬件时钟"><a href="#同步硬件时钟" class="headerlink" title="同步硬件时钟"></a>同步硬件时钟</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hwclock --systohc <span class="hljs-comment"># 也可以[--utc]</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="设置语言"><a href="#设置语言" class="headerlink" title="设置语言"></a>设置语言</h4><p>打开 &#x2F;etc&#x2F;locale.gen 取消下面两行的注释后保存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">en_US.UTF-8 UTF-8<br>zh_CN.UTF-8 UTF-8<br>zh_CN.GB18030 GB18030<br>zh_CN.GBK GBK<br>zh_CN GB2312<br></code></pre></td></tr></table></figure>
+
+<p>生成语言</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">locale-gen <br></code></pre></td></tr></table></figure>
+
+<p>编辑 &#x2F;etc&#x2F;locale.conf设置默认语言为英文</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">LANG=en_US.UTF-8<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="设置主机名"><a href="#设置主机名" class="headerlink" title="设置主机名"></a>设置主机名</h4><p>打开&#x2F;etc&#x2F;hostname ，把主机名写进去, 我这里写入的是 arch</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">arch<br></code></pre></td></tr></table></figure>
+
+<p>打开 &#x2F;etc&#x2F;hosts，设置hosts</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">127.0.0.1     arch<br>127.0.0.1     localhost<br>::1           localhost<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="设置root密码"><a href="#设置root密码" class="headerlink" title="设置root密码"></a>设置root密码</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">passwd root<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="安装网络包"><a href="#安装网络包" class="headerlink" title="安装网络包:"></a>安装网络包:</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S networkmanager dhcpcd<br></code></pre></td></tr></table></figure>
+
+<p>若dns有问题打开&#x2F;etc&#x2F;nsswitch.conf，找到hosts那行，将其改为如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">hosts:    files dns <br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="安装-openssh"><a href="#安装-openssh" class="headerlink" title="安装 openssh"></a>安装 openssh</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -Sy openssh<br></code></pre></td></tr></table></figure>
+
+<p>根据情况</p>
+<p>写入服务: systemctl enable sshd<br>启动服务: systemctl start sshd.service</p>
+<h4 id="设置自动连接网络（有线）"><a href="#设置自动连接网络（有线）" class="headerlink" title="设置自动连接网络（有线）"></a>设置自动连接网络（有线）</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl <span class="hljs-built_in">enable</span> dhcpcd<br>systemctl start  dhcpcd.service<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装GRUB"><a href="#安装GRUB" class="headerlink" title="安装GRUB"></a>安装GRUB</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装基本包</span><br><span class="hljs-built_in">mkdir</span> -p /boot/efi/EFI/boot<br>pacman -S grub-efi-x86_64 efibootmgr os-prober<br><span class="hljs-comment"># 安装grub到磁盘上</span><br>grub-install --efi-directory=/boot/efi --bootloader-id=grub<br><span class="hljs-built_in">cp</span> /boot/efi/EFI/grub/grubx64.efi /boot/efi/EFI/boot/bootx64.efi<br>grub-mkconfig -o /boot/grub/grub.cfg<br></code></pre></td></tr></table></figure>
+<h4 id="umount分区并重启机器"><a href="#umount分区并重启机器" class="headerlink" title="umount分区并重启机器"></a>umount分区并重启机器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">exit</span><br>umount /mnt/boot/efi &amp;&amp; umount /mnt &amp;&amp; reboot<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="安装图形界面"><a href="#安装图形界面" class="headerlink" title="安装图形界面"></a>安装图形界面</h3><h4 id="开机后启动网络服务"><a href="#开机后启动网络服务" class="headerlink" title="开机后启动网络服务"></a>开机后启动网络服务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl <span class="hljs-built_in">enable</span> NetworkManager.service <br>systemctl start NetworkManager.service <br></code></pre></td></tr></table></figure>
+
+<h4 id="启动wpa-supplicant服务"><a href="#启动wpa-supplicant服务" class="headerlink" title="启动wpa_supplicant服务"></a>启动wpa_supplicant服务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl <span class="hljs-built_in">enable</span> wpa_supplicant.service<br>sudo systemctl start wpa_supplicant.service<br><span class="hljs-comment"># 查看 wifi 列表：</span><br>nmcli dev wifi list<br><span class="hljs-comment"># 连接wifi</span><br>nmcli device wifi connect [wifi name] password [wifi password]<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装基本网络命令包"><a href="#安装基本网络命令包" class="headerlink" title="安装基本网络命令包"></a>安装基本网络命令包</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S net-tools dnsutils inetutils iproute2<br></code></pre></td></tr></table></figure>
+
+<p>若网络按安装比较慢，尝试更换源</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">vim /etc/pacman.d/mirrorlist<br># 增加以下内容<br>## China<br>Server = http://mirrors.tuna.tsinghua.edu.cn/archlinux/$repo/os/$arch<br>## China<br>Server = http://mirror.lzu.edu.cn/archlinux/$repo/os/$arch<br>## China<br>Server = http://mirrors.cqu.edu.cn/archlinux/$repo/os/$arch<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装显卡驱动"><a href="#安装显卡驱动" class="headerlink" title="安装显卡驱动"></a>安装显卡驱动</h4><p>安装软件包 mesa，它提供 DRI 和 3D 加速<br>若需要x86_64下的32位支持,可以从 multilib 安装 lib32-mesa.<br>要使用 Xorg 2D 加速 DDX 驱动，请安装软件包 xf86-video-ati.<br>加速视频解码 由 mesa-vdpau 和 lib32-mesa-vdpau 包提供支持</p>
+<h5 id="硬件接口服务"><a href="#硬件接口服务" class="headerlink" title="硬件接口服务"></a>硬件接口服务</h5><p>参考 xorg-server</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S xorg-server <br></code></pre></td></tr></table></figure>
+<h5 id="安装驱动"><a href="#安装驱动" class="headerlink" title="安装驱动"></a>安装驱动</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S xf86-video-intel<br>pacman -S nvidia nvidia-utils nvidia-dkms nvidia-lts nvidia-prime nvidia-settings<br>pacman -S community/nccl<br><span class="hljs-comment">#xf86-video-intel intel显卡驱动</span><br><span class="hljs-comment">#xf86-video-ati  AMD显卡驱动</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="声卡驱动"><a href="#声卡驱动" class="headerlink" title="声卡驱动"></a>声卡驱动</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">pacman -S alsa-utils pulseaudio pulseaudio-alsa<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装输入设备"><a href="#安装输入设备" class="headerlink" title="安装输入设备"></a>安装输入设备</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S xf86-input-libinput // (xorg-server已经默认安装)<br></code></pre></td></tr></table></figure>
+<h4 id="安装触摸板驱动"><a href="#安装触摸板驱动" class="headerlink" title="安装触摸板驱动"></a>安装触摸板驱动</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S xf86-input-synaptics<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="安装显示管理器"><a href="#安装显示管理器" class="headerlink" title="安装显示管理器"></a>安装显示管理器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S sddm sddm-kcm<br>systemctl <span class="hljs-built_in">enable</span> sddm<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="安装plasma桌面"><a href="#安装plasma桌面" class="headerlink" title="安装plasma桌面"></a>安装plasma桌面</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S plasma-desktop <br></code></pre></td></tr></table></figure>
+
+<h4 id="安装基本的软件"><a href="#安装基本的软件" class="headerlink" title="安装基本的软件"></a>安装基本的软件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S dolphin konsole kwrite plasma-pa kscreen<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装中文字体"><a href="#安装中文字体" class="headerlink" title="安装中文字体"></a>安装中文字体</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S ttf-dejavu ttf-liberation wqy-microhei<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装ntfs磁盘的支持"><a href="#安装ntfs磁盘的支持" class="headerlink" title="安装ntfs磁盘的支持"></a>安装ntfs磁盘的支持</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S ntfs-3g<br></code></pre></td></tr></table></figure>
+
+<h4 id="安装中文输入法"><a href="#安装中文输入法" class="headerlink" title="安装中文输入法"></a>安装中文输入法</h4><p>可跳过，后续安装更好的输入，搜狗输入法。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># pacman -S fcitx fcitx-rime fcitx-im kcm-fcitx fcitx-googlepinyin</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="安装plasma网络工具托盘"><a href="#安装plasma网络工具托盘" class="headerlink" title="安装plasma网络工具托盘"></a>安装plasma网络工具托盘</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S plasma-nm<br><span class="hljs-comment"># 系统托盘网络管理工具</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="安装plasma音量管理托盘"><a href="#安装plasma音量管理托盘" class="headerlink" title="安装plasma音量管理托盘"></a>安装plasma音量管理托盘</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">pacman -S plasma-pa<br></code></pre></td></tr></table></figure>
+
+<h4 id="设置pacman彩色输出"><a href="#设置pacman彩色输出" class="headerlink" title="设置pacman彩色输出"></a>设置pacman彩色输出</h4><p>打开&#x2F;etc&#x2F;pacman.conf文件<br>找到被注释的#Color<br>改为Color,pacman就会输出彩色信息方便查看</p>
+<h4 id="安装主题"><a href="#安装主题" class="headerlink" title="安装主题"></a>安装主题</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S arc-kde<br></code></pre></td></tr></table></figure>
+
+<h4 id="首次用户目录生成"><a href="#首次用户目录生成" class="headerlink" title="首次用户目录生成"></a>首次用户目录生成</h4><p>安装 xdg-user-dirs</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S xdg-user-dirs <br><span class="hljs-comment">#跟新用户目录</span><br>xdg-user-dirs-update <br><span class="hljs-comment"># 若不慎删除了某个默认用户文件夹，使用如下命令强制重新生成家目录文件夹</span><br><span class="hljs-comment"># xdg-user-dirs-update --force</span><br><span class="hljs-comment"># 该命令只对当前用户起作用</span><br></code></pre></td></tr></table></figure>
+
+
+<h4 id="安装图标"><a href="#安装图标" class="headerlink" title="安装图标"></a>安装图标</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S papirus-icon-theme<br></code></pre></td></tr></table></figure>
+
+<h4 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h4><p>务必添加一个 用户 ，否则后面sddm显示管理器登录的时候无法登录，sddm不会列出root用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加i0gan用户，i0gan可替换为你自己的账户。</span><br>useradd -m -g <span class="hljs-built_in">users</span> -s /bin/bash i0gan <br><span class="hljs-comment"># 为刚才添加的用户设置密码</span><br>passwd i0gan <br><br>vim /etc/sudoers<br><span class="hljs-comment"># 在 root ALL=(ALL) ALL 下面添加</span><br><span class="hljs-comment"># i0gan ALL=(ALL) ALL</span><br><span class="hljs-comment"># 为你刚才创建的用户 添加sudo权限</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="调节亮度"><a href="#调节亮度" class="headerlink" title="调节亮度"></a>调节亮度</h4><p>查看亮度最大值:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#只能root</span><br><span class="hljs-built_in">cat</span> /sys/class/backlight/intel_backlight/max_brightness<br><span class="hljs-built_in">echo</span> 100 &gt; /sys/class/backlight/intel_backlight/brightness<br></code></pre></td></tr></table></figure>
+<p>我写了个脚本，可以调节亮度：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#! /bin/bash</span><br><br><span class="hljs-comment"># 判断是否为root</span><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$UID</span> -ne 0 ];<span class="hljs-keyword">then</span><br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;Please run as root first.&#x27;</span><br>	<span class="hljs-built_in">exit</span><br><span class="hljs-keyword">fi</span><br><br>max=`<span class="hljs-built_in">cat</span> /sys/class/backlight/intel_backlight/max_brightness`<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;The max brightness: <span class="hljs-variable">$max</span>&quot;</span><br><br><span class="hljs-comment"># input value</span><br><span class="hljs-built_in">read</span> -p <span class="hljs-string">&quot;Your brightness:&quot;</span> value<br><br>min_value=20<br><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$value</span> -le <span class="hljs-variable">$min_value</span> ];<span class="hljs-keyword">then</span><br>	value=<span class="hljs-variable">$min_value</span><br>	<span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;aa&#x27;</span><br><span class="hljs-keyword">fi</span><br><br><span class="hljs-built_in">echo</span> <span class="hljs-variable">$value</span> &gt; /sys/class/backlight/intel_backlight/brightness<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;finish&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="终端显示电量"><a href="#终端显示电量" class="headerlink" title="终端显示电量"></a>终端显示电量</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pacman -S acpi<br></code></pre></td></tr></table></figure>
+
+
+<p>再重启以下即可进入图形话界面了。</p>
+<h3 id="双显卡问题"><a href="#双显卡问题" class="headerlink" title="双显卡问题"></a>双显卡问题</h3><p>这里针对的是Y7000以及Y9000双显卡问题，但显卡可直接跳过。</p>
+<h4 id="方法1"><a href="#方法1" class="headerlink" title="方法1"></a>方法1</h4><p>关闭独立显卡，使用集成显卡</p>
+<p>ref: <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_30418225/article/details/113891206">https://blog.csdn.net/weixin_30418225/article/details/113891206</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">pacman -S bbswitch<br></code></pre></td></tr></table></figure>
+
+<p>安装好之后需要修改一些地方<br>首先，在&#x2F;etc&#x2F;modules-load.d下新建bbswitch.conf，并修改为如下内容。这样每次启动都会加载bbswitch模块了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[系统关闭独立显卡及省电降温设置]<br>bbswitch<br></code></pre></td></tr></table></figure>
+
+<p>然后，在&#x2F;etc&#x2F;modprobe.d&#x2F;下新建bbswitch.conf，并修改为如下内容。这是bbswitch加载的参数，我们让其默认关闭</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">options bbswitch load_state=0<br></code></pre></td></tr></table></figure>
+
+<p>其次，在&#x2F;etc&#x2F;modprobe.d&#x2F;下新建nouveau_blacklist.conf，并修改为如下内容。有时候bbswitch加载了，但是不能关闭显卡，因为有些模块正在占用着，因此要禁掉。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">blacklist nouveau<br>blacklist nvidiafb<br></code></pre></td></tr></table></figure>
+
+<p>最后，在&#x2F;usr&#x2F;lib&#x2F;systemd&#x2F;system-shutdown&#x2F;下新建nvidia_card_enable.sh，并修改为以下内容，记得加运行权限。每次reboot的时候，显卡都是关闭的，不管是重启到windows还是linux，都会找不到设备，必须彻底关机才行。解决该问题的办法就是每次重启都启用显卡</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#!/bin/bash<br>case &quot;$1&quot; in<br>reboot)<br>echo &quot;Enabling NVIDIA GPU&quot;<br>echo ON &gt; /proc/acpi/bbswitch<br>;;<br>*)<br>esac<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="方法2"><a href="#方法2" class="headerlink" title="方法2"></a>方法2</h4><p>增加额外源，若还是出现闪屏失败，可尝试下面的方法,采用</p>
+<p>增加archlinuxcn源</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">打开/etc/pacman.conf，在末尾加上<br>[archlinuxcn]<br>SigLevel = Optional TrustAll<br>Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch<br>#安装key-ring<br>sudo pacman -Sy<br>sudo pacman -S archlinuxcn-keyring<br></code></pre></td></tr></table></figure>
+
+<p>安装yay yaourt bumblebee，这里的i0gan是我的用户名称。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">pacman -S yay yaourt<br>pacman -S bumblebee mesa<br>gpasswd -a i0gan bumblebee<br>systemctl enable bumblebeed.service<br>systemctl start bumblebeed.service<br>pacman -S archlinuxcn/optimus-manager # 安装显卡管理软件<br></code></pre></td></tr></table></figure>
+
+<p>参考 </p>
+<p><a target="_blank" rel="noopener" href="https://wiki.archlinux.org/index.php/Bumblebee#Installing_Bumblebee_with_Intel.2FNVIDIA">Installing Bumblebee with Intel&#x2F;NVIDIA</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tonyc/p/7732119.html">Archlinux双显卡安装NVIDIA闭源驱动</a></p>
+<h4 id="方法3"><a href="#方法3" class="headerlink" title="方法3"></a>方法3</h4><p>还是闪屏采用一下方法试试。</p>
+<hr>
+<ol>
+<li>确保能正常进入桌面，安装必要的软件包</li>
+</ol>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">$ sudo pacman -S <span class="hljs-keyword">bumblebee </span><span class="hljs-keyword">bbswitch</span><br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>把i0gan添加到bumblebee组里</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp">$ sudo gpasswd -a i0gan bumblebee<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>启动bumblebeed服务</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo systemctl <span class="hljs-built_in">enable</span> bumblebeed.service<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>安装依赖</li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-variable">$ </span>sudo pacman -S bumblebee nvidia opencl-nvidia lib32-nvidia-utils lib32-opencl-nvidia mesa lib32-mesa-libgl xf86-video-intel<br></code></pre></td></tr></table></figure>
+
+<p>lib32打头的需要开启multilib，把<code>/etc/pacman.conf</code>文件中的下面两行取消注释，然后执行<code>pacman -Sy</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">[multilib]</span><br><span class="hljs-meta prompt_">#</span><span class="language-bash">Include = /etc/pacman.d/mirrorlist</span><br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>配置bumblebee</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo nano /etc/bumblebee/bumblebee.conf<br>指定nvidia<br>Driver=nvidia<br>电源管理指定bbswitch<br>[driver-nvidia]<br>PMMethod=bbswitch<br></code></pre></td></tr></table></figure>
+
+<p>弄好之后重启</p>
+<h5 id="检测是否安装成功"><a href="#检测是否安装成功" class="headerlink" title="检测是否安装成功"></a>检测是否安装成功</h5><ol>
+<li>安装测试软件</li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-variable">$ </span>sudo pacman -S virtualgl<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>运行测试软件</li>
+</ol>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-variable">$ </span>optirun glxspheres64<br></code></pre></td></tr></table></figure>
+
+<h5 id="开启和关闭NVIDIA显卡"><a href="#开启和关闭NVIDIA显卡" class="headerlink" title="开启和关闭NVIDIA显卡"></a>开启和关闭NVIDIA显卡</h5><hr>
+<ul>
+<li>查看状态<br>使用<code>nvidia-smi</code>命令可以查看<strong>NVIDIA</strong>显卡是否已经启动</li>
+<li>开启</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo <span class="hljs-built_in">tee</span> /proc/acpi/bbswitch &lt;&lt;&lt; <span class="hljs-string">ON</span></span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>关闭</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">$ </span><span class="language-bash">sudo <span class="hljs-built_in">tee</span> /proc/acpi/bbswitch &lt;&lt;&lt; <span class="hljs-string">OFF</span></span><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="启用独立显卡切换"><a href="#启用独立显卡切换" class="headerlink" title="启用独立显卡切换"></a>启用独立显卡切换</h4><p>通过以上方法禁用掉独立显卡后，很多应用程序也会受到影响，比如wine，那么就有必要启动独立显卡，让我们自己通过简单的命令进行动态切换显卡。</p>
+<p>查看启用的显卡状态</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">optimus-manager --status <br></code></pre></td></tr></table></figure>
+
+<p>让bumblebee设备查找到 nivida显卡</p>
+<p>ref: <a target="_blank" rel="noopener" href="https://askubuntu.com/questions/290443/bumblebee-cannot-access-secondary-gpu-error-xorg-ee-no-devices-detected">https://askubuntu.com/questions/290443/bumblebee-cannot-access-secondary-gpu-error-xorg-ee-no-devices-detected</a></p>
+<p>The following AskUbuntu answer fixed it for me: <a target="_blank" rel="noopener" href="https://askubuntu.com/a/285638/47280">https://askubuntu.com/a/285638/47280</a></p>
+<p>Basically, you need to edit <code>/etc/bumblebee/xorg.conf.nvidia</code> and uncomment the following line:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">BusID &quot;PCI:01:00:0&quot;<br></code></pre></td></tr></table></figure>
+
+<p>让xorg启用 nivida显卡</p>
+<p>ref: <a target="_blank" rel="noopener" href="https://archived.forum.manjaro.org/t/guide-install-and-configure-optimus-manager-for-hybrid-gpu-setups-intel-nvidia/92196">https://archived.forum.manjaro.org/t/guide-install-and-configure-optimus-manager-for-hybrid-gpu-setups-intel-nvidia/92196</a></p>
+<p>vim &#x2F;etc&#x2F;X11&#x2F;xorg.conf.d&#x2F;10-optimus-manager.conf</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">Section &quot;Device&quot;<br>        Identifier &quot;integrated&quot;<br>        Driver &quot;modesetting&quot;<br>        BusID &quot;PCI:0:2:0&quot;<br>        Option &quot;DRI&quot; &quot;3&quot;<br>EndSection<br></code></pre></td></tr></table></figure>
+
+<p>删除掉以上信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">optimus-manager --status <br>optimus-manager --switch nvidia # 切换到独立显卡。<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/Askannz/optimus-manager">https://github.com/Askannz/optimus-manager</a></p>
+<ul>
+<li><strong>Bumblebee :</strong> optimus-manager is incompatible with Bumblebee since both tools would be trying to control GPU power switching at the same time. If Bumblebee is installed, you must disable its daemon (<code>sudo systemctl disable bumblebeed.service</code>, then reboot). This is particularly important for Manjaro users since Bumblebee is installed by default.</li>
+</ul>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2022/03/25/env/linux/myarch/software_install/">← Next ArchLinux日常软件安装</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2022/03/08/dev/game/interview/TDS%E5%B7%A5%E4%BD%9C%E5%AE%A4%E7%AC%94%E8%AF%95/">2022 TDS游戏工作室笔试 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-ArchLinux"><span class="toc-text">安装 ArchLinux</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%89%8D%E7%A1%AC%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="toc-text">目前硬件信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%87%86%E5%A4%87%E7%B3%BB%E7%BB%9F"><span class="toc-text">准备系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F"><span class="toc-text">安装系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E7%BD%91%E7%BB%9C"><span class="toc-text">连接网络</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E6%98%AF%E5%90%A6%E6%94%AF%E6%8C%81uefi"><span class="toc-text">查看是否支持uefi</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AF%B9%E6%97%B6"><span class="toc-text">对时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="toc-text">磁盘分区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96"><span class="toc-text">格式化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%82%E8%BD%BD"><span class="toc-text">挂载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E9%95%9C%E5%83%8F%E5%9C%B0%E5%9D%80"><span class="toc-text">修改镜像地址</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%9F%BA%E7%A1%80%E5%8C%85"><span class="toc-text">安装基础包:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%94%9F%E6%88%90-genfstab"><span class="toc-text">生成 genfstab:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5%E6%96%B0%E7%B3%BB%E7%BB%9F"><span class="toc-text">进入新系统:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E6%97%B6%E5%8C%BA"><span class="toc-text">设置时区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E7%A1%AC%E4%BB%B6%E6%97%B6%E9%92%9F"><span class="toc-text">同步硬件时钟</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%AF%AD%E8%A8%80"><span class="toc-text">设置语言</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%BB%E6%9C%BA%E5%90%8D"><span class="toc-text">设置主机名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEroot%E5%AF%86%E7%A0%81"><span class="toc-text">设置root密码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E7%BD%91%E7%BB%9C%E5%8C%85"><span class="toc-text">安装网络包:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-openssh"><span class="toc-text">安装 openssh</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E8%87%AA%E5%8A%A8%E8%BF%9E%E6%8E%A5%E7%BD%91%E7%BB%9C%EF%BC%88%E6%9C%89%E7%BA%BF%EF%BC%89"><span class="toc-text">设置自动连接网络（有线）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85GRUB"><span class="toc-text">安装GRUB</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#umount%E5%88%86%E5%8C%BA%E5%B9%B6%E9%87%8D%E5%90%AF%E6%9C%BA%E5%99%A8"><span class="toc-text">umount分区并重启机器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%9B%BE%E5%BD%A2%E7%95%8C%E9%9D%A2"><span class="toc-text">安装图形界面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BC%80%E6%9C%BA%E5%90%8E%E5%90%AF%E5%8A%A8%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1"><span class="toc-text">开机后启动网络服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8wpa-supplicant%E6%9C%8D%E5%8A%A1"><span class="toc-text">启动wpa_supplicant服务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%9F%BA%E6%9C%AC%E7%BD%91%E7%BB%9C%E5%91%BD%E4%BB%A4%E5%8C%85"><span class="toc-text">安装基本网络命令包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%98%BE%E5%8D%A1%E9%A9%B1%E5%8A%A8"><span class="toc-text">安装显卡驱动</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E6%8E%A5%E5%8F%A3%E6%9C%8D%E5%8A%A1"><span class="toc-text">硬件接口服务</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E9%A9%B1%E5%8A%A8"><span class="toc-text">安装驱动</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A3%B0%E5%8D%A1%E9%A9%B1%E5%8A%A8"><span class="toc-text">声卡驱动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%BE%93%E5%85%A5%E8%AE%BE%E5%A4%87"><span class="toc-text">安装输入设备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%A7%A6%E6%91%B8%E6%9D%BF%E9%A9%B1%E5%8A%A8"><span class="toc-text">安装触摸板驱动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%98%BE%E7%A4%BA%E7%AE%A1%E7%90%86%E5%99%A8"><span class="toc-text">安装显示管理器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85plasma%E6%A1%8C%E9%9D%A2"><span class="toc-text">安装plasma桌面</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%9F%BA%E6%9C%AC%E7%9A%84%E8%BD%AF%E4%BB%B6"><span class="toc-text">安装基本的软件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93"><span class="toc-text">安装中文字体</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85ntfs%E7%A3%81%E7%9B%98%E7%9A%84%E6%94%AF%E6%8C%81"><span class="toc-text">安装ntfs磁盘的支持</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E8%BE%93%E5%85%A5%E6%B3%95"><span class="toc-text">安装中文输入法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85plasma%E7%BD%91%E7%BB%9C%E5%B7%A5%E5%85%B7%E6%89%98%E7%9B%98"><span class="toc-text">安装plasma网络工具托盘</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85plasma%E9%9F%B3%E9%87%8F%E7%AE%A1%E7%90%86%E6%89%98%E7%9B%98"><span class="toc-text">安装plasma音量管理托盘</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AEpacman%E5%BD%A9%E8%89%B2%E8%BE%93%E5%87%BA"><span class="toc-text">设置pacman彩色输出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98"><span class="toc-text">安装主题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A6%96%E6%AC%A1%E7%94%A8%E6%88%B7%E7%9B%AE%E5%BD%95%E7%94%9F%E6%88%90"><span class="toc-text">首次用户目录生成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%9B%BE%E6%A0%87"><span class="toc-text">安装图标</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%94%A8%E6%88%B7"><span class="toc-text">添加用户</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B0%83%E8%8A%82%E4%BA%AE%E5%BA%A6"><span class="toc-text">调节亮度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E6%98%BE%E7%A4%BA%E7%94%B5%E9%87%8F"><span class="toc-text">终端显示电量</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E6%98%BE%E5%8D%A1%E9%97%AE%E9%A2%98"><span class="toc-text">双显卡问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%951"><span class="toc-text">方法1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%952"><span class="toc-text">方法2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%B3%953"><span class="toc-text">方法3</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%AE%89%E8%A3%85%E6%88%90%E5%8A%9F"><span class="toc-text">检测是否安装成功</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%BC%80%E5%90%AF%E5%92%8C%E5%85%B3%E9%97%ADNVIDIA%E6%98%BE%E5%8D%A1"><span class="toc-text">开启和关闭NVIDIA显卡</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E7%8B%AC%E7%AB%8B%E6%98%BE%E5%8D%A1%E5%88%87%E6%8D%A2"><span class="toc-text">启用独立显卡切换</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

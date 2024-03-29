@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>UE4基础 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>UE4基础</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2022-09-09T06:48:52.000Z" id="date"> 2022-09-09</time></div></span><br><span>Last Update: <div class="control"><time datetime="2022-10-24T09:45:58.428Z" id="updated"> 2022-10-24</time></div></span><br><span>Word Count: <div class="control">3.1k</div></span><br><span>Read Time: <div class="control">13 min</div></span></div></div><hr><div id="post-content"><h1 id="UE4基础"><a href="#UE4基础" class="headerlink" title="UE4基础"></a>UE4基础</h1><p>文档：<a target="_blank" rel="noopener" href="https://docs.unrealengine.com/4.27/en-US/">https://docs.unrealengine.com/4.27/en-US/</a></p>
+<h2 id="UE4项目目录结构"><a href="#UE4项目目录结构" class="headerlink" title="UE4项目目录结构"></a>UE4项目目录结构</h2><p>Binarires：存放编译生成结果的二进制文件</p>
+<p>Config：存放当前项目的配置文件（中医）</p>
+<p>Content：存放平常最常用到所有的资源和蓝图（重要）</p>
+<p>Intermediate：中间文件（gitignore)，存放一些临时生成的文件</p>
+<p>Save：存储自动保存的文件，日志文件，引擎崩溃日志，硬件信息，烘焙信息数据等。</p>
+<p>Source：C++源码文件（重要）</p>
+<p>DerivedDataCache：渲染缓存，C盘不够的情况下，会将缓存文件存储在该目录下。</p>
+<h2 id="编译类型"><a href="#编译类型" class="headerlink" title="编译类型"></a>编译类型</h2><p>编译类型分为两种：</p>
+<p>Editor：编辑器型与UE4Editor配合编译便于制作开发</p>
+<p>Game：游戏型可以直接从源代码运行游戏不关心编辑端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">DebugGame：游戏调试（只适合游戏代码）<br>DebugGame Editor：游戏调试时通过UE4Editor进行调试<br>Development：游戏开发型调试（适合查看源代码执行）<br>Development Ediotr：游戏开发型调试在UE4Editor中进行（默认情况）<br>Shipping：发现模式没有了调试辅助<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="编译系统"><a href="#编译系统" class="headerlink" title="编译系统"></a>编译系统</h2><p>UE4支持全平台开发，为了方便开发者使用同一套代码在全平台下发布，所以UE4使用了自定义编译系统。他也可以保证开发者的代码包括在UE4Editor下的参数设定，可以全平台适用。</p>
+<p>这套自定义编译系统是在VS编辑器后台通过命令行默默执行的，他最重要的两个工具是UBT和UHT。</p>
+<p>UBT（Unreal Build Tools）</p>
+<pre><code>* ue4自定义的一种编译工具
+* 他使用的是C#语言
+* 用来逐步编译Engine的代码模块和项目的代码模块
+* 对项目的C++代码来说主要用于处理项目对引擎功能模块的依赖
+</code></pre>
+<p>UHT（Unreal Header Tool）</p>
+<pre><code>* ue4 对项目C++代码的解析工具
+* 它可以将项目的C++代码翻译成UE4 Editor认识的特殊编码
+* 它主要是为了给UE4Editor提供C++代码的可视化功能
+</code></pre>
+<h2 id="C-基础"><a href="#C-基础" class="headerlink" title="C++基础"></a>C++基础</h2><h3 id="foreach"><a href="#foreach" class="headerlink" title="foreach"></a>foreach</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-type">int</span> numbers[] = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>&#125;;<br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> c : numbers) &#123;<br>	cout &lt;&lt; c &lt;&lt; endl;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h3><h4 id="auto-ptr"><a href="#auto-ptr" class="headerlink" title="auto_ptr"></a>auto_ptr</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">TestAutoPtr</span><span class="hljs-params">()</span> </span>&#123;<br>	<span class="hljs-function">auto_ptr&lt;Myclass&gt; <span class="hljs-title">p</span><span class="hljs-params">(<span class="hljs-keyword">new</span> Myclass)</span></span>;<br>	<span class="hljs-keyword">if</span>(<span class="hljs-literal">nullptr</span> != p.get) &#123;<br>		p.<span class="hljs-built_in">get</span>()-&gt;member = <span class="hljs-string">&quot;aaa&quot;</span>; <span class="hljs-comment">// 当赋值给另一个智能指针时，原来的智能指针无效</span><br>		p-&gt;<span class="hljs-built_in">Print</span>();<br>        <span class="hljs-comment">// p-&gt;member = &quot;aaa&quot;; // 不建议使用</span><br>        <span class="hljs-comment">// p.release(); // 会返回 Myclass*，需要手动释放指向的内存。</span><br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="shared-ptr"><a href="#shared-ptr" class="headerlink" title="shared_ptr"></a>shared_ptr</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">shared_ptr&lt;int&gt; p1(new int(10));<br>shared_ptr&lt;int&gt; p1;<br>p1 = make_shared&lt;int&gt;(10);<br><br><br>// shared_ptr&lt;int&gt; p2(p1); //拷贝构造<br>// shared_ptr&lt;int&gt; p3(move(p1));// 移动构造<br>// p2.use_count(); // 返回使用次数<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="wake-ptr"><a href="#wake-ptr" class="headerlink" title="wake_ptr"></a>wake_ptr</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">wake_ptr&lt;int&gt; pw1;<br>shared_ptr&lt;int&gt; ps1 = make_share&lt;int&gt;(1);<br>pw1 = ps1; // 不会增加ps1的引用计数<br>// 注意：因为弱引用指针不会增加计数器，为了程序安全，不能作为返回值。一般用作形参。<br>// 在使用的时候需要锁住对象，避免对象释放掉了再使用。<br>if(ps1.expired()) &#123; // 表示安全<br>	*(ps1.lock().get()) = 10; // lock返回共享指针，并对里面的值进行赋值。<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="unique-ptr"><a href="#unique-ptr" class="headerlink" title="unique_ptr"></a>unique_ptr</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">```<br><br><br><br>### Lamda<br><br>```c++<br>#include&lt;iostream&gt;<br>#include&lt;functional&gt;<br><br>using namespace std;<br>int main() &#123;<br><br>        auto f = [](int a, int b) &#123;<br>                return a + b;<br>        &#125;;<br>        cout &lt;&lt; f(1, 2) &lt;&lt; endl; <br><br>        int a = 4;<br>        auto f2 = [=](int b) &#123; // =代表值捕获当前作用域内的所有变量<br>                return a + b;<br>        &#125;;<br>        cout &lt;&lt; f2(2) &lt;&lt; endl;<br><br>        auto f3= [&amp;](int b) &#123; // &amp;代表地址捕获当前作用域内的所有变量<br>                return a + b;<br>        &#125;;<br>        cout &lt;&lt; f3(2) &lt;&lt; endl;<br><br><br>        int c = 5;<br>        auto f4= [=, &amp;c](int b) &#123; // 值捕获全部变量，c进行地址捕获<br>                return a + b + c;<br>        &#125;;<br>        cout &lt;&lt; f4(2) &lt;&lt; endl;<br>        <br>        // 采用function来获取返回值调用<br>        function&lt;int(int, int)&gt; f5 = [&amp;](int a, int b)-&gt; int &#123; <br>                return a + b + c;<br>        &#125;;<br>        cout &lt;&lt; f5(1, 2) &lt;&lt; endl;<br>        <br>        // 直接调用<br>        cout &lt;&lt; [=](int a, int b)-&gt; int &#123;<br>                return a + b + c;<br>        &#125;(1, 2);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="UE4-C-基础"><a href="#UE4-C-基础" class="headerlink" title="UE4 C++ 基础"></a>UE4 C++ 基础</h2><h3 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h3><p>虚幻引擎封装了许多自定义的数据类型：类、结构、枚举；</p>
+<p>自定义了所有的数据结构：动态数组、链表、集合、图、各种字符串操作；</p>
+<p>对自己的封装形式做了如下区分：</p>
+<p>A字母开头：表示当前类对象来自于AActor</p>
+<p>U字母开头：表示它一定继承于UObject</p>
+<p>F字母开头：大量使用在结构体当中，也有很多类使用他开头，如果类使用F开头，表示当前类不会继承UObject；</p>
+<p>I字母开头：表示当前对象是接口类型；&#x2F;&#x2F; 继承了大量的纯虚函数，没有实现，需要自己实现。</p>
+<p>E字母开头：表示当前类型是枚举；</p>
+<p>T字母开头：表示模板类，一般用于数据结构定义，多线程安全类；</p>
+<p>如果字母全部大写，那么表示宏定义出来的。</p>
+<h3 id="打印日志"><a href="#打印日志" class="headerlink" title="打印日志"></a>打印日志</h3><p>虚幻引擎日志分为两类：</p>
+<p>终端输出</p>
+<p>屏幕输出</p>
+<p>需要注意的是， 虚幻引擎本身采用的是UTF-16字符编码集，Windows采用的是Unicode，两个字符集不通用，只有ASCII码表可以交互，对中文输出是乱码。</p>
+<h4 id="终端输出"><a href="#终端输出" class="headerlink" title="终端输出"></a>终端输出</h4><p>虚幻引擎将日志分为三类：</p>
+<p>Message（描述一般信息）</p>
+<p>Warrning（描述警告，一般为黄色）</p>
+<p>Error（描述发送致命错误，红颜色）</p>
+<p>向终端输出函数：</p>
+<p>UE_LOG(日志分类， 日志种类， 字符串格式化， 字符串参数， …)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">UE_LOG</span>(LogTemp, Warning, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;开始&quot;</span>));<br><span class="hljs-built_in">UE_LOG</span>(LogTemp, Display, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;display&quot;</span>));<br><span class="hljs-built_in">UE_LOG</span>(LogTemp, Warning, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;The Actor&#x27;s name is %s&quot;</span>), <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;Myactor&quot;</span>));<br></code></pre></td></tr></table></figure>
+
+
+
+<p>自定义log类型：</p>
+<p>头文件中声明</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">DECLARE_LOG_CATEGORY_CLASS</span>(MyLog, Log, All); <span class="hljs-comment">// 自定义log类型</span><br></code></pre></td></tr></table></figure>
+
+<p>cpp文件中实例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">DEFINE_LOG_CATEGORY_CLASS(AMyActor, MyLog);<br>// 使用<br>UE_LOG(MyLog, Display, TEXT(&quot;display&quot;));<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="屏幕输出"><a href="#屏幕输出" class="headerlink" title="屏幕输出"></a>屏幕输出</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">void UEngine::AddOnScreenDebugMessage(int32 Key, float TimeToDisplay, FColor DisplayColor, const FString&amp; DebugMessage, bool bNewerOnTop, const FVector2D&amp; TextScale)<br></code></pre></td></tr></table></figure>
+
+<p>Key：缩进， -1自动计算</p>
+<p>TimeToDisplay：显示多少秒</p>
+<p>DisplayColor：打印颜色</p>
+<p>DebugMessage：打印消息</p>
+<p>bNewerOnTop：是不是从新的Top开始打印</p>
+<p>TextScale：字体的缩小放大</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">GEngine-&gt;<span class="hljs-built_in">AddOnScreenDebugMessage</span>(<span class="hljs-number">-1</span>, <span class="hljs-number">5.0f</span>, FColor::Red, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;InputComponent Enabled!&quot;</span>));<br>GEngine-&gt;<span class="hljs-built_in">AddOnScreenDebugMessage</span>(<span class="hljs-number">-1</span>, <span class="hljs-number">5.0f</span>, FColor::Red, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;Test!&quot;</span>), <span class="hljs-literal">true</span>, );<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="运行顺序"><a href="#运行顺序" class="headerlink" title="运行顺序"></a>运行顺序</h3><p>编译器运行： 构造函数，PostInitProperties</p>
+<p>运行期运行：函数，PostInitProperties</p>
+<h4 id="AMyActor"><a href="#AMyActor" class="headerlink" title="AMyActor"></a>AMyActor</h4><p>在编译完成后调用和运行时调用</p>
+<p>先执行构造函数：引擎编译成功时就会调用对象的构造函数。这时为了与蓝图挂钩。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp">AMyActor::<span class="hljs-built_in">AMyActor</span>()<br>&#123;<br> 	<span class="hljs-comment">// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don&#x27;t need it.</span><br>	PrimaryActorTick.bCanEverTick = <span class="hljs-literal">true</span>;<br>	<span class="hljs-built_in">UE_LOG</span>(LogTemp, Warning, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;构造&quot;</span>));<br>	<span class="hljs-keyword">auto</span> pSecen = <span class="hljs-built_in">CreateDefaultSubobject</span>&lt;USceneComponent&gt;(<span class="hljs-built_in">FName</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;Root&quot;</span>)));<br>	<span class="hljs-built_in">SetRootComponent</span>(pSecen);<br>	APlayerController *pc = UGameplayStatics::<span class="hljs-built_in">GetPlayerController</span>(<span class="hljs-built_in">GetWorld</span>(), <span class="hljs-number">0</span>);<br>	<span class="hljs-built_in">EnableInput</span>(<span class="hljs-number">0</span>);<br>	<span class="hljs-keyword">if</span>(<span class="hljs-literal">nullptr</span> != InputComponent)<br>	&#123;<br>		GEngine-&gt;<span class="hljs-built_in">AddOnScreenDebugMessage</span>(<span class="hljs-number">-1</span>, <span class="hljs-number">3.0f</span>, FColor::Red, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;InputComponent Enabled!&quot;</span>));<br>		<br>	&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>绝对不要再里面写一些空指针内存错误，会导致Editor打不开。</p>
+<h4 id="PostInitProperties"><a href="#PostInitProperties" class="headerlink" title="PostInitProperties"></a>PostInitProperties</h4><p>在编译完成后调用和运行时调用，对Actor所有属性进行初始化，编辑器类属性</p>
+<p>重写</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">virtual</span> <span class="hljs-type">void</span> <span class="hljs-title">PostInitProperties</span><span class="hljs-params">()</span> <span class="hljs-keyword">override</span></span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">AMyActor::PostInitProperties</span><span class="hljs-params">()</span></span><br><span class="hljs-function"></span>&#123;<br>	Super::<span class="hljs-built_in">PostInitProperties</span>(); <span class="hljs-comment">// 需要进行调用父类函数</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="PostInitializeComponents"><a href="#PostInitializeComponents" class="headerlink" title="PostInitializeComponents"></a>PostInitializeComponents</h4><p>在运行期调用，早于BeginPlay</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">void AMyActor::PostInitializeComponents()<br>&#123;<br>	Super::PostInitializeComponents();<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="BeginPlay"><a href="#BeginPlay" class="headerlink" title="BeginPlay"></a>BeginPlay</h4><p>游戏启动时调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">// Called when the game starts or when spawned<br>void AMyActor::BeginPlay()<br>&#123;<br>	Super::BeginPlay();<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="Tick"><a href="#Tick" class="headerlink" title="Tick"></a>Tick</h4><p>每一帧都调用，该函数的执行会取决于<code>PrimaryActorTick.bCanEverTick</code>，一般在构造函数中会设置该值为true；</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don&#x27;t need it.</span><br>PrimaryActorTick.bCanEverTick = <span class="hljs-literal">true</span>;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">// Called every frame<br>void AMyActor::Tick(float DeltaTime)<br>&#123;<br>	Super::Tick(DeltaTime);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="EndPlay"><a href="#EndPlay" class="headerlink" title="EndPlay"></a>EndPlay</h4><p>在结束运行的时候调用，释放对象的时候，在该函数中进行释放。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virtual  void EndPlay(const EEndPlayReason::Type EndPlayReason) override;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">void AMyActor::EndPlay(const EEndPlayReason::Type EndPlayReason)<br>&#123;<br>	// 一定要在调用Super::EndPlay(EndPlayReason);之前，先释放对象<br>	<br>	<br>	Super::EndPlay(EndPlayReason);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h4 id="BeginDestroy"><a href="#BeginDestroy" class="headerlink" title="BeginDestroy"></a>BeginDestroy</h4><p>在结束运行的时候调用，在EndPlay之后调用。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virtual  void EndPlay(const EEndPlayReason::Type EndPlayReason) override;<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">void AMyActor::EndPlay(const EEndPlayReason::Type EndPlayReason)<br>&#123;<br>	Super::EndPlay(EndPlayReason);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="设置类变量属性"><a href="#设置类变量属性" class="headerlink" title="设置类变量属性"></a>设置类变量属性</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category=<span class="hljs-string">&quot;FLValues&quot;</span>)<br>	FString myText = <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;Hello World!&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><p>虚幻采用UTF-16的编码格式，他使用的字符类型为TCHAR，向外打印输出一定采用TCHAR类型。</p>
+<p>将Ascii码转tchar</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">TCHAR * chars = ANSI_TO_TCHAR(&quot;1234&quot;);<br></code></pre></td></tr></table></figure>
+
+<p>将TCHAR转char</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ANSICHAR* ansic TCHAR_TO_ANSI(chars);<br></code></pre></td></tr></table></figure>
+
+<p>转为UTF-8</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">TCHAR_TO_UTF8()<br></code></pre></td></tr></table></figure>
+
+<p>采用TEXT可直接将字符串转换为TCHAR类型。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">TEXT(&quot;hello&quot;)<br></code></pre></td></tr></table></figure>
+
+
+
+<p>UE4定义的字符串类解释</p>
+<p>FName：用于描述资源名称或路径，对于组件或Actor命名的时候用到它，只读属性。</p>
+<p>FText：UE4本地化字符类型，用于描述不同操作系统下的统一字符类型，只读属性。</p>
+<p>FString：标准TCHAR动态字符串。</p>
+<h4 id="FString"><a href="#FString" class="headerlink" title="FString"></a>FString</h4><p>初始化</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">FString a(TEXT(&quot;你好&quot;));<br></code></pre></td></tr></table></figure>
+
+<p>追加</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">a += <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;  &quot;</span>);      <span class="hljs-comment">// 追加</span><br>a.<span class="hljs-built_in">Append</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;！&quot;</span>)); <span class="hljs-comment">// 推荐，追加</span><br>a.<span class="hljs-built_in">InsertAt</span>(<span class="hljs-number">2</span>, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;%&quot;</span>)); <span class="hljs-comment">// 插入操作</span><br></code></pre></td></tr></table></figure>
+
+<p>判断字符串是否存在</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// UE_NODISCARD FORCEINLINE bool Contains(const TCHAR* SubStr, ESearchCase::Type SearchCase = ESearchCase::IgnoreCase, </span><br><span class="hljs-comment">//							  ESearchDir::Type SearchDir = ESearchDir::FromStart ) const</span><br><span class="hljs-keyword">if</span>(a.<span class="hljs-built_in">Contains</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;%&quot;</span>)))<span class="hljs-comment">// 查找子字符串是否存在，默认忽略大小写</span><br>&#123;<span class="hljs-comment">// 存在</span><br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<p>查找字符串</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 查找字符串</span><br><span class="hljs-comment">//UE_NODISCARD FORCEINLINE int32 Find( const FString&amp; SubStr, ESearchCase::Type SearchCase = ESearchCase::IgnoreCase, </span><br><span class="hljs-comment">//							ESearchDir::Type SearchDir = ESearchDir::FromStart, int32 StartPosition=INDEX_NONE ) const</span><br><span class="hljs-type">int</span> idx = a.<span class="hljs-built_in">Find</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;%&quot;</span>), ESearchCase::CaseSensitive, ESearchDir::FromStart, <span class="hljs-number">0</span>);<br><span class="hljs-keyword">if</span>(idx &gt;= <span class="hljs-number">0</span>)<br>&#123;<br>	<span class="hljs-comment">// 存在，子字符串起始位置idx</span><br>&#125;<span class="hljs-keyword">else</span><br>&#123;<br>	<span class="hljs-comment">// 不存在</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>删除字符串</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// FORCEINLINE void RemoveAt(int32 Index, int32 Count = 1, bool bAllowShrinking = true)</span><br>a.<span class="hljs-built_in">RemoveAt</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-literal">true</span>);<br></code></pre></td></tr></table></figure>
+
+<p>判断是否为空</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">a.IsEmpty();<br></code></pre></td></tr></table></figure>
+
+<p>获取长度</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">a.Len();<br></code></pre></td></tr></table></figure>
+
+
+
+<p>将int转化为FString</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">FString s = FString::FormatAsNumber(1);<br><br></code></pre></td></tr></table></figure>
+
+<p>将FString转化为int</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">int n2 = FCString::Atoi(TEXT(&quot;123&quot;));<br></code></pre></td></tr></table></figure>
+
+<p>将float类型转换为FString</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">FString::SanitizeFloat(2.0f);<br></code></pre></td></tr></table></figure>
+
+<p>将FString类型转换为float</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">float n = FCString::Atof(TEXT(&quot;1.2&quot;));<br></code></pre></td></tr></table></figure>
+
+<p>格式化字符串</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function">FString <span class="hljs-title">FString::Format</span><span class="hljs-params">(<span class="hljs-type">const</span> TCHAR* InFormatString, <span class="hljs-type">const</span> FStringFormatNamedArguments&amp; InNamedArguments)</span></span>;<br><span class="hljs-function">FString <span class="hljs-title">FString::Format</span><span class="hljs-params">(<span class="hljs-type">const</span> TCHAR* InFormatString, <span class="hljs-type">const</span> FStringFormatOrderedArguments&amp; InOrderedArguments)</span></span>;<br></code></pre></td></tr></table></figure>
+
+<p>例子</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp">TArray&lt;FStringFormatArg&gt; args;<br>args.<span class="hljs-built_in">Add</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;你好&quot;</span>));<br>args.<span class="hljs-built_in">Add</span>(<span class="hljs-number">0</span>);<br>FString out = FString::<span class="hljs-built_in">Format</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;FString fomat str=&#123;0&#125;, num=&#123;1&#125; &quot;</span>), args);<br></code></pre></td></tr></table></figure>
+
+<h4 id="FName"><a href="#FName" class="headerlink" title="FName"></a>FName</h4><p>在构造时进行赋值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">FName name(TEXT(&quot;RootComponent&quot;));<br></code></pre></td></tr></table></figure>
+
+<p>FString对FName进行赋值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">name = *FString(TEXT(&quot;FString&quot;));<br>name = *FString(TEXT(&quot;/Game/MobileStarterContent/Maps/StarterMap.StarterMap&quot;));<br></code></pre></td></tr></table></figure>
+
+
+
+<p>将FName转换为FString</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">FString out2 = name.ToString();<br></code></pre></td></tr></table></figure>
+
+<h4 id="FText"><a href="#FText" class="headerlink" title="FText"></a>FText</h4><p>在做UI编程的时候，FText比较常用。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp">FText text = FText::<span class="hljs-built_in">AsNumber</span>(<span class="hljs-number">1.0f</span>);<br>text = FText::<span class="hljs-built_in">FromString</span>(<span class="hljs-built_in">FString</span>(<span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;dddd&quot;</span>)));<br>FString fs = text.<span class="hljs-built_in">ToString</span>();<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="UE4-C-数据结构"><a href="#UE4-C-数据结构" class="headerlink" title="UE4 C++数据结构"></a>UE4 C++数据结构</h3><h4 id="TArray"><a href="#TArray" class="headerlink" title="TArray"></a>TArray</h4><p>初始化</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">TArray&lt;int32&gt; arr;<br>arr.<span class="hljs-built_in">Init</span>(<span class="hljs-number">2</span>, <span class="hljs-number">10</span>); <span class="hljs-comment">// 初始化值，和初始化个数</span><br></code></pre></td></tr></table></figure>
+
+<p>添加元素</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp">arr.<span class="hljs-built_in">Add</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// 可能拥有内存开辟和复制操作，</span><br>arr.<span class="hljs-built_in">Emplace</span>(<span class="hljs-number">35</span>); <span class="hljs-comment">// 采用引用右值技术，创建一个新实例，当元素数量较大时，效率较高。</span><br>arr.<span class="hljs-built_in">Push</span>(<span class="hljs-number">100</span>); <span class="hljs-comment">// 对Add于Emplace进行重载，根据大小情况进行选择</span><br>arr.<span class="hljs-built_in">Num</span>(); <span class="hljs-comment">// 获取元素长度</span><br>arr.<span class="hljs-built_in">Remove</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// 删除123元素</span><br>arr.<span class="hljs-built_in">RemoveAt</span>(<span class="hljs-number">0</span>, <span class="hljs-number">3</span>, <span class="hljs-literal">true</span>); <span class="hljs-comment">// 从0开始，删3个，删除完之后，是否归还空间。</span><br>arr.<span class="hljs-built_in">Empty</span>(); <span class="hljs-comment">//删除所有内容</span><br><span class="hljs-comment">//条件删除</span><br>arr.<span class="hljs-built_in">RemoveAll</span>([](<span class="hljs-type">const</span> int32 val) &#123; <span class="hljs-keyword">return</span> val &gt; <span class="hljs-number">2</span>; &#125;); <span class="hljs-comment">// 删除大于2的元素</span><br></code></pre></td></tr></table></figure>
+
+<p>采用foreach 循环</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> c : arr)<br>	&#123;<br>		GEngine-&gt;<span class="hljs-built_in">AddOnScreenDebugMessage</span>(<span class="hljs-number">-1</span>, <span class="hljs-number">3.0f</span>, FColor::Red, FString::<span class="hljs-built_in">FormatAsNumber</span>(c), <span class="hljs-literal">true</span>, <span class="hljs-built_in">FVector2D</span>(<span class="hljs-number">2.0f</span>, <span class="hljs-number">2.0f</span>));<br>	&#125;<br></code></pre></td></tr></table></figure>
+
+<p>采用迭代器循环，利用迭代器效率最高。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">auto</span> pFunc = [](TArray&lt;int32&gt; arr)-&gt;<span class="hljs-type">void</span><br>	&#123;<br>		<span class="hljs-keyword">if</span>(arr.<span class="hljs-built_in">Num</span>() &gt; <span class="hljs-number">0</span>)<br>		&#123;<br>			<span class="hljs-keyword">for</span>(TArray&lt;int32&gt;::TConstIterator it = arr.<span class="hljs-built_in">CreateConstIterator</span>(); it; ++it)<br>			&#123;<br>				<span class="hljs-built_in">UE_LOG</span>(MyLog, Display, <span class="hljs-built_in">TEXT</span>(<span class="hljs-string">&quot;Arr = %d&quot;</span>), *it);<br>			&#125;<br>		&#125;	<br>	&#125;;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+<h3 id="组件"><a href="#组件" class="headerlink" title="组件"></a>组件</h3><p>创建组件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">USceneComponent *root = CreateDefaultSubobject&lt;USceneComponent&gt;(FName(TEXT(&quot;Root&quot;)));<br>SetRootComponent(root);<br></code></pre></td></tr></table></figure>
+
+<p>创建对象</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">NewObject&lt;UObject&gt;();<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="UMG"><a href="#UMG" class="headerlink" title="UMG"></a>UMG</h2><p>UMG:<strong>（Unreal Motion Graphics UI Designer）****虚幻示意图形界面设计器</strong></p>
+<p>是一个可视化的UI创作工具，可以用来创建UI元素，如游戏中的HUD、菜单或您希望呈现给用户的其他界面相关图形。UMG的核心是控件，这些控件是一系列预先制作的函数，可用于构建界面（如按钮、复选框、滑块、进度条等）。这些控件在专门的控件蓝图中编辑，该蓝图使用两个选项卡进行构造：设计器（Designer）选项卡允许界面和基本函数的可视化布局，而图表（Graph）选项卡提供所使用控件背后的功能。</p>
+<p>ref:<a target="_blank" rel="noopener" href="https://docs.unrealengine.com/4.27/zh-CN/InteractiveExperiences/UMG/">https://docs.unrealengine.com/4.27/zh-CN/InteractiveExperiences/UMG/</a></p>
+<p>HUD：(Head Up Display)</p>
+<h2 id="安卓打包"><a href="#安卓打包" class="headerlink" title="安卓打包"></a>安卓打包</h2><p>ref： <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/385138133">https://zhuanlan.zhihu.com/p/385138133</a></p>
+<p>Edit-&gt;Project Settings-&gt;Packaging-&gt;Project-&gt;Build Configureation设置为Shipping （发行模式）。</p>
+<h2 id="常用API"><a href="#常用API" class="headerlink" title="常用API"></a>常用API</h2><p>获取第一个PlayerController</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">APlayerController* PlayerController = <span class="hljs-built_in">GetWorld</span>()-&gt;<span class="hljs-built_in">GetFirstPlayerController</span>();<br></code></pre></td></tr></table></figure>
+
+<p>获取鼠标屏幕上的位置</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">FVector2D MousePos = <span class="hljs-built_in">FVector2D</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>PlayerController-&gt;<span class="hljs-built_in">GetMousePosition</span>(MousePos.X, MousePos.Y);<br></code></pre></td></tr></table></figure>
+
+<p>获取鼠标在世界里的位置</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">FVector MouseLocation, MouseDirection;<br>PC-&gt;<span class="hljs-built_in">DeprojectMousePositionToWorld</span>(MouseLocation, MouseDirection);<br></code></pre></td></tr></table></figure>
+
+<p>在一定范围内返回差值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">float XDirection = FMath::Clamp( ObjLocation.X - MousePos.X, -1.0f, 1.0f);<br></code></pre></td></tr></table></figure>
+
+<p>实现对象在X轴上的移动</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c++">FVector Direction = <span class="hljs-built_in">FVector</span>(XDirection, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br><span class="hljs-built_in">AddMovementInput</span>(Direction);<br></code></pre></td></tr></table></figure>
+
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2022/09/16/dev/game/u3d/Unity%E4%B9%8BET%E6%A1%86%E6%9E%B6/">← Next Unity之ET框架</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2022/07/07/life/%E5%B0%8F%E7%8B%97%E8%AE%AD%E7%BB%83%E8%90%A5/">小狗训练营 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#UE4%E5%9F%BA%E7%A1%80"><span class="toc-text">UE4基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#UE4%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-text">UE4项目目录结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E7%B1%BB%E5%9E%8B"><span class="toc-text">编译类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E7%B3%BB%E7%BB%9F"><span class="toc-text">编译系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C-%E5%9F%BA%E7%A1%80"><span class="toc-text">C++基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#foreach"><span class="toc-text">foreach</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="toc-text">智能指针</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#auto-ptr"><span class="toc-text">auto_ptr</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#shared-ptr"><span class="toc-text">shared_ptr</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#wake-ptr"><span class="toc-text">wake_ptr</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#unique-ptr"><span class="toc-text">unique_ptr</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UE4-C-%E5%9F%BA%E7%A1%80"><span class="toc-text">UE4 C++ 基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="toc-text">命名规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%93%E5%8D%B0%E6%97%A5%E5%BF%97"><span class="toc-text">打印日志</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%88%E7%AB%AF%E8%BE%93%E5%87%BA"><span class="toc-text">终端输出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B1%8F%E5%B9%95%E8%BE%93%E5%87%BA"><span class="toc-text">屏幕输出</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-text">运行顺序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AMyActor"><span class="toc-text">AMyActor</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PostInitProperties"><span class="toc-text">PostInitProperties</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PostInitializeComponents"><span class="toc-text">PostInitializeComponents</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BeginPlay"><span class="toc-text">BeginPlay</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Tick"><span class="toc-text">Tick</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#EndPlay"><span class="toc-text">EndPlay</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#BeginDestroy"><span class="toc-text">BeginDestroy</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%B1%BB%E5%8F%98%E9%87%8F%E5%B1%9E%E6%80%A7"><span class="toc-text">设置类变量属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-text">字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#FString"><span class="toc-text">FString</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FName"><span class="toc-text">FName</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#FText"><span class="toc-text">FText</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UE4-C-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-text">UE4 C++数据结构</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TArray"><span class="toc-text">TArray</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6"><span class="toc-text">组件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UMG"><span class="toc-text">UMG</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E5%8D%93%E6%89%93%E5%8C%85"><span class="toc-text">安卓打包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8API"><span class="toc-text">常用API</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

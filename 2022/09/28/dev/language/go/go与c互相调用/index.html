@@ -1,0 +1,76 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Go与C的互相调用 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>Go与C的互相调用</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2022-09-28T14:09:47.000Z" id="date"> 2022-09-28</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.026Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">474</div></span><br><span>Read Time: <div class="control">2 min</div></span></div></div><hr><div id="post-content"><h1 id="Go与C的互相调用"><a href="#Go与C的互相调用" class="headerlink" title="Go与C的互相调用"></a>Go与C的互相调用</h1><p>官方参考：<a target="_blank" rel="noopener" href="https://github.com/golang/go/wiki/cgo#function-pointer-callbacks">https://github.com/golang/go/wiki/cgo#function-pointer-callbacks</a></p>
+<h2 id="Go调用C代码"><a href="#Go调用C代码" class="headerlink" title="Go调用C代码"></a>Go调用C代码</h2><h3 id="调用C的lib"><a href="#调用C的lib" class="headerlink" title="调用C的lib"></a>调用C的lib</h3><p>c、go代码文件如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">.<br>├── c_module.c<br>├── c_module.h<br>└── main.go<br></code></pre></td></tr></table></figure>
+
+<p>c_module.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">extern</span> <span class="hljs-type">int</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span>;<br></code></pre></td></tr></table></figure>
+
+<p>c_module.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;c_module.h&quot;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">add</span><span class="hljs-params">(<span class="hljs-type">int</span> a, <span class="hljs-type">int</span> b)</span> &#123;<br>    <span class="hljs-keyword">return</span> a+b;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编译为.so</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">gcc -shared -o libc_module.so c_module.c<br></code></pre></td></tr></table></figure>
+
+<p>记得在生成.so文件的名称前面加一个lib</p>
+<p>main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main<br><span class="hljs-comment">//#cgo CFLAGS: -I./</span><br><span class="hljs-comment">//#cgo LDFLAGS: -L$&#123;SRCDIR&#125;/ -lc_module</span><br><span class="hljs-comment">//</span><br><span class="hljs-comment">//#include &quot;c_module.h&quot;</span><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;C&quot;</span><br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;fmt&quot;</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;<br>	fmt.Println(C.add(<span class="hljs-number">10</span>, <span class="hljs-number">5</span>))<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>编译go代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">go build -o main main.go<br></code></pre></td></tr></table></figure>
+
+<p>运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=./ &amp;&amp; ./main<br></code></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">15<br></code></pre></td></tr></table></figure>
+
+<p>调用成功</p>
+<h2 id="C代码调用Go代码"><a href="#C代码调用Go代码" class="headerlink" title="C代码调用Go代码"></a>C代码调用Go代码</h2><h3 id="调用go的lib"><a href="#调用go的lib" class="headerlink" title="调用go的lib"></a>调用go的lib</h3><p>Go语言写的代码可以编译为动态库或静态库，之后C语言链接该动态库或静态库就可以调用Go语言写的代码。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-keyword">package</span> main;<br><span class="hljs-keyword">import</span> <span class="hljs-string">&quot;C&quot;</span><br><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span> &#123;&#125;<br><br><span class="hljs-comment">//export Hello</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Hello</span><span class="hljs-params">()</span></span> <span class="hljs-type">string</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello&quot;</span><br>&#125;<br><br><span class="hljs-comment">//export Print_a</span><br><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">Print_a</span><span class="hljs-params">()</span></span> &#123;<br>    <span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;aaaaa&quot;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>上面的&#x2F;&#x2F;export 是一个特殊的注释，代表着导出该函数。</p>
+<p>编译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">go build -buildmode=c-shared -o libgo.so main.go<br></code></pre></td></tr></table></figure>
+
+<p>编译完后，会出现libgo.h 和libgo.so两个文件</p>
+<p>如果是想静态编译的话</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">go build -buildmode=c-archive -o libgo.a main.go<br></code></pre></td></tr></table></figure>
+
+<p>编译完后，会出现libgo.h 和libgo.a两个文件</p>
+<p>这里写一个main.c来调用go</p>
+<p>main.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;libgo.h&quot;</span></span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>    GoString str;<br>    str = Hello();<br>    Print_a();<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%d\n&quot;</span>,(<span class="hljs-type">int</span>)str.n);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>静态库编译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">gcc main.c libgo.a -lpthread -o main<br></code></pre></td></tr></table></figure>
+
+<p>运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">./main<br>aaaaa<br>5<br></code></pre></td></tr></table></figure>
+
+<p>成功的打印了aaaaa以及字符串的长度。</p>
+<p>动态库编译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">export LD_LIBRARY_PATH=./<br>gcc main.c -L./ -lgo -lpthread -o main<br></code></pre></td></tr></table></figure>
+
+
+
+<p>查看链接情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ldd main<br>        linux-vdso.so.1 (0x00007ffc22882000)<br>        libgo.so =&gt; ./libgo.so (0x00007ff893c0f000)<br>        libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007ff893a13000)<br>        libpthread.so.0 =&gt; /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007ff8939f0000)<br>        /lib64/ld-linux-x86-64.so.2 (0x00007ff893d63000)<br></code></pre></td></tr></table></figure>
+
+<p>正常的，运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">./main<br>aaaaa<br>5<br></code></pre></td></tr></table></figure>
+
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2022/10/03/env/linux/myarch/%E5%88%B6%E4%BD%9CSwap/">← Next 制作Linux Swap</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2022/09/28/dev/db/redis/Redis%E5%85%A5%E9%97%A8/">Redis常见问题 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Go%E4%B8%8EC%E7%9A%84%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8"><span class="toc-text">Go与C的互相调用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Go%E8%B0%83%E7%94%A8C%E4%BB%A3%E7%A0%81"><span class="toc-text">Go调用C代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8C%E7%9A%84lib"><span class="toc-text">调用C的lib</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#C%E4%BB%A3%E7%A0%81%E8%B0%83%E7%94%A8Go%E4%BB%A3%E7%A0%81"><span class="toc-text">C代码调用Go代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8go%E7%9A%84lib"><span class="toc-text">调用go的lib</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

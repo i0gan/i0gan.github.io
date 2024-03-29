@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>牛客安全服务题目 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>牛客安全服务题目</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2022-03-05T09:01:09.000Z" id="date"> 2022-03-05</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.164Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">1.4k</div></span><br><span>Read Time: <div class="control">5 min</div></span></div></div><hr><div id="post-content"><h1 id="牛客安全服务题目"><a href="#牛客安全服务题目" class="headerlink" title="牛客安全服务题目"></a>牛客安全服务题目</h1><h2 id="2022-3-5"><a href="#2022-3-5" class="headerlink" title="2022-3-5"></a>2022-3-5</h2><p>1 获取域内成员服务器权限后，查看域控制器的命令行是？ </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">net group &quot;domain Controllers&quot; /domain<br></code></pre></td></tr></table></figure>
+
+
+
+<p>2 构造shell.asp;.gif这样的文件名去上传非法文件，利用的是哪个IIS版本的解析漏洞？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">IIS 5.0<br></code></pre></td></tr></table></figure>
+
+
+
+<p>3 mysql默认数据库账号密码为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">root/root<br></code></pre></td></tr></table></figure>
+
+
+
+<p>4 规避CSRF的方法的是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">使用服务端代码做最终验证<br>判断HTTP referer<br>使用隐藏的token hash做校验<br></code></pre></td></tr></table></figure>
+
+
+
+<p>5 SQLMAP使用下列那个命令可以反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">--os-pwn<br></code></pre></td></tr></table></figure>
+
+
+
+<p>6 ssrf漏洞用来探测服务器内网端口的协议是什么？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ftp<br></code></pre></td></tr></table></figure>
+
+
+
+<p>7 关于struts2-045漏洞（CVE-2017-5638）说法正确的是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">建议用户升级到不受影响的版本（Struts 2.3.32或Struts 2.5.10.1）或者使用其他Multipart parser应用<br></code></pre></td></tr></table></figure>
+
+
+
+<p>8 ARP欺骗是针对以太网地址解析协议（ARP）的一种攻击技术，其实质是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">提供虚拟的MAC与IP地址的组合<br></code></pre></td></tr></table></figure>
+
+
+
+<p>9 目前我国颁布实施的信息安全相关标准中，哪些标准属于强制执行的标准</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">GB 17859-1999 计算机信息系统安全保护等级划分准则<br></code></pre></td></tr></table></figure>
+
+
+
+<p>10 路由信息中包含的是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">目标网络<br>下一跳<br>路由权值<br></code></pre></td></tr></table></figure>
+
+<p>不包含 源地址</p>
+<p>11 VPN系统中的三种典型技术</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">隧道技术<br>身份认证技术<br>加密技术<br></code></pre></td></tr></table></figure>
+
+
+
+<p>12 某公司下设6个的子公司，最大的一个子公司有 26台计算机，现申请到一个C类IP地址，子网掩码设为（ ）可使每个子公司在一个网段中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">子网掩码是一个32位地址，用于屏蔽IP地址的一部分以区别网络标识和主机标识，并说明该IP地址是在局域网上，还是在广域网上。<br><br>子网掩码的设定必须遵循一定的规则。与二进制IP地址相同，子网掩码由1和0组成，且1和0分别连续。子网掩码的长度也是32位，左边是网络位，用二进制数字“1”表示，1的数目等于网络位的长度；右边是主机位，用二进制数字“0”表示，0的数目等于主机位的长度。这样做的目的是为了让掩码与IP地址做按位与运算时用0遮住原主机数，而不改变原网络段数字，而且很容易通过0的位数确定子网的主机数（2的主机位数次方-2，因为主机号全为1时表示该网络广播地址，全为0时表示该网络的网络号，这是两个特殊地址）。通过子网掩码，才能表明一台主机所在的子网与其他子网的关系，使网络正常工作。<br><br>类别	子网掩码的二进制数值	子网掩码的十进制数值<br>A	11111111 00000000 00000000 00000000	255.0.0.0<br>B	11111111 11111111 00000000 00000000	255.255.0.0<br>C	11111111 11111111 11111111 00000000	255.255.255.0<br><br>计算方式<br>由于子网掩码的位数决定于可能的子网数目和每个子网的主机数目。在定义子网掩码前，必须弄清楚本来使用的子网数和主机数目。<br>该题是对C类地址进行划分6个子网，每个子网中最多包含了26台主机。<br>我们根据子网数来划分： ip结构 = 网络号 + 子网号 + 主机号<br>6个子网，6的二进制是110，子网数占用了3个bit位，我们得需要用1来补全。在子网掩码中，网络号为 111<br>那么还剩5bit，5bit的最大值为 11111 = 32，32-2 = 30，减2的原因是（主机号全为1时表示该网络广播地址，全为0时表示该网络的网络号）。<br>30 &gt; 26，说明可以用该子网掩码。则该子网掩码为  11111111 11111111 11111111 00000000 &amp; 11100000 = 11111111 11111111 11111111 11100000 = 255.255.255.224<br></code></pre></td></tr></table></figure>
+
+
+
+<p>13 Windows提供的分布式安全环境叫做</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">域<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<p>14 linux下查找www目录中名称为shell.php的文件，命令为？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">find /www -name‘shell.php’<br></code></pre></td></tr></table></figure>
+
+
+
+<p>15 在bash中，在命令后添加2&gt;&amp;1，有何含义？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">标准错误输出重定向到标准输出<br></code></pre></td></tr></table></figure>
+
+
+
+<p>16 DNS欺骗是发生在TCP&#x2F;IP协议中那一层的问题？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">应用层<br></code></pre></td></tr></table></figure>
+
+
+
+<p>17 SSRF是服务器端请求伪造，由服务器发起</p>
+<p>对</p>
+<p>18 启动数据库的账号一般是高权限账号，使用数据库执行系统命令即相当于使用高权限账号执行系统命令，因此数据库提权也属于权限继承类提权。</p>
+<p>对</p>
+<p>19 sql注入按照注入点类型来分类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">数字型<br>字符型<br>搜索型<br></code></pre></td></tr></table></figure>
+
+
+
+<p>20 以下关于chkrootkit工具说法正确的是？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">检测是否被植入后门、木马、rootkit<br>检测登录日志<br>检测系统命令是否正常<br></code></pre></td></tr></table></figure>
+
+
+
+<p>21 以下哪些项属于应用层防火墙的特点？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">更有效的阻止应用层攻击<br>工作在OSI模型的第七层<br>比较容易进行审计<br></code></pre></td></tr></table></figure>
+
+
+
+<p>22 PHP中可能导致XXE漏洞的方法有</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">SimpleXMLElement()<br>DOMDocument()<br></code></pre></td></tr></table></figure>
+
+
+
+<p>23 是路由协议的有</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">IS-IS<br>OSPF<br>RIP<br></code></pre></td></tr></table></figure>
+
+
+
+<p>24 请写出TCP&#x2F;IP协议的4层概念模型</p>
+<p>应用层，传输层，网络层，数据链路层。</p>
+<p>25 数据结构逆向的重点在于分析什么？</p>
+<p>重点分析数据，数据的引用、数据的变化，从而推理数据的结构</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2022/03/08/dev/game/interview/TDS%E5%B7%A5%E4%BD%9C%E5%AE%A4%E7%AC%94%E8%AF%95/">← Next 2022 TDS游戏工作室笔试</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/10/24/security/interview/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8%E9%9D%A2%E7%BB%8F/">二进制安全面经 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%9B%E5%AE%A2%E5%AE%89%E5%85%A8%E6%9C%8D%E5%8A%A1%E9%A2%98%E7%9B%AE"><span class="toc-text">牛客安全服务题目</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#2022-3-5"><span class="toc-text">2022-3-5</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>KVM虚拟机配置 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>KVM虚拟机配置</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-09-28T04:56:53.000Z" id="date"> 2021-09-28</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.040Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">2.9k</div></span><br><span>Read Time: <div class="control">11 min</div></span></div></div><hr><div id="post-content"><h1 id="KVM虚拟机配置"><a href="#KVM虚拟机配置" class="headerlink" title="KVM虚拟机配置"></a>KVM虚拟机配置</h1><h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Linux下的内核虚拟化模块<br>Windows下的虚拟化软件Hyper-V<br>企业化：EXSI<br>虚拟化的前提：硬件虚拟化（）<br>Intel虚拟CPU：Intel VT</p>
+<p>KVM：就是Keyboard Video Mouse的缩写。KVM 交换机通过直接连接键盘、视频和鼠标 (KVM) 端口，让您能够访问和控制计算机。KVM 技术无需目标服务器修改软件。这就意味着可以在 Windows 的 BIOS 环境下，随时访问目标计算机。KVM 提供真正的主板级别访问，并支持多平台服务器和串行设备。<br>KVM 技术已经从最初的基础SOHO办公型，发展成为企业 IT 基础机房设施管理系统。可以从kvm 客户端管理软件轻松的直接访问位于多个远程位置的服务器和设备。KVM over IP 解决方案具备完善的多地点故障转移功能、符合新服务器管理标准 (IPMI) 的直接界面，以及将本地存储媒体映射至远程位置的功能。<br>中文名<br>KVM<br>全称<br>Keyboard Video Mouse<br>本质<br>计算机技术<br>优点<br>支持多平台服务器和串行设备<br>地位<br>网络中的管理设备<br>功能<br>支持串口overIP远程调试串口设备</p>
+<p>工作原理<br>首先简要介绍一下虚拟化技术及其涉及的元素。 虚拟化解决方案的底部是要进行虚拟化的机器。这台机器可能直接支持虚拟化，也可能不会直接支持虚拟化；那么就需要系统管理程序的支持。系统管理程序，或称为 VMM，也称为Hypervisor，可以看作是平台硬件和操作系统的抽象化。<br>在某些情况中，这个系统管理程序就是一个操作系统；此时，它就称为主机操作系统。<br>系统管理程序之上是客户机操作系统，也称为虚拟机（VM）。这些 VM 都是一些相互隔离的操作系统，将底层硬件平台视为自己所有。但是实际上，是系统管理程序为它们制造了这种假象。<br>使用 KVM 引用内核虚拟机，使用 KVM 引用系统管理程序（用来启动一台新虚拟机）。<br>更加简单的一种虚拟化是操作系统虚拟化，其中一台计算机可以运行相同类型的多个操作系统。这种虚拟化可以将一个操作系统的多个服务器隔离开来 （这意味着全都必须使用相同类型和版本的操作系统）。<br>要对所有电子线路板进行三防处理。</p>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><p>KVM是键盘(Keyboard)、显示器(Video)、鼠标(Mouse)的缩写。KVM技术的核心思想是：通过适当的键盘、鼠标、显示器的配置，实现系统和网络的集中管理；提高系统的可管理性，提高系统管理员的工作效率；节约机房的面积，降低网络工程和服务器系统的总体拥有成本；避免使用多显示器产生的辐射，营建健康环保的机房。利用KVM多主机切换系统，系统管理员可以通过一套键盘、鼠标、显示器在多个不同操作系统的主机或服务器之间进行切换并实施管理。</p>
+<h4 id="一、切换器（KVM）一般应用在哪些领域？"><a href="#一、切换器（KVM）一般应用在哪些领域？" class="headerlink" title="一、切换器（KVM）一般应用在哪些领域？"></a>一、切换器（KVM）一般应用在哪些领域？</h4><p>信息控制中心 、呼叫中心、证券&#x2F;金融交易系统、银行数据中心、工业控制环境、教学环境、测试中心等所有多服务器或多计算机工作环境。</p>
+<h4 id="二、切换器（KVM）的基本特点。"><a href="#二、切换器（KVM）的基本特点。" class="headerlink" title="二、切换器（KVM）的基本特点。"></a>二、切换器（KVM）的基本特点。</h4><p>即插即用的设计，操作起来方便简单。可支持PC、SUN和MAC等各种品牌计算机和服务器。适用于NETWARE、WIN95&#x2F;98&#x2F;2000&#x2F;ME&#x2F;XP&#x2F;NT、UNIX、OS&#x2F;2等各种操作系统和应用软件。可适配VGA、SVGA和XGA等各种分辨率显示器。有自动扫描、热键切换和OSD菜单等强大功能。</p>
+<h4 id="三、切换器（KVM）有关的名词解释。"><a href="#三、切换器（KVM）有关的名词解释。" class="headerlink" title="三、切换器（KVM）有关的名词解释。"></a>三、切换器（KVM）有关的名词解释。</h4><p>1． 输入接口<br>输入接口是切换器的主要参数，指其输入的接口方式和接口数量。切换器一般有4路、8路、32路甚至更多的输入接口，使用BNC插头或复合视频接口。<br>2． 输出接口<br>输出接口指切换器的输出接口方式，一般为BNC插头或复合视频接口。<br>3． 带宽<br>带宽又叫频宽，是指在固定的的时间内可传输的资料数量，亦即在传输管道中可以传递数据的能力。在数字设备中，频宽通常以bps表示，即每秒可传输之位数。在模拟设备中，频宽通常以每秒传送周期或赫兹Hz来表示。频宽对基本输入输出系统（BIOS）设备尤其重要，如快速磁盘驱动器会受低频宽的总线所阻碍。<br>4． 切换器方式<br>切换方式是指KVM切换器在从一台设备转换到控制另外一台设备时所采用的切换方式。一般的产品都是通过按钮、hot-key（热键）和屏幕菜单来操作了。<br>5． 支持分辨率<br>支持分辨率主要是指KVM切换器在有其中控制的机器向其输出信号时所能显示的分辨率，也就是视频窗口的宽度和高度上的像素数量。<br>6． 热插拔<br>热插拔是指可以直接增加或移除主机而无需关闭电源。<br>7． 热键切换<br>指用定义键进行切换。<br>8． 多用户<br>两个以上用户操作主机。<br>9． 级联<br>两个以上切换器操作八个以上主机。<br>10． 即插即用<br>无需驱动程序随时安装使用。<br>11． 多平台<br>适于所有操作系统和软件环境<br>12． 机架式<br>可安装在19英寸机架上<br>四、使用切换器（KVM）的优越性。<br>相对于数据仓库和互联网这些发展极快和服务器数量增加极快的公司来说，采用切换器（KVM）的优越性将体现在以下几个方面：<br>1． 节省空间：<br>对于这些发展极为快速的行业而言，原先所用的空间相对有限，而搬迁则会造成服务的停顿。在这些情况下，减少键盘、鼠标和显示器的数量，可以为新增加的服务器腾出大量的空间。<br>2．提高效率：<br>可以想象，当系统或网络维护人员穿梭于服务器、各种机柜所组成的丛林中，寻找出故障的机器时，效率是不会提高的。而这低效率，不但浪费了有限的人力资源，而且使出现的故障得不到及时的修复，使网络或数据中心出现不应有的停顿。能实现在由一套键盘、鼠标、显示器组成的控制台登陆所有的机器，势必将极大地提高系统或网络维护人员的工作效率。<br>3．加强管理：<br>工作效率的提高，意味着网络或数据中心得到了有效的管理，从而提高了这些系统的稳定性和安全性。<br>4．节约成本：<br>网络运营成本，尤其是那些必须24小时不间断运行的网络及数据中心的运行成本，逐渐成为网络经营商们成功的关键因素。同时，硬件软件费用、人员费用以及场地费用也是公司运营费用的主要组成部分。<br>5．远程管理：<br>系统的远程维护和管理也是这些大型系统所面临的重要问题。系统的管理和维护人员不可能24小时在机房里值班，而机器故障却可能在任何时候发生，因信息的交通堵塞而造成系统长时间的不稳定将极大地损坏企业的形象或产生重大的损失。通过远程的键盘、鼠标和显示器来实现系统的远程管理、维护是保证系统24小时不间断、稳定运行的重要手段。<br>6．环保节能：<br>使用KVM Switch可避免使用多台显示器，从而减少辐射，节省空调、能源等的消耗，营造健康环保节能的工作环境。<br>因此，实现一个用户使用一套键盘、鼠标、显示器去访问和操作一台以上主机的功能将为不少的企业节省了空间和服务器外设产品资源，有效提高大规模应用的管理能力。</p>
+<h2 id="二、-实验"><a href="#二、-实验" class="headerlink" title="二、 实验"></a>二、 实验</h2><p>环境：Arch Linux x86_64<br><strong>2.1虚拟机关机模式下开启虚拟化引擎后再开机</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">cat /proc/cpuinfo | egrep &#x27;vmx|svm&#x27;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>安装virt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo pacman -S virt-manager libvirt<br>sudo systemctl enable libvirtd<br>sudo systemctl start libvirtd<br></code></pre></td></tr></table></figure>
+
+<p>查看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">lsmod | grep kvm <br></code></pre></td></tr></table></figure>
+
+<p>启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo virt-manager<br></code></pre></td></tr></table></figure>
+
+
+
+<p>查看网络</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virsh net-list --all<br></code></pre></td></tr></table></figure>
+
+
+
+<p>启动网络</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo virsh net-start default<br>sudo virsh net-autostart default<br></code></pre></td></tr></table></figure>
+
+
+
+<p>启动虚拟机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virsh start XXXX_new # 启动虚拟机<br></code></pre></td></tr></table></figure>
+
+
+
+<p>安装</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virt-install --name rhel-server-7.4-x86_64-dvd.iso --disk path=/dev/sdb1  --check path_in_use=off --graphics spice --vcpus=1 --ram 1024 --location=/root/test/rhel-server-7.4-x86_64-dvd.iso --network bridge=br1 --os-type=linux --os-variant=rhel7<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="网路设置"><a href="#网路设置" class="headerlink" title="网路设置"></a>网路设置</h3><p>使用brctl命令创建网桥br1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">brctl addbr br1<br></code></pre></td></tr></table></figure>
+
+<p>删除网桥br1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">brctl delbr br1<br></code></pre></td></tr></table></figure>
+
+<p>将eth0端口加入网桥br1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">brctl addif br1 eth0<br></code></pre></td></tr></table></figure>
+
+<p>删除网桥br1的端口eth0</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">brctl delif br1 eth0<br></code></pre></td></tr></table></figure>
+
+
+
+<p>查询网桥信息</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">brctl show<br>brctl show br1<br></code></pre></td></tr></table></figure>
+
+
+
+<p>开启路由转发</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo -i<br>echo 1 &gt; /proc/sys/net/ipv4/ip_forward<br></code></pre></td></tr></table></figure>
+
+
+
+<p>防火墙设置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo -i<br>iptables -t nat -A POSTROUTING -j MASQUERADE<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>问题一:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo virsh net-start default<br><br>error: Failed to start network default<br>error: internal error: Failed to initialize a valid firewall backend<br></code></pre></td></tr></table></figure>
+
+
+
+<p>在启动虚拟机网络时报错， libvirtError: internal error: Failed to initialize a valid firewall backend，查资料，如下解决</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo pacman -S ebtables dnsmasq firewalld<br></code></pre></td></tr></table></figure>
+
+
+
+<p>注意，要将当前用户加入kvm组，否则没有kvm权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo groupadd kvm<br>sudo usermod -aG kvm root<br>sudo usermod -aG docker $&#123;USER&#125;<br>sudo systemctl restart libvirtd<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="创建虚拟机"><a href="#创建虚拟机" class="headerlink" title="创建虚拟机"></a>创建虚拟机</h2><h3 id="采用图形化界面创建虚拟机"><a href="#采用图形化界面创建虚拟机" class="headerlink" title="采用图形化界面创建虚拟机"></a>采用图形化界面创建虚拟机</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virt-manager<br></code></pre></td></tr></table></figure>
+
+<p>进去之后选择File-&gt; New Virtual Machine ，选择一个下载好的ISO即可</p>
+<p>选择安装之后就会在<code>/var/lib/libvirt/images/</code>生成一个虚拟机磁盘</p>
+<h3 id="采用命令创建虚拟机"><a href="#采用命令创建虚拟机" class="headerlink" title="采用命令创建虚拟机"></a>采用命令创建虚拟机</h3><h4 id="virt-install安装"><a href="#virt-install安装" class="headerlink" title="virt-install安装"></a>virt-install安装</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virt-install --name=win7 --os-variant=win7 --ram 512 --vcpus=1 --disk path=/home/kvm_imgs/win7.img,size=30,format=qcow2,bus=virtio --accelerate --disk device=cdrom,path=/opt/win7.iso --disk device=cdrom,path=/opt/virtio-win-0.1.102.iso --vnc --vncp<br>ort=5922 --vnclisten=0.0.0.0 --network bridge=br0,model=virtio --noautoconsole<br></code></pre></td></tr></table></figure>
+
+
+
+<p>如果img文件或者qcow2文件已经自带了系统，就用 –boot&#x3D;hd ; 如果是本身有网卡驱动的镜像就不要用 model&#x3D;virtio ）</p>
+<p>比如下面这种创建方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">virt-install --name=systemname --vcpu=4 --ram=8196 --disk path=path_of_img_or_qcow2,format=qcow2 --boot=hd --network bridge=br0,model=virtio --vnc --vncport=123456 --vnclisten=0.0.0.0 --noautoconsole<br></code></pre></td></tr></table></figure>
+
+
+
+<p>br20.xml</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;network&gt;<br>  &lt;name&gt;br20&lt;/name&gt;<br>  &lt;forward mode=&#x27;nat&#x27;&gt;<br>    &lt;nat&gt;<br>      &lt;port start=&#x27;1024&#x27; end=&#x27;65535&#x27;/&gt;<br>    &lt;/nat&gt;<br>  &lt;/forward&gt;<br>  &lt;bridge name=&#x27;br20&#x27; stp=&#x27;on&#x27; delay=&#x27;0&#x27;/&gt;<br>  &lt;ip address=&#x27;192.168.30.1&#x27; netmask=&#x27;255.255.255.0&#x27;&gt;<br>    &lt;dhcp&gt;<br>      &lt;range start=&#x27;192.168.30.50&#x27; end=&#x27;192.168.30.200&#x27;/&gt;<br>    &lt;/dhcp&gt;<br>  &lt;/ip&gt;<br>&lt;/network&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="运行虚拟机"><a href="#运行虚拟机" class="headerlink" title="运行虚拟机"></a>运行虚拟机</h2><p>ref: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/huanglinxin/p/10148572.html">https://www.cnblogs.com/huanglinxin/p/10148572.html</a></p>
+<p>ref: <a target="_blank" rel="noopener" href="https://blog.csdn.net/ningjiu9/article/details/82053200">https://blog.csdn.net/ningjiu9/article/details/82053200</a></p>
+<p>ref: <a target="_blank" rel="noopener" href="https://blog.csdn.net/github_27924183/article/details/76914322">https://blog.csdn.net/github_27924183/article/details/76914322</a></p>
+<p>ref: <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/KVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">https://wiki.archlinux.org/title/KVM_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)</a></p>
+<p>ref: <a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_25868251/article/details/84879475">https://blog.csdn.net/qq_25868251/article/details/84879475</a></p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/10/24/security/interview/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%AE%89%E5%85%A8%E9%9D%A2%E7%BB%8F/">← Next 二进制安全面经</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/09/27/env/linux/vmware/">Install vmware on arch linux Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#KVM%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="toc-text">KVM虚拟机配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-text">概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-text">特点</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%88%87%E6%8D%A2%E5%99%A8%EF%BC%88KVM%EF%BC%89%E4%B8%80%E8%88%AC%E5%BA%94%E7%94%A8%E5%9C%A8%E5%93%AA%E4%BA%9B%E9%A2%86%E5%9F%9F%EF%BC%9F"><span class="toc-text">一、切换器（KVM）一般应用在哪些领域？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%88%87%E6%8D%A2%E5%99%A8%EF%BC%88KVM%EF%BC%89%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%89%B9%E7%82%B9%E3%80%82"><span class="toc-text">二、切换器（KVM）的基本特点。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%88%87%E6%8D%A2%E5%99%A8%EF%BC%88KVM%EF%BC%89%E6%9C%89%E5%85%B3%E7%9A%84%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A%E3%80%82"><span class="toc-text">三、切换器（KVM）有关的名词解释。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81-%E5%AE%9E%E9%AA%8C"><span class="toc-text">二、 实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E8%B7%AF%E8%AE%BE%E7%BD%AE"><span class="toc-text">网路设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%87%E5%88%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">遇到的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">创建虚拟机</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%87%E7%94%A8%E5%9B%BE%E5%BD%A2%E5%8C%96%E7%95%8C%E9%9D%A2%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">采用图形化界面创建虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%87%E7%94%A8%E5%91%BD%E4%BB%A4%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">采用命令创建虚拟机</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#virt-install%E5%AE%89%E8%A3%85"><span class="toc-text">virt-install安装</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-text">运行虚拟机</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

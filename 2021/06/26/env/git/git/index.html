@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Git学习 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>Git学习</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-06-26T02:14:13.000Z" id="date"> 2021-06-26</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.038Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">1.6k</div></span><br><span>Read Time: <div class="control">6 min</div></span></div></div><hr><div id="post-content"><h1 id="Git学习"><a href="#Git学习" class="headerlink" title="Git学习"></a>Git学习</h1><p>命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><p>代码克隆</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git clone  [url]<br></code></pre></td></tr></table></figure>
+
+<p>查看状态</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git status<br></code></pre></td></tr></table></figure>
+
+<p>添加所需要push的文件或文件夹</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git add . # 递归选定当前路径下的所有文件<br></code></pre></td></tr></table></figure>
+
+<p>给修改的文件进行注释</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">commit -m &quot;msg&quot;<br></code></pre></td></tr></table></figure>
+
+<p>推送</p>
+<p>推送你的代码到github仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git push<br># git push -u origin master<br># 如果新建的远程仓库是空的，所以要加上-u这个参数，等远程仓库里面有了内容之后，下次再从本地库上传内容的时候只需下面这样就可以了：<br># git push origin master<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="空仓库"><a href="#空仓库" class="headerlink" title="空仓库"></a>空仓库</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">//如何使用git上次自己的代码.<br>cd project_path //进入到工程目录<br>git init //初始话git仓库<br>git add . //添加当前项目的所有文件<br>//添加省份标识:<br>git config --global user.email &quot;you@example.com&quot; //你的邮箱<br>git config --global user.name &quot;Your Name&quot; //你的姓名<br>//git commit<br>git commit -m &quot;Your_msg&quot; //预提交. -m 是代表一些注释.<br>//创建SSH KEY<br>ssh-keygen -t rsa -C &quot;youremail@example.com&quot;<br>将 ~/.ssh/id_rsa.pub中的内容添加到github中<br>登录Github,找到右上角的图标，打开点进里面的Settings，再选中里面的SSH and GPG KEYS，点击右上角的New SSH key，然后Title里面随便填，再把刚才id_rsa.pub里面的内容复制到Title下面的Key内容框里面，最后点击Add SSH key<br><br>第九步：关联好之后我们就可以把本地库的所有内容推送到远程仓库（也就是Github）上了，通过：<br>git remote add origin git@github.com:I0gan/Litalk.git<br></code></pre></td></tr></table></figure>
+
+<h2 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h2><p>创建工程时，按照工程采用的语言框架在项目根目录下自行定义 .gitignore文件对不需要push的文件进行排除。</p>
+<p>例如Unity3d项目的.gitignore</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UserSettings<br># ProjectSettings<br>.vscode<br><br># This .gitignore file should be placed at the root of your Unity project directory<br>#<br># Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore<br>#<br>/[Ll]ibrary/<br>/[Tt]emp/<br>/[Oo]bj/<br>/[Bb]uild/<br>/[Bb]uilds/<br>/[Ll]ogs/<br>/[Mm]emoryCaptures/<br><br># Asset meta data should only be ignored when the corresponding asset is also ignored<br>!/[Aa]ssets/**/*.meta<br><br># Uncomment this line if you wish to ignore the asset store tools plugin<br># /[Aa]ssets/AssetStoreTools*<br><br># Autogenerated Jetbrains Rider plugin<br>[Aa]ssets/Plugins/Editor/JetBrains*<br><br># Visual Studio cache directory<br>.vs/<br><br># Gradle cache directory<br>.gradle/<br><br># Autogenerated VS/MD/Consulo solution and project files<br>ExportedObj/<br>.consulo/<br>*.csproj<br>*.unityproj<br>*.sln<br>*.suo<br>*.tmp<br>*.user<br>*.userprefs<br>*.pidb<br>*.booproj<br>*.svd<br>*.pdb<br>*.mdb<br>*.opendb<br>*.VC.db<br><br># Unity3D generated meta files<br>*.pidb.meta<br>*.pdb.meta<br>*.mdb.meta<br><br># Unity3D generated file on crash reports<br>sysinfo.txt<br><br># Builds<br>*.apk<br>*.unitypackage<br><br># Crashlytics generated file<br>crashlytics-build.properties<br><br>Assets/Plugins<br>Assets/Plugins.meta<br>Assets/StreamingAssets<br>Assets/StreamingAssets.meta<br>Assets/ThirdParty<br>Assets/ThirdParty.meta<br>Assets/K2Examples<br>Assets/K2Examples.meta<br>NuiDatabase<br>obj<br>msc<br>.vs<br>*.jpg<br>*.dll<br>OpenNI2<br>*.ini<br>*.data<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="合作工程"><a href="#合作工程" class="headerlink" title="合作工程"></a>合作工程</h2><p>多日参与git项目编写时，得需要注意某些事项。</p>
+<h3 id="编写代码之前注意事项"><a href="#编写代码之前注意事项" class="headerlink" title="编写代码之前注意事项"></a>编写代码之前注意事项</h3><p>每次写代码或者修改文件之前，先git pull一下，确保当前代码状态是最新的，这样之后出现冲突的几率少一些，改冲突也没那么麻烦了。</p>
+<h3 id="编写代码之后注意事项"><a href="#编写代码之后注意事项" class="headerlink" title="编写代码之后注意事项"></a>编写代码之后注意事项</h3><p>修改了一些重要代码文件之后，尽快push到远程仓库。</p>
+<h3 id="提交步骤"><a href="#提交步骤" class="headerlink" title="提交步骤"></a>提交步骤</h3><ol>
+<li>先对自己修改的文件打Commit，</li>
+<li>再点击Fetch，</li>
+<li>之后有Pull的话也点击Pull，</li>
+<li>最后Push</li>
+</ol>
+<h3 id="出现冲突解决步骤："><a href="#出现冲突解决步骤：" class="headerlink" title="出现冲突解决步骤："></a>出现冲突解决步骤：</h3><p>先打commit，再pull，打开文件解决冲突 ， push</p>
+<h2 id="Git撤销-amp-回滚操作"><a href="#Git撤销-amp-回滚操作" class="headerlink" title="Git撤销&amp;回滚操作"></a>Git撤销&amp;回滚操作</h2><p>开发过程中，你肯定会遇到这样的场景：</p>
+<p>场景一：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">糟了，我刚把不想要的代码，commit到本地仓库中了，但是还没有做push操作！<br></code></pre></td></tr></table></figure>
+
+<p>场景二：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">彻底完了，刚线上更新的代码出现问题了，需要还原这次提交的代码！<br></code></pre></td></tr></table></figure>
+
+<p>场景三：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">刚才我发现之前的某次提交太愚蠢了，现在想要干掉它！<br></code></pre></td></tr></table></figure>
+
+<h3 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h3><p>上述场景一，在未进行<code>git push</code>前的所有操作，都是在“本地仓库”中执行的。我们暂且将“本地仓库”的代码还原操作叫做“撤销”！</p>
+<p>情况一：文件被修改了，但未执行<code>git add</code>操作(working tree内撤销)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git checkout fileName<br>git checkout .<br></code></pre></td></tr></table></figure>
+
+<p>情况二：同时对多个文件执行了<code>git add</code>操作，但本次只想提交其中一部分文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">$ git add *<br>$ git status<br># 取消暂存<br>$ git reset HEAD &lt;filename&gt;<br></code></pre></td></tr></table></figure>
+
+<p>情况三：文件执行了<code>git add</code>操作，但想撤销对其的修改（index内回滚）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 取消暂存<br>git reset HEAD fileName<br># 撤销修改<br>git checkout fileName<br></code></pre></td></tr></table></figure>
+
+<p>情况四：修改的文件已被<code>git commit</code>，但想再次修改不再产生新的Commit</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 修改最后一次提交 <br>$ git add sample.txt<br>$ git commit --amend -m&quot;说明&quot;<br></code></pre></td></tr></table></figure>
+
+<p>情况五：已在本地进行了多次<code>git commit</code>操作，现在想撤销到其中某次Commit</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git reset [--hard|soft|mixed|merge|keep] [commit|HEAD]<br></code></pre></td></tr></table></figure>
+
+<h3 id="回滚"><a href="#回滚" class="headerlink" title="回滚"></a>回滚</h3><p>上述场景二，已进行<code>git push</code>，即已推送到“远程仓库”中。我们将已被提交到“远程仓库”的代码还原操作叫做“回滚”！*<strong>注意：对远程仓库做回滚操作是有风险的，需提前做好备份和通知其他团队成员！*</strong></p>
+<p><em>如果你每次更新线上，都会打<a target="_blank" rel="noopener" href="http://blog.csdn.net/ligang2585116/article/details/46468709">tag</a>，那恭喜你，你可以很快的处理上述场景二的情况</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git checkout &lt;tag&gt;<br></code></pre></td></tr></table></figure>
+
+<p><em>如果你回到当前HEAD指向</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git checkout &lt;branch_name&gt;<br></code></pre></td></tr></table></figure>
+
+<p>情况一：撤销指定文件到指定版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 查看指定文件的历史版本<br>git log &lt;filename&gt;<br># 回滚到指定commitID<br>git checkout &lt;commitID&gt; &lt;filename&gt;<br></code></pre></td></tr></table></figure>
+
+<p>情况二：删除最后一次远程提交</p>
+<p><em>方式一：使用revert</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git revert HEAD<br>git push origin master<br></code></pre></td></tr></table></figure>
+
+<p><em>方式二：使用reset</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git reset --hard HEAD^<br>git push origin master -f<br></code></pre></td></tr></table></figure>
+
+<p><em>二者区别：</em></p>
+<ul>
+<li>revert是放弃指定提交的修改，但是会生成一次新的提交，需要填写提交注释，以前的历史记录都在；</li>
+<li>reset是指将HEAD指针指到指定提交，历史记录中不会出现放弃的提交记录。</li>
+</ul>
+<p>情况三：回滚某次提交</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># 找到要回滚的commitID<br>git log<br>git revert commitID<br></code></pre></td></tr></table></figure>
+
+<h3 id="删除某次提交"><a href="#删除某次提交" class="headerlink" title="删除某次提交"></a>删除某次提交</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git log --oneline -n5<br>git rebase -i ``&quot;commit id&quot;``^<br></code></pre></td></tr></table></figure>
+
+<p>注意：需要注意最后的<em>^</em>号，意思是commit id的前一次提交</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git rebase -i &quot;5b3ba7a&quot;^<br></code></pre></td></tr></table></figure>
+
+<p>在编辑框中删除相关commit，如<code>pick 5b3ba7a test2</code>，然后保存退出（如果遇到冲突需要先解决冲突）！</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">git push origin master -f<br></code></pre></td></tr></table></figure>
+
+<p>通过上述操作，如果你想对历史多个commit进行处理或者，可以选择<code>git rebase -i</code>，只需删除对应的记录就好。rebase还可对 commit 消息进行编辑，以及合并多个commit。</p>
+<p>git reset –hard HEAD^</p>
+<p>加引号：<code>git reset -hard &quot;HEAD^&quot;</code><br>加一个^：<code>git reset -hard HEAD^^</code><br>换成<del>：&#96;git reset –hard HEAD</del><code>或者</code>git reset –hard HEAD<del>1<code>  </code></del>&#96; 后面的数字表示回退几次提交，默认是一次</p>
+<p>ref: <a target="_blank" rel="noopener" href="https://www.cnblogs.com/heqiyoujing/p/10461015.html">https://www.cnblogs.com/heqiyoujing/p/10461015.html</a></p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/06/28/env/linux/openvpn/">← Next openvpn环境搭建</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/06/25/security/ctf/compitation/wp-qwb-2021/">2021 强网杯PWN部分WP Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Git%E5%AD%A6%E4%B9%A0"><span class="toc-text">Git学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-text">基本操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A9%BA%E4%BB%93%E5%BA%93"><span class="toc-text">空仓库</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitignore"><span class="toc-text">.gitignore</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%88%E4%BD%9C%E5%B7%A5%E7%A8%8B"><span class="toc-text">合作工程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81%E4%B9%8B%E5%89%8D%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">编写代码之前注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81%E4%B9%8B%E5%90%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">编写代码之后注意事项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E4%BA%A4%E6%AD%A5%E9%AA%A4"><span class="toc-text">提交步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BA%E7%8E%B0%E5%86%B2%E7%AA%81%E8%A7%A3%E5%86%B3%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="toc-text">出现冲突解决步骤：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Git%E6%92%A4%E9%94%80-amp-%E5%9B%9E%E6%BB%9A%E6%93%8D%E4%BD%9C"><span class="toc-text">Git撤销&amp;回滚操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%92%A4%E9%94%80"><span class="toc-text">撤销</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9E%E6%BB%9A"><span class="toc-text">回滚</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%9F%90%E6%AC%A1%E6%8F%90%E4%BA%A4"><span class="toc-text">删除某次提交</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

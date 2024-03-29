@@ -1,0 +1,358 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Linux 基础命令 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>Linux 基础命令</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2019-09-25T03:09:11.000Z" id="date"> 2019-09-25</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.041Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">6.2k</div></span><br><span>Read Time: <div class="control">24 min</div></span></div></div><hr><div id="post-content"><h1 id="Linux-基础命令"><a href="#Linux-基础命令" class="headerlink" title="Linux 基础命令"></a>Linux 基础命令</h1><h3 id="ls"><a href="#ls" class="headerlink" title="ls"></a>ls</h3><p>显示目录<br>  参数:<br>     -a　显示所有<br>     -l　显示详细<br>     -i　显示文件id</p>
+<h3 id="pwd"><a href="#pwd" class="headerlink" title="pwd"></a>pwd</h3><p>打印当前目录</p>
+<h3 id="cp"><a href="#cp" class="headerlink" title="cp"></a>cp</h3><p>  复制文件<br>　参数:<br>    -r复制包括子目录<br>    -ｐ复制包括文件属性<br>    例:如何在复制时重命名，把Downloads复制到home目录下<br>    并命名为rename_file</p>
+<pre><code>cp -r /home/logan/Downloads /home/rename_file
+# 前提是在home/目录下无rename_file文件夹才可命名成功
+</code></pre>
+<h3 id="rm"><a href="#rm" class="headerlink" title="rm"></a>rm</h3><p>  删除文件或文件夹<br>　参数:<br>    -r删除包括子目录文件或文件夹<br>    -f强行执行</p>
+<p>  快捷键:Ctrl+L 可达到清屏目的，等同于输入命令clear</p>
+<h3 id="mv"><a href="#mv" class="headerlink" title="mv"></a>mv</h3><p>移动或重命名文件</p>
+<p>  mkdir–make directory<br>  创建目录<br>　参数:<br>    -p创建连续父子目录</p>
+<p>　rmdir—remove empty directory<br>  删除空目录</p>
+<p>　如何修改语言:输入locale 查看各种功能语言，在输入相应的值进行修改．
+　</p>
+<h3 id="touch"><a href="#touch" class="headerlink" title="touch"></a>touch</h3><p>创建一个文件<br>  注意,若创建含有空格的名称文件需要使用单引号或双引号括起来</p>
+<h3 id="cat"><a href="#cat" class="headerlink" title="cat"></a>cat</h3><p>显示文件内容，从上往下输出，直到输出完毕<br>  参数:<br>    -n显示行号</p>
+<h3 id="tac"><a href="#tac" class="headerlink" title="tac"></a>tac</h3><p>倒着打印,于cat相同，从下往上输出，直到输出完毕<br>不支持-n  </p>
+<h3 id="more"><a href="#more" class="headerlink" title="more"></a>more</h3><p>显示文件内容－可以往下翻页</p>
+<h3 id="less"><a href="#less" class="headerlink" title="less"></a>less</h3><p>显示文件内容－可以往上翻页<br>　使用技巧:输入&#x2F;+keyword可以查找你所需要的信息</p>
+<p>  head—show with text<br>　显示文件内容-指定行号进打印前几行内容<br>　参数:<br>    -n指定行号</p>
+<h3 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h3><p>显示文件内容-指定行号进行打印后几行内容<br>  参数:<br>    -n指定行号<br>    -f动态显示文件末尾内容<br>注意，head与tail未指定行数时，默认为10行</p>
+<h3 id="ln"><a href="#ln" class="headerlink" title="ln"></a>ln</h3><p>生成链接文件－默认硬链接<br>  语法: ln -s [原文件] [目标文件]<br>  参数: -s创建软链接</p>
+<h3 id="chmod"><a href="#chmod" class="headerlink" title="chmod"></a>chmod</h3><p>改变文件或文件目录的权限<br>  语法:chomd [{ugoa}{+-&#x3D;}{rwx}] {文件目录}<br>             [mode&#x3D;421] {文件目录}<br>  参数:<br>    -R递归修改　／Important!!!!</p>
+<h3 id="chown"><a href="#chown" class="headerlink" title="chown"></a>chown</h3><p>改变文件或目录的所属者</p>
+<h3 id="chgrp"><a href="#chgrp" class="headerlink" title="chgrp"></a>chgrp</h3><p>改变文件或目录的所属组</p>
+<h3 id="umask"><a href="#umask" class="headerlink" title="umask"></a>umask</h3><p>  显示,设置文件的缺省权限<br>  参数:<br>    -S以rwx形式显示新建文件缺省文件权限<br>注:&#x2F;&#x2F;&#x2F;比如:<br>  umask<br>  0022<br>  (0022)代表使用777-755 &gt;&gt;rwx-r_x-r_x</p>
+<h3 id="find"><a href="#find" class="headerlink" title="find"></a>find</h3><p>文件搜索<br>  语法:find [搜索范围] [匹配条件]<br>  例如:</p>
+<p>  find &#x2F;etc&#x2F; -name <em>woshi</em>  —-使用<em>号代表搜索</em>号里面的有关内容</p>
+<p>  find &#x2F;etc&#x2F; -size +204800  —-搜索大于100M的文件<br>  (+n 大于　-n小于　n等于)</p>
+<p>  find &#x2F; -cmin -5 —在&#x2F;目录下查找５min之内被修改属性的文件<br>　(若超过５min使用+)</p>
+<p>  find &#x2F;etc -size +163840 -a -size -204800<br>  在&#x2F;etc下查找大于80MB小于100MB的文件</p>
+<p>  find &#x2F;etc -name inittab -exec ls -l {} ;<br>  在&#x2F;etc下查找inittab文件并显示其详细信息<br>  -exec&#x2F;-ok 命令 {} ;</p>
+<p>  参数:<br>    -name使用名称搜索<br>    -size根据大小搜索 </p>
+<pre><code>-amin根据改动的访问时间 access
+-cmin根据文件改动的属性 change
+-mmin根据文件内容改动 modify
+-o条件中任意一各条件满足即可
+-type根据文件类型查找(f文件　d目录 l软链接文件)
+-inum根据i节点查寻 
+</code></pre>
+<h2 id="压缩打包命令"><a href="#压缩打包命令" class="headerlink" title="压缩打包命令"></a>压缩打包命令</h2><pre><code>若打包 a 目录
+tar -cvf a.tar a
+若打包并压缩为gz格式
+tar -zcvf a.tar.gz
+若打包并压缩为bz2格式
+tar -jcvf a.tar.bz2
+解包tar
+tar -xvf a.tar -C ./		(-C代表指定的目录)
+解包gz
+tar -cxvf a.tar.gz -C ./
+解包tar.bz2
+tar -jxvf a.tar.bz2 -C ./
+
+gzip
+bzip2
+rar
+压缩: rar a ***
+解压: rar x ***.rar
+zip
+压缩: zip ***
+解压: unzip *** -d 目录
+</code></pre>
+<h2 id="网络命令"><a href="#网络命令" class="headerlink" title="网络命令"></a>网络命令</h2><p>  write—给指定在线用户发送消息<br>  按: Ctrl + D 保存结束</p>
+<p>  wall—发送广播信息</p>
+<p>  ping—测试网络的连通性<br>  参数:<br>    -c指定发送次数<br>  例如:ping 192.168.03.01</p>
+<p>  nslookup—(翻译域名为IP)</p>
+<p>  ifconfig—查看当前计算机网卡还有ip地址<br>  (interface configure)</p>
+<p>  mail—查看发送邮件<br>  进入以后 h列出 d删除 q退出 邮件序列号-查看邮件</p>
+<p>  last—列出目前与过去登入系统的用户信息</p>
+<p>  lastlog—检查某特定用户上次登录的时间<br>  参数:<br>    -u<br>  例如:lastlog -u logan</p>
+<p>  traceroute—显示数据包到主机之间的路径<br>  例如:traceroute <a target="_blank" rel="noopener" href="http://www.baidu.com/">www.baidu.com</a></p>
+<p>  netststat—显示网络相关的信息<br>  参数:<br>    -t TCP协议<br>    -u UDP协议<br>    -l 监听<br>    -r 路由<br>    -n 显示IP地址和端口号<br>  范例:<br>    netstat -tlun 查看本地监听端口<br>    netstat -an　 查看本地所有的网络链接<br>    netstat -rn   查看本机路由表</p>
+<p>  mount—挂载<br>  umount—</p>
+<h2 id="关机重启命令"><a href="#关机重启命令" class="headerlink" title="关机重启命令"></a>关机重启命令</h2><p>  shutdown—(优先使用)<br>  参数:<br>    -h 关机<br>    -r 重启<br>    -c 取消<br>　halt—关机</p>
+<p>  poweroff—关机<br>  reboot—重启</p>
+<p>  init 0—关机<br>　init 6—重启<br>  系统运行级别<br>     0 关机<br>    1 单用户<br>    2 不完全多用户，不含NFS服务<br>    3 完全多用户<br>    4 未分配<br>    5 图形界面<br>    6 重启</p>
+<p>  runlevel—查询系统运行级别</p>
+<p>  logout—退出登录</p>
+<h2 id="文本编辑器Vim"><a href="#文本编辑器Vim" class="headerlink" title="文本编辑器Vim"></a>文本编辑器Vim</h2><h3 id="进入插入模式"><a href="#进入插入模式" class="headerlink" title="进入插入模式:"></a>进入插入模式:</h3><pre><code>a 在光标所在字符后插入
+A 在光标所在行尾插入
+i 在光标所在字符前插入
+I 在光标所在行首插入
+o 在光标下插入新行
+O 在光标上插入新行
+</code></pre>
+<h3 id="定位命令"><a href="#定位命令" class="headerlink" title="定位命令:"></a>定位命令:</h3><pre><code>set nu 设置行号
+set nonu 取消行号
+gg  到第一行
+G   到最后一行
+nG  到第n行
+n   到第n行
+$   移至行尾
+0   移至行首
+</code></pre>
+<h3 id="删除命令"><a href="#删除命令" class="headerlink" title="删除命令:"></a>删除命令:</h3><pre><code>x   删除光标标所在处字符
+nx  除光标所在后n个字符
+dd  删除光标所在行
+ndd 删除光标所在的n行
+dG  删除光标删除光标所在行到文件末尾内容
+D   删除光标所在处到行尾内容
+nl,n2d  删除指定内容
+</code></pre>
+<h3 id="复制和剪切命令"><a href="#复制和剪切命令" class="headerlink" title="复制和剪切命令:"></a>复制和剪切命令:</h3><pre><code>yy   复制当前行
+nyy  复制当前行的以下n行
+dd   剪切当前行
+ndd  剪切当前行以下n行
+p,P  粘贴在当前光标所在行下或行上
+</code></pre>
+<h3 id="替换和取消命令"><a href="#替换和取消命令" class="headerlink" title="替换和取消命令:"></a>替换和取消命令:</h3><pre><code>r    取代光标所在字符
+R    从光标所在处开始替换字符，按Esc结束
+u    撤销
+</code></pre>
+<h3 id="搜索命令"><a href="#搜索命令" class="headerlink" title="搜索命令:"></a>搜索命令:</h3><pre><code>/string  搜索指定字符串,若搜索时忽略大小写:set ic
+n	 搜索
+s/old/new/g      替换当前行
+%s/old/new/g     全文替换指定字符串
+n1,n2s/old/new/g 在一定范围内替换指定字符串
+</code></pre>
+<h3 id="cmd-—-执行shell命令"><a href="#cmd-—-执行shell命令" class="headerlink" title="!cmd —-(执行shell命令)"></a>!cmd —-(执行shell命令)</h3><pre><code>分屏操作:
+水平分屏: sp + file
+垂直分屏: vsp + file
+切换屏幕:   Ctrl +ww
+保存并全部退出: wqall 后加all
+保存和退出命令:
+w    保存修改
+w new_filename 保存为指定文件
+wq   保存修改并退出
+ZZ   快捷键,保存修改并退出
+q!   不保存修改退出
+wq!  保存修改并退出(文件所有者及root可使用)
+</code></pre>
+<h3 id="vim使用技巧"><a href="#vim使用技巧" class="headerlink" title="vim使用技巧"></a>vim使用技巧</h3><pre><code>r !命令	 导入命令执行结果
+map 快捷键 触发命令　　　　定义快捷键
+例如:
+map ^P I#&lt;ESC&gt;
+map ^B 0x
+连续注释技巧:
+n1,n2s/^/内容/g
+n1,n2s/^#//g
+n1,n2s/^/\/\//g	(使用转义符\)
+替换
+ab 输入内容 变成内容
+若想永久保存自定义命令或快捷键,修改用户目录下.vimrc配置文件
+</code></pre>
+<h2 id="用户配置文件"><a href="#用户配置文件" class="headerlink" title="用户配置文件"></a>用户配置文件</h2><pre><code>查看配置文件的帮助信息: man 5 配置文件名
+用户信息文件/etc/passwd
+第1字段:用户名
+第2字段:密码标志
+第3字段:UID
+UID:
+0         root
+1~499 	  系统用户
+500~65535 普通用户
+第4字段:GID(用户初始组)
+第5字段:用户说明
+第6字段:家目录
+第7字段:登录之后的Shell
+影子文件    /etc/	密码存放文件
+组密码文件   /etc/gshadow
+第一字段:组名
+第二字段:组密码	
+第三字段:组管理员用户名	
+第四字段:组中附加用户
+组信息文件   /etc/group
+第一字段:组名
+第二字段:组密码标志
+第三字段:GID
+第四字段:组中附加用户
+</code></pre>
+<h3 id="如何使其他用户变为超级用户"><a href="#如何使其他用户变为超级用户" class="headerlink" title="如何使其他用户变为超级用户"></a>如何使其他用户变为超级用户</h3><p>更改&#x2F;etc&#x2F;passwd的UID为0即可<br>    用户的邮箱文件: &#x2F;var&#x2F;spool&#x2F;mail&#x2F;用户名&#x2F;<br>    用户模板目录:	&#x2F;etc&#x2F;skel&#x2F;	(就是创建用户时家目录中出现的文件,用户的家目录中的文件就是从这拷贝来的)</p>
+<h2 id="用户管理命令"><a href="#用户管理命令" class="headerlink" title="用户管理命令"></a>用户管理命令</h2><h3 id="useradd"><a href="#useradd" class="headerlink" title="useradd"></a>useradd</h3><p>添加用户<br>参数:<br>    -u 指定用户UID<br>    -d 指定家目录<br>    -c 用户说明<br>    -g 指定初始组<br>    -G 指定用户的附加组<br>    -s 指定用户登录的shell，默认是&#x2F;bin&#x2F;bash<br>    -m 指定用户的家目录,若不存在，则创建一个<br>    用户默认值文件:<br>    &#x2F;etc&#x2F;default&#x2F;useradd	—创建用户的默认属性<br>    &#x2F;etc&#x2F;login.defs —密码有效期文件</p>
+<p>  adduser—添加用户脚本<br>    可以添加完整的目录</p>
+<p>  passwd—-修改或添加用户密码<br>参数:<br>    -S 查询用户密码的密码状态<br>    -l 暂时锁定用户 -u 解锁用户<br>  usermod—修改用户信息</p>
+<p>  whoami—查看当前用户</p>
+<p>  change—-修改用户密码状态</p>
+<p>  userdel—删除用户   -r 删除用户同时删除用户家目录</p>
+<p>  su——–用户切换<br>    注意:直接使用su并不能全部切换为切换的用户<br>    参数：<br>    - 选项只使用＂-＂代表连带用户环境变量一起切换<br>    -c 仅执行一次命令，而不切换用户身</p>
+<h3 id="手动删除用户"><a href="#手动删除用户" class="headerlink" title="手动删除用户"></a>手动删除用户</h3><pre><code>vi /etc/passwd
+vi /etc/shadow
+vi /etc/group
+vi /etc/gshadow
+rm -rf /var/spool/mail/用户名
+rm -rf /home/用户名
+</code></pre>
+<h3 id="id"><a href="#id" class="headerlink" title="id"></a>id</h3><p>查看用户ID</p>
+<h3 id="env"><a href="#env" class="headerlink" title="env"></a>env</h3><p>查看环境变量</p>
+<h2 id="用户组管理命令"><a href="#用户组管理命令" class="headerlink" title="用户组管理命令"></a>用户组管理命令</h2><h3 id="groupadd"><a href="#groupadd" class="headerlink" title="groupadd"></a>groupadd</h3><p>添加组<br>  参数:<br>    -g      指定GID</p>
+<h3 id="groupmod"><a href="#groupmod" class="headerlink" title="groupmod"></a>groupmod</h3><p>修改组<br>    -g      修改组GID<br>    -n      修改组名</p>
+<h3 id="groupdel"><a href="#groupdel" class="headerlink" title="groupdel"></a>groupdel</h3><p>删除组</p>
+<h3 id="gpasswd"><a href="#gpasswd" class="headerlink" title="gpasswd"></a>gpasswd</h3><p>把用户添加入组或从组里删除<br>    -a 把用户加入组<br>    -d 把用户从组中删除</p>
+<h2 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h2><h3 id="ACL权限"><a href="#ACL权限" class="headerlink" title="ACL权限"></a>ACL权限</h3><p>查看分区ACL权限是否开启:dumpe2fs -h &#x2F;dev&#x2F;sda3 (-h仅显示超级块中的信息)<br>临时开启分区ACL权限: mount -o remount,acl &#x2F;<br>永久开启ACL权限:修改 &#x2F;etc&#x2F;fstab<br>重新挂载文件系统 mount -o remount &#x2F;</p>
+<h4 id="getfacl-目录—查看ACL"><a href="#getfacl-目录—查看ACL" class="headerlink" title="getfacl + 目录—查看ACL"></a>getfacl + 目录—查看ACL</h4><h4 id="setfacl—-设定ACL权限命令"><a href="#setfacl—-设定ACL权限命令" class="headerlink" title="setfacl—-设定ACL权限命令"></a>setfacl—-设定ACL权限命令</h4><p>  参数:<br>    -m 设定ACL权限<br>    -x 删除指定的ACL权限<br>    -b 删除所有的ACL权限<br>    -d 设定默认ACL权限<br>    -k 删除默认ACL权限<br>    -R 递归设定ACL权限<br>  例如: setfacl -m u:用户名:rwx 目录 &#x2F;&#x2F;给用户<br>        setfacl -m g:组名:rwx 目录   &#x2F;&#x2F;给组</p>
+<pre><code>最大权限mask:
+</code></pre>
+<p>  mask是用来指定最大有效权限的．如果我妈给用户赋予ACL权限，是需要<br>和mask的权限”相与”才能利亚到用户的真正权限<br>  例如: setfacl -m m:rx 目录&#x2F;文件 </p>
+<pre><code>删除ACL: setfacl u:用户名 目录/文件
+递归ACL权限: setfacl -m  u:用户名:权限 -R  目录 注意:-R 只能在后面
+</code></pre>
+<p>  默认ACL权限: setfacl -m d:u:用户名:权限 -R  目录 (防止子目录中产生的新文件没有该用户的ACL权限)</p>
+<h2 id="文件特殊权限"><a href="#文件特殊权限" class="headerlink" title="文件特殊权限"></a>文件特殊权限</h2><pre><code>SetUID (灵魂附体,只能是对可执行文件有效)
+chmod 4755 文件名 4代表是SUID
+chmod u+s  文件名 2代表是SGID
+          1代表是SID
+可利用修改一些命令文件,可获得暂时的root身份
+取消SUID: 直接输入 chmod 755 文件名
+
+SetGID(暂时升级为组的该文件的所属组)
+chmod g+s 目录/文件名
+
+Sticky BIT------SBIT
+chmod 1755 目录
+chmod o+t  目录
+</code></pre>
+<p>技巧: echo 文本内容 &gt;&gt; 文件 —–向文件中写入数据<br>  文件系统属性权限:chattr[+-&#x3D;][选项] 文件&#x2F;目录<br>  选项:<br>    -i 如果对文件设了i属性,那么对文件不能修改,也对root有效<br>    -a 只能增加文件内容，其他不能做其他的<br>  lsattr—查看文件系统属性权限<br>  参数:<br>    -a 显示所有文件和目录<br>    -d 仅显示目标目录或文件</p>
+<pre><code>系统命令权限: sudo
+</code></pre>
+<p>  描述:把本来只能超级用户的执行命令赋予普通命令执行<br>  操作对象是系统命令</p>
+<p>  visudo—实际修改的是&#x2F;etc&#x2F;sudoers文件<br>  例如:<br>    用户名　ALL&#x3D;&#x2F;sbin&#x2F;shutdown -r now<br>    sudo -l　可查看可用的sudo命令<br>  使用: sudo &#x2F;sbin&#x2F;shutdown -r now</p>
+<h2 id="文件管理"><a href="#文件管理" class="headerlink" title="文件管理"></a>文件管理</h2><p>  mount—挂载<br>  语法: mount [-t 文件系统] [-L 卷标名] [-o 特殊选项] 设备名 挂载点<br>  参数:<br>    -a 根据 &#x2F;etc&#x2F;fstab的内容，自动挂载<br>    -t 加入文件系统类型来指定挂载类型，可以以ext3,ext4,iso9660等文件系统<br>    -L 卷标名:挂载指定卷标的分区，而不是安装设备文件名挂载<br>    -o 特殊选项:可以指定挂载的额外选项<br>    常见额外选项:<br>    remount  rw&#x2F;ro  exec&#x2F;noexec</p>
+<pre><code>fdisk分区-自动挂载与fstab文件修复
+</code></pre>
+<p>  fstab文件: &#x2F;etc&#x2F;fstab　开机自动挂载文件<br>    第1字段:UUID&#x2F;设备文件名<br>    第5字段:分区是否被dump备份0代表不备份,1代表每天备份,2代表不定期备份<br>    第6字段:指定分区是否被fsck检测，0代表不检测,其他数字代表检测的优先级,那么当然1的优先级比2高</p>
+<p>!!!!!!!	注意:若手动修改&#x2F;etc&#x2F;fasab文件之后，写之后记得去使用 mount -a命令来自动挂载，防止下次开机系统崩溃.<br>    若系统出错后,一般进入只读状态,使用命令:mount -o remount,rw &#x2F;进行重新挂载</p>
+<p>  df—文件系统查看<br>  参数:<br>    -a 显示所有文件系统信息,包括特殊文件系统,如&#x2F;proc,&#x2F;sysfs<br>    -h 使用习惯单位显示容量,如KB,MB或GB等<br>    -T显示文件系统类型<br>    -m 以MB为显示单位<br>    -k 以KB为显示单位<br>  du—查看文件总的大小<br>    注意:ls命令只能查看本目录和子目录下的文件名大小之和<br>  常用: du -sh 目录</p>
+<p>  fsck—文件系统修复命令<br>  参数：<br>    -a 不用显示用户提示,自动修复文件系统<br>    -y 自动修复.和-a作用一致,不过有些文件系统只支持-y</p>
+<p>  dumpe2fs—显示磁盘状态命令</p>
+<p>  分区命令:<br>    fdisk<br>  参数:<br>    -l 显示分区信息	</p>
+<p>!!! 注意: 在分区之后要得重新读取分区表信息<br>    命令: partprobe</p>
+<p>  格式化命令:<br>    mkfs -t ext4 &#x2F;dev&#x2F;sdb1<br>  注意:拓展分区不能格式化</p>
+<p>  分配swap<br>  free-查询swap占用情况<br>  fdisk中使用l查看ID,swap为82,分配好内存分区后,使用t来改变该分区的ID,改为swap.<br>  修改之后使用命令mkswap 来格式化该分区<br>  改好之后可使用swapon &#x2F;dev&#x2F;sdb6 来挂载swap(暂时)<br>  spwaoff可来umount swap<br>  若想永久修改,可修改 &#x2F;etc&#x2F;fstab 按着要求填写</p>
+<h2 id="shell基础"><a href="#shell基础" class="headerlink" title="shell基础"></a>shell基础</h2><h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>  source—重新读取配置文件<br>  source等效于’.’<br>  . 配置文件 or source 配置文件<br>  shell支持的配置文件: &#x2F;etc&#x2F;shells</p>
+<h3 id="shell-脚本"><a href="#shell-脚本" class="headerlink" title="shell 脚本"></a>shell 脚本</h3><p>  如何run shell脚本:<br>  1-使用绝对路径 2-使用相对路径 3-bash + 当前目录下的shell脚本<br>  在shell脚本中必写:#!&#x2F;bin&#x2F;bash —告诉计算机这是shell脚本</p>
+<p>windows中编写的shell脚本的回车符是M$,而Linux是$,这造成了<br>windows和linux不兼容,使用命令 dos2unix可以改变格式.: </p>
+<h3 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h3><p>打印字符串在终端<br>  参数:<br>    -e 支持反斜线控制的字符转换<br>  若想颜色输出: echo -e “\e[1;31m abcd \e[0m”<br>  30m&#x3D;黑色　31m&#x3D;红色 32m&#x3D;绿色 33m&#x3D;黄色<br>  34m&#x3D;蓝色  35m&#x3D;洋红 36m&#x3D;青色 37m&#x3D;白色</p>
+<h3 id="history"><a href="#history" class="headerlink" title="history"></a>history</h3><p>历史命令<br>  参数:<br>    -c 清楚历史<br>    -w 把缓存历史命令写入保存中 ~&#x2F;.bash_history<br>  历史命令默认保存1000条　可以在环境变量配置文件&#x2F;etc&#x2F;profile中修改<br>  历史命令的调用:<br>  使用上下键,!n 执行第n行命令 !!重复执行上一条,!字符串 </p>
+<h3 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h3><p> 别名&#x3D;’原命令’	—设定别名<br>  alias 查询别名<br>  让别名永久生效:修改 ~&#x2F;.bashrc<br>    命令执行顺序<br>  1—绝对路径\相对路径<br>  2—别名<br>  3—bash内部命令<br>  4—$PATH环境变量　查看—echo $PATH</p>
+<h3 id="多命令执行顺序"><a href="#多命令执行顺序" class="headerlink" title="多命令执行顺序"></a>多命令执行顺序</h3><p>  命令1;命令2   命令1&amp;&amp;命令2    命令||命令2<br>   顺序执行	　　逻辑与　　　　逻辑或</p>
+<p>  dd if&#x3D;输入文件 of&#x3D;输出文件 bs&#x3D;字节数 count&#x3D;个数</p>
+<h3 id="管道符"><a href="#管道符" class="headerlink" title="管道符"></a>管道符</h3><p>命令1 | 命令2  —命令1的正确输出作为命令2的输入<br>  例如:分屏显示:  ls -al &#x2F;etc | more</p>
+<p>  grep—搜索内容<br>    -i 忽略大小写<br>    -n 输出行号<br>    -v 反向查找<br>    –color&#x3D;auto 搜索出的关键字用颜色显示<br>　例如: netstat -an | grep “ESTABLISHED”  查看多少人连接</p>
+<h2 id="数值运算与运算符"><a href="#数值运算与运算符" class="headerlink" title="数值运算与运算符"></a>数值运算与运算符</h2><h3 id="declare—声明变量类型"><a href="#declare—声明变量类型" class="headerlink" title="declare—声明变量类型"></a>declare—声明变量类型</h3><pre><code>- :给变量设定类型属性
++ :取消变量类型的属性
+-i:给变量声明为整数型(integer)
+-x:给变量声明为环境变量
+-p:显示指定变量的被声明类型
+</code></pre>
+<p>  例:a&#x3D;1;b&#x3D;2;declare -i c&#x3D;$a+$b;echo $c<br>  使用expr或let数值运算工具<br>  例:a&#x3D;1;b&#x3D;2;c&#x3D;$(expr $a + $b)<br>  注:+号的左右两侧必须有空格</p>
+<h4 id="法三-常用"><a href="#法三-常用" class="headerlink" title="法三:(常用)"></a>法三:(常用)</h4><p>  $((运算式))或$[运算式]</p>
+<pre><code>变量的测试与变量的替换
+x=$&#123;y-New_Value&#125; 
+x=$&#123;y:-New_value&#125;
+x=$&#123;y+New_value&#125;
+x=$&#123;y:+New_value&#125;
+x=$&#123;y=New_value&#125;
+x=$&#123;y:=New_value&#125;
+x=$&#123;y?New_value&#125;
+x=$&#123;y:?New_value&#125;
+</code></pre>
+<h3 id="环境变量的配置文件"><a href="#环境变量的配置文件" class="headerlink" title="环境变量的配置文件"></a>环境变量的配置文件</h3><p>  &#x2F;etc&#x2F;profile<br>  USER<br>  LOGNASME<br>  MAIL<br>  PATH<br>  HOSTNAME<br>  HISTSIZE<br>  HISTSIZE</p>
+<p>  &#x2F;etc&#x2F;profile.d&#x2F;*.sh</p>
+<p>  ~&#x2F;.bash_profile<br>  ~&#x2F;.bashrc<br>  &#x2F;etc&#x2F;bashrc</p>
+<h2 id="Shell欢迎信息"><a href="#Shell欢迎信息" class="headerlink" title="Shell欢迎信息"></a>Shell欢迎信息</h2><p>&#x2F;etc&#x2F;issue  &#x2F;etc&#x2F;issue.net (登录前)<br>  &#x2F;etc&#x2F;issue　　(本地生效)<br>  \d 显示当前系统日期<br>  \s 显示操作系统名称<br>  \l 显示登录的终端号(比较常用)<br>  \m 显示硬件结构体系<br>  \n 显示主机名<br>  \o 显示域名<br>  \r 显示内核版本<br>  \t 显示当前系统时间<br>  \u 显示当前登录用户的序列号</p>
+<p>  &#x2F;etc&#x2F;issue.net (远程生效)<br>  转义符不生效,只能为纯文本<br>  是否显示欢迎信息,有SSH的配置文件&#x2F;etc&#x2F;ssh&#x2F;sshd_config决定<br>  加入”Banner &#x2F;etc&#x2F;issue.net”行才能显示,(重启SSH服务) service sshd restart</p>
+<p>  &#x2F;etc&#x2F;motd(登录后)</p>
+<h2 id="正则表达式与通配符"><a href="#正则表达式与通配符" class="headerlink" title="正则表达式与通配符"></a>正则表达式与通配符</h2><p>  正则表达式<br>  用来在文件中匹配符合条件的字符串，正则是包含匹配.grep,awk,sed</p>
+<p>  Linux通配符号:* ? []<br>  通配符用来匹配符合条件的文件名，通配符是完全匹配.ls,find,cp<br>这些命令不支持正则表达式，所以只能使用shell自己的通配符来进行匹配了.</p>
+<h2 id="shell编程"><a href="#shell编程" class="headerlink" title="shell编程"></a>shell编程</h2><h3 id="cut—截取字符段截取命令"><a href="#cut—截取字符段截取命令" class="headerlink" title="cut—截取字符段截取命令"></a>cut—截取字符段截取命令</h3><h3 id="printf—格式化输出"><a href="#printf—格式化输出" class="headerlink" title="printf—格式化输出"></a>printf—格式化输出</h3><h2 id="服务管理"><a href="#服务管理" class="headerlink" title="服务管理"></a>服务管理</h2><p>  RPM包安装服务<br>  chkconfig –list  查看自启动服务状态  0~6 代表Linux的运行级别<br>  ps aux  查看进程<br>  源码包安装服务:<br>  安装位置默认: usr&#x2F;local</p>
+<h2 id="Terminal快捷键"><a href="#Terminal快捷键" class="headerlink" title="Terminal快捷键"></a>Terminal快捷键</h2><pre><code>Ctrl+p    //上一行命令
+Ctrl+n	  //下一行命令
+Ctrl+b    //光标向后移动
+Ctrl+f	  //光标向前移动
+Ctrl+a    //光标移动到行首
+Ctrl+e	  //光标移动到行未
+Ctrl+h	  //backspace	
+Ctrl+j    //Enter 回车
+Ctrl+i	  //TAb键
+Ctrl+d    //Delete
+Ctrl+u    //删除光标前面的内
+</code></pre>
+<h2 id="如何使用linux创建U盘启动器"><a href="#如何使用linux创建U盘启动器" class="headerlink" title="如何使用linux创建U盘启动器"></a>如何使用linux创建U盘启动器</h2><p>   0.格式化U盘,mkfs.vfat &#x2F;dev&#x2F;设备名称</p>
+<ol>
+<li>使用　fdisk -h 查看各储存设备名称</li>
+<li>找到U盘盘符名称,使用umont &#x2F;dev&#x2F;设备名称–&#x2F;&#x2F;注意，必须umount掉</li>
+<li>使用dd if&#x3D;sio镜像目录 of&#x3D;&#x2F;dev&#x2F;设备名称 bs&#x3D;2M—设置刻录速度</li>
+<li>回车.—完毕!</li>
+</ol>
+<h2 id="linux文件字符串批量查找-替换"><a href="#linux文件字符串批量查找-替换" class="headerlink" title="linux文件字符串批量查找, 替换"></a>linux文件字符串批量查找, 替换</h2><p>有时候要找一些字符串，但是又不知道在哪个文件，只记得一些字符串</p>
+<p>查找目录下的所有文件中是否含有某个字符串</p>
+<p><code>find .|xargs grep -ri “SMS_ISSEND”</code></p>
+<p>查找目录下的所有文件中是否含有某个字符串,并且只打印出文件名</p>
+<p><code>find .|xargs grep -ri “SMS_ISSEND” -l</code></p>
+<p>批量替换</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs sh">sed -i <span class="hljs-string">&quot;s/oldstring/newstring/g&quot;</span> `grep oldstring -rl yourdir`<br></code></pre></td></tr></table></figure>
+
+<h2 id="防火墙-打开-关闭"><a href="#防火墙-打开-关闭" class="headerlink" title="防火墙 打开 关闭"></a>防火墙 打开 关闭</h2><p>Debian原来用的是UFW防火墙，之前没接触过这种类型防火墙，懵逼了半天，这里记录一下简单的使用规则，后期在使用过程中慢慢完善UFW防火墙的使用操作方法；</p>
+<p>查看防火墙现有规则：</p>
+<p>ufw status</p>
+<p>开启&#x2F;关闭防火墙：</p>
+<p>ufw enable #开启<br>ufw disable #关闭</p>
+<p>开启指定tcp或者udp端口：</p>
+<p>ufw allow 22&#x2F;tcp</p>
+<p>同时开启tcp与udp端口：</p>
+<p>ufw allow 445</p>
+<p>删除53端口：</p>
+<p>ufw delete allow 53</p>
+<p>拒绝指定tcp或者udp端口：</p>
+<p>allow&#x2F;deny 20&#x2F;tcp<br>allow&#x2F;deny 20&#x2F;udp</p>
+<p>突出显示的输出表示网络接口名称,它们通常被命名为eth0或enp3s2 </p>
+<p>因此，如果您的服务器具有名为eth0的公共网络接口，则可以使用以下命令允许HTTP流量（端口80 ）：</p>
+<p>sudo ufw allow in on eth0 to any port 80</p>
+<p>这样做将允许您的服务器从公共互联网接收HTTP请求<br>或者，如果您希望MySQL数据库服务器（端口3306 ）监听专用网络接口eth1上的连接，例如，您可以使用此命令：</p>
+<p>sudo ufw allow in on eth1 to any port 3306</p>
+<p>这将允许专用网络上的其他服务器连接到MySQL数据库</p>
+<h2 id="如何实现免密钥登录linux"><a href="#如何实现免密钥登录linux" class="headerlink" title="如何实现免密钥登录linux"></a>如何实现免密钥登录linux</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs sh">ssh-keygen <span class="hljs-comment"># 生产密钥</span><br><span class="hljs-comment"># 直接写入, 会造成服务器其他密钥的丢失</span><br>scp ~/.ssh/id_rsa.pub root@*****:/root/.ssh/authorized_keys<br><br><span class="hljs-comment"># 正确写入</span><br>ssh-copy-id -i ~/.ssh/id_rsa.pub root@39.97.119.22<br></code></pre></td></tr></table></figure>
+
+<p>然后即可免密钥登录远程了</p>
+<h2 id="nohup"><a href="#nohup" class="headerlink" title="nohup"></a>nohup</h2><p>nohup 命令运行由 Command参数和任何相关的 Arg参数指定的命令，忽略所有挂断（SIGHUP）信号。在注销后使用<br>nohup 命令运行后台中的程序。要运行后台中的 nohup 命令，添加 &amp; （ 表示“and”的符号）到命令的尾部。<br>nohup 是 no hang up 的缩写，就是不挂断的意思。<br>nohup命令：如果你正在运行一个进程，而且你觉得在退出帐户时该进程还不会结束，那么可以使用nohup命令。该命令<br>可以在你退出帐户&#x2F;关闭终端之后继续运行相应的进程。<br>在缺省情况下该作业的所有输出都被重定向到一个名为nohup.out的文件中。<br>回到顶部<br>案例</p>
+<ol>
+<li><p>nohup command &gt; myout.file 2&gt;&amp;1 &amp;<br>在上面的例子中，0 – stdin (standard input)，1 – stdout (standard output)，2 – stderr (standard error) ；<br>2&gt;&amp;1是将标准错误（2）重定向到标准输出（&amp;1），标准输出（&amp;1）再被重定向输入到myout.file文件中。</p>
+</li>
+<li><p>0 22 * * * &#x2F;usr&#x2F;bin&#x2F;python &#x2F;home&#x2F;pu&#x2F;download_pdf&#x2F;download_dfcf_pdf_to_oss.py &gt;<br>&#x2F;home&#x2F;pu&#x2F;download_pdf&#x2F;download_dfcf_pdf_to_oss.log 2&gt;&amp;1</p>
+</li>
+</ol>
+<p>这是放在crontab中的定时任务，晚上22点时候怕这个任务，启动这个python的脚本，并把日志写在download_dfcf_pdf_to_oss.log文件中<br>回到顶部<br>nohup和&amp;的区别</p>
+<p>&amp; ： 指在后台运行<br>nohup ： 不挂断的运行，注意并没有后台运行的功能，，就是指，用nohup运行命令可以使命令永久的执行下去，和用户终端没有关系，<br>例如我们断开SSH连接都不会影响他的运行，注意了nohup没有后台运行的意思；&amp;才是后台运行</p>
+<p>&amp;是指在后台运行，但当用户推出(挂起)的时候，命令自动也跟着退出<br>那么，我们可以巧妙的吧他们结合起来用就是<br>nohup COMMAND &amp;<br>这样就能使命令永久的在后台执行<br>例如：</p>
+<ol>
+<li>sh test.sh &amp;<br>将sh test.sh任务放到后台 ，即使关闭xshell退出当前session依然继续运行，但标准输出和标准错误信息会丢失（缺少的日志的输出）</li>
+</ol>
+<p>将sh test.sh任务放到后台 ，关闭xshell，对应的任务也跟着停止。</p>
+<ol start="2">
+<li>nohup sh test.sh<br>将sh test.sh任务放到后台，关闭标准输入，终端不再能够接收任何输入（标准输入），重定向标准输出和标准错误到当前目录下的nohup.out文件，<br>即使关闭xshell退出当前session依然继续运行。</li>
+<li>nohup sh test.sh  &amp;<br>将sh test.sh任务放到后台，但是依然可以使用标准输入，终端能够接收任何输入，重定向标准输出和标准错误到当前目录下的nohup.out文件，<br>即使关闭xshell退出当前session依然继续运行。</li>
+</ol>
+<h2 id="配置dns服务器"><a href="#配置dns服务器" class="headerlink" title="配置dns服务器"></a>配置dns服务器</h2><p>执行<strong>vim&#x2F;etc&#x2F;resolv.conf</strong>命令编辑<code>/etc/resolv.conf</code>文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">vim /etc/resolv.conf<br></code></pre></td></tr></table></figure>
+
+<p>格式:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">nameserver server_ip<br></code></pre></td></tr></table></figure>
+
+<p>执行以下命令，验证文件系统域名是否可以解析到IP地址。</p>
+<p>nslookup</p>
+<h2 id="更改磁盘名称"><a href="#更改磁盘名称" class="headerlink" title="更改磁盘名称"></a>更改磁盘名称</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">e2label /dev/sdxN &lt;New Name&gt;<br></code></pre></td></tr></table></figure>
+
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2019/09/25/env/linux/linux-wine/">← Next wine安装与配置</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2019/09/21/dev/language/c/basic/">c基础 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="toc-text">Linux 基础命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ls"><span class="toc-text">ls</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pwd"><span class="toc-text">pwd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cp"><span class="toc-text">cp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rm"><span class="toc-text">rm</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mv"><span class="toc-text">mv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#touch"><span class="toc-text">touch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cat"><span class="toc-text">cat</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tac"><span class="toc-text">tac</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#more"><span class="toc-text">more</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#less"><span class="toc-text">less</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tail"><span class="toc-text">tail</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ln"><span class="toc-text">ln</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chmod"><span class="toc-text">chmod</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chown"><span class="toc-text">chown</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#chgrp"><span class="toc-text">chgrp</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#umask"><span class="toc-text">umask</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#find"><span class="toc-text">find</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E7%BC%A9%E6%89%93%E5%8C%85%E5%91%BD%E4%BB%A4"><span class="toc-text">压缩打包命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%91%BD%E4%BB%A4"><span class="toc-text">网络命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E6%9C%BA%E9%87%8D%E5%90%AF%E5%91%BD%E4%BB%A4"><span class="toc-text">关机重启命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E6%9C%AC%E7%BC%96%E8%BE%91%E5%99%A8Vim"><span class="toc-text">文本编辑器Vim</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="toc-text">进入插入模式:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D%E5%91%BD%E4%BB%A4"><span class="toc-text">定位命令:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%91%BD%E4%BB%A4"><span class="toc-text">删除命令:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E5%88%B6%E5%92%8C%E5%89%AA%E5%88%87%E5%91%BD%E4%BB%A4"><span class="toc-text">复制和剪切命令:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%BF%E6%8D%A2%E5%92%8C%E5%8F%96%E6%B6%88%E5%91%BD%E4%BB%A4"><span class="toc-text">替换和取消命令:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%90%9C%E7%B4%A2%E5%91%BD%E4%BB%A4"><span class="toc-text">搜索命令:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cmd-%E2%80%94-%E6%89%A7%E8%A1%8Cshell%E5%91%BD%E4%BB%A4"><span class="toc-text">!cmd —-(执行shell命令)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#vim%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7"><span class="toc-text">vim使用技巧</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">用户配置文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E5%85%B6%E4%BB%96%E7%94%A8%E6%88%B7%E5%8F%98%E4%B8%BA%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7"><span class="toc-text">如何使其他用户变为超级用户</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-text">用户管理命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#useradd"><span class="toc-text">useradd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%8A%A8%E5%88%A0%E9%99%A4%E7%94%A8%E6%88%B7"><span class="toc-text">手动删除用户</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#id"><span class="toc-text">id</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#env"><span class="toc-text">env</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E7%BB%84%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="toc-text">用户组管理命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#groupadd"><span class="toc-text">groupadd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#groupmod"><span class="toc-text">groupmod</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#groupdel"><span class="toc-text">groupdel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#gpasswd"><span class="toc-text">gpasswd</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86"><span class="toc-text">权限管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#ACL%E6%9D%83%E9%99%90"><span class="toc-text">ACL权限</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#getfacl-%E7%9B%AE%E5%BD%95%E2%80%94%E6%9F%A5%E7%9C%8BACL"><span class="toc-text">getfacl + 目录—查看ACL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#setfacl%E2%80%94-%E8%AE%BE%E5%AE%9AACL%E6%9D%83%E9%99%90%E5%91%BD%E4%BB%A4"><span class="toc-text">setfacl—-设定ACL权限命令</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%89%B9%E6%AE%8A%E6%9D%83%E9%99%90"><span class="toc-text">文件特殊权限</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E7%AE%A1%E7%90%86"><span class="toc-text">文件管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E5%9F%BA%E7%A1%80"><span class="toc-text">shell基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-text">环境变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shell-%E8%84%9A%E6%9C%AC"><span class="toc-text">shell 脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#echo"><span class="toc-text">echo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#history"><span class="toc-text">history</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#alias"><span class="toc-text">alias</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="toc-text">多命令执行顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%A1%E9%81%93%E7%AC%A6"><span class="toc-text">管道符</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E5%80%BC%E8%BF%90%E7%AE%97%E4%B8%8E%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-text">数值运算与运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#declare%E2%80%94%E5%A3%B0%E6%98%8E%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B"><span class="toc-text">declare—声明变量类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%95%E4%B8%89-%E5%B8%B8%E7%94%A8"><span class="toc-text">法三:(常用)</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-text">环境变量的配置文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Shell%E6%AC%A2%E8%BF%8E%E4%BF%A1%E6%81%AF"><span class="toc-text">Shell欢迎信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%B8%8E%E9%80%9A%E9%85%8D%E7%AC%A6"><span class="toc-text">正则表达式与通配符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shell%E7%BC%96%E7%A8%8B"><span class="toc-text">shell编程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cut%E2%80%94%E6%88%AA%E5%8F%96%E5%AD%97%E7%AC%A6%E6%AE%B5%E6%88%AA%E5%8F%96%E5%91%BD%E4%BB%A4"><span class="toc-text">cut—截取字符段截取命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#printf%E2%80%94%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA"><span class="toc-text">printf—格式化输出</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="toc-text">服务管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Terminal%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="toc-text">Terminal快捷键</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8linux%E5%88%9B%E5%BB%BAU%E7%9B%98%E5%90%AF%E5%8A%A8%E5%99%A8"><span class="toc-text">如何使用linux创建U盘启动器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#linux%E6%96%87%E4%BB%B6%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%89%B9%E9%87%8F%E6%9F%A5%E6%89%BE-%E6%9B%BF%E6%8D%A2"><span class="toc-text">linux文件字符串批量查找, 替换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99-%E6%89%93%E5%BC%80-%E5%85%B3%E9%97%AD"><span class="toc-text">防火墙 打开 关闭</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%85%8D%E5%AF%86%E9%92%A5%E7%99%BB%E5%BD%95linux"><span class="toc-text">如何实现免密钥登录linux</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#nohup"><span class="toc-text">nohup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEdns%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-text">配置dns服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%94%B9%E7%A3%81%E7%9B%98%E5%90%8D%E7%A7%B0"><span class="toc-text">更改磁盘名称</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

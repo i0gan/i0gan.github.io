@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Docker-镜像以及容器管理 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>Docker-镜像以及容器管理</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-01-24T08:38:25.000Z" id="date"> 2021-01-24</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.036Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">1.3k</div></span><br><span>Read Time: <div class="control">4 min</div></span></div></div><hr><div id="post-content"><h1 id="Docker-镜像以及容器管理"><a href="#Docker-镜像以及容器管理" class="headerlink" title="Docker - 镜像以及容器管理"></a>Docker - 镜像以及容器管理</h1><p>Docker将容器打包成镜像，体积远小于其他虚拟化软件，可以更快的分发部署，轻量级的容器和镜像结构发挥了巨大作用。</p>
+<h2 id="一、保存容器更改"><a href="#一、保存容器更改" class="headerlink" title="一、保存容器更改"></a>一、保存容器更改</h2><p>Docker镜像的本质是多个基于UnionFS的镜像层依次挂载的结果，而容器的文件系统则是在以只读方式挂载镜像后增加的一个可读可写的沙盒环境。</p>
+<p>基于镜像结构，Docker提供了将容器中的这个可读可写的沙盒环境持久化为一个镜像层的方法。能够很轻松的在Docker里将容器内的修改记录下来，保存为一个新的镜像。</p>
+<p>通过<strong>docker commit</strong>命令，可以将容器修改的内容保存为镜像，由于镜像的结构很像代码仓库里的修改记录，而记录容器修改的过程又像是在提交代码，所以可以更形象的称之为提交容器的更改。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">docker commit webapp<br>sha256:0bc42f7ff218029c6c4199ab5c75ab83aeaaed3b5c731f715a3e807dda61d19e<br></code></pre></td></tr></table></figure>
+
+<p>Docker将容器内沙盒文件系统记录成镜像层的时候，会先暂停容器的运行，以保证容器内的文件系统处于一个相对稳定的状态，确保数据的一致性。</p>
+<p>提交镜像更新后，可以得到Docker创建的新镜像的ID，可以本地镜像列表中找到它。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">docker images<br>REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE<br>&lt;none&gt;                &lt;none&gt;              0bc42f7ff218        3 seconds ago       372MB<br></code></pre></td></tr></table></figure>
+
+<p>类似通过Git提交代码一样，还能在提交容器更改时附加提交信息，方便以后查询。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker commit -m &quot;configured&quot; webapp<br></code></pre></td></tr></table></figure>
+
+<h2 id="二、镜像命名"><a href="#二、镜像命名" class="headerlink" title="二、镜像命名"></a>二、镜像命名</h2><p>提交容器更新后产生的镜像并没<strong>REPOSITORY</strong>和<strong>TAG</strong>内容，新的镜像还没有名字。</p>
+<p>通过<strong>docker tag</strong>命令，能够为未命名的镜像指定镜像名，也能够对已有的镜像创建一个新的命名。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">docker tag 0bc42f7ff218 webapp:1.0<br>docker tag webapp:1.0 webapp:latest<br></code></pre></td></tr></table></figure>
+
+<p>对未命名的镜像进行命名后，Docker就不会在镜像列表里继续显示这个镜像，取而代之的是新的命名。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">docker images<br>REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE<br>webapp                1.0                 0bc42f7ff218        29 minutes ago      372MB<br>webapp                latest              0bc42f7ff218        29 minutes ago      372MB<br></code></pre></td></tr></table></figure>
+
+<p>由于镜像是对镜像层的引用记录，所以对镜像进行命名后，能够在镜像列表里同时看到新老两个镜像，实质是它们其实引用着相同的镜像层，这个能够从镜像ID中看得出来。</p>
+<p>除了使用docker tag在容器提交为新的镜像后为镜像命名这种方式外，还可以直接在<strong>docker commit</strong>命令里指定新的镜像名，这种方式在使用容器提交时更加方便。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker commit -m &quot;upgrade&quot; webapp webapp：2.0<br></code></pre></td></tr></table></figure>
+
+<h2 id="三、镜像迁移"><a href="#三、镜像迁移" class="headerlink" title="三、镜像迁移"></a>三、镜像迁移</h2><p>将更新导出为镜像后，就可以开始镜像迁移。</p>
+<p>由于Docker以集中的方式管理镜像的，所以在迁移之前，需要先从Docker中取出镜像。<strong>docker save</strong>命令可以将镜像输出，提供了保存镜像到Docker外部的方式。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker save webapp:1.0 &gt; webapp-1.0.tar<br></code></pre></td></tr></table></figure>
+
+<p>默认定义下，docker save命令会将镜像内容放入输出流中，这种用法有时不太友好，docker save命令还提供了**-o**选项，用来指定输出文件，使用这个选项可以让命令更具有统一性。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker save -o ./webapp-1.0.tar webapp:1.0<br></code></pre></td></tr></table></figure>
+
+<p>镜像导出之后可以找到已经存储镜像内容的webapp-1.0.tar文件。通过解压软件查看其中的内容，会看到里面就是镜像所基于的几个镜像层的记录文件。</p>
+<h2 id="四、导入镜像"><a href="#四、导入镜像" class="headerlink" title="四、导入镜像"></a>四、导入镜像</h2><p>可以通过很多种方式将导出的镜像文件复制到另一台机器上，之后将镜像导入到新机器中运行的Docker中。使用与docker save相对的<strong>docker load</strong>命令即可。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker load &lt; webapp-1.0.tar<br></code></pre></td></tr></table></figure>
+
+<p>docker load从输入流中读取镜像的数据，也能够使用**-i**选项指定输入文件。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker load -i webapp-1.0.tar<br></code></pre></td></tr></table></figure>
+
+<p>镜像导入后，就可以通过docker images看到，导入的镜像会延用原有的镜像名称。</p>
+<h2 id="五、批量迁移"><a href="#五、批量迁移" class="headerlink" title="五、批量迁移"></a>五、批量迁移</h2><p>通过docker save和docker load命令还能够批量迁移镜像，只要在docker save中传入多个镜像名作为参数，它就能够将这些镜像都打成一个包，便于一次性迁移多个镜像。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker save -o ./images.tar webapp:1.0 nginx:1.12 mysql:5.7<br></code></pre></td></tr></table></figure>
+
+<p>装有多个镜像的包可以直接被docker load识别和读取，将这个包导入后，其中所有镜像都会被导入到Docker之中。</p>
+<h2 id="六、导出和导入容器"><a href="#六、导出和导入容器" class="headerlink" title="六、导出和导入容器"></a>六、导出和导入容器</h2><p>提交镜像修改，再导出镜像进行迁移的方法还不够效率，使用<strong>docker export</strong>命令可以直接导出容器，把它简单的理解为docker commit与docker save的结合体。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">docker export -o ./webapp.tar webapp<br></code></pre></td></tr></table></figure>
+
+<p>相对的，使用docker export导出的容器包，需要使用<strong>docker import</strong>导入，导入的结果还是一个镜像，而不是容器。</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/01/24/dev/language/php/php/">← Next PHP学习</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/01/17/env/docker/source/">Docker配置源 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker-%E9%95%9C%E5%83%8F%E4%BB%A5%E5%8F%8A%E5%AE%B9%E5%99%A8%E7%AE%A1%E7%90%86"><span class="toc-text">Docker - 镜像以及容器管理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BF%9D%E5%AD%98%E5%AE%B9%E5%99%A8%E6%9B%B4%E6%94%B9"><span class="toc-text">一、保存容器更改</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E9%95%9C%E5%83%8F%E5%91%BD%E5%90%8D"><span class="toc-text">二、镜像命名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E9%95%9C%E5%83%8F%E8%BF%81%E7%A7%BB"><span class="toc-text">三、镜像迁移</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%AF%BC%E5%85%A5%E9%95%9C%E5%83%8F"><span class="toc-text">四、导入镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%89%B9%E9%87%8F%E8%BF%81%E7%A7%BB"><span class="toc-text">五、批量迁移</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%AF%BC%E5%87%BA%E5%92%8C%E5%AF%BC%E5%85%A5%E5%AE%B9%E5%99%A8"><span class="toc-text">六、导出和导入容器</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

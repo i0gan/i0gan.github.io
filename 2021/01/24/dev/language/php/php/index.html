@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PHP学习 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>PHP学习</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-01-24T09:51:33.000Z" id="date"> 2021-01-24</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.030Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">948</div></span><br><span>Read Time: <div class="control">4 min</div></span></div></div><hr><div id="post-content"><h1 id="PHP学习"><a href="#PHP学习" class="headerlink" title="PHP学习"></a>PHP学习</h1><h1 id="About-PHP"><a href="#About-PHP" class="headerlink" title="About PHP"></a>About PHP</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>PHP: Hypertext Preprocessor, 超文本预处理器。php是一种功能强大，并简便易用的脚本语言，它可嵌入到HTML中，尤其适合web开发。</p>
+<h2 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h2><p>1994年， Rasmus床找了php，（这完全是个人爱好)</p>
+<p>1997年，Zeev, Andi重写解析器，发展到PHP3 (有了队伍)</p>
+<p>2000年五月，php4发布，它使用了Zend引擎(Zeev+andi)。(有了标准)</p>
+<p>2004年7月，php5正式发布。( 飞速发展，不断创新)</p>
+<p>php官方网址: <a target="_blank" rel="noopener" href="http://www.php.net/">www.php.net</a></p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><p>php是免费的</p>
+<p>效率高: php消耗相当少的系统资源</p>
+<p>易学易用，功能强大</p>
+<p>跨平台</p>
+<p>嵌入HTML</p>
+<p>面向对象</p>
+<h2 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h2><p>WAMP: windows + apache + mysql + php</p>
+<p>WNMP: windows + nginx + mysql + php</p>
+<p>LAMP: linux + apache + mysql + php</p>
+<p>LNMP: linux + nginx + mysql + php</p>
+<h3 id="官方网站"><a href="#官方网站" class="headerlink" title="官方网站"></a>官方网站</h3><p>php: <a target="_blank" rel="noopener" href="http://www.php.net/">http://www.php.net</a></p>
+<p>mysql: <a target="_blank" rel="noopener" href="http://www.mysql.com/">http://www.mysql.com</a></p>
+<p>apache: <a target="_blank" rel="noopener" href="http://www.apache.org/">http://www.apache.org</a></p>
+<p>windows下:</p>
+<p>推荐软件: phpstudy</p>
+<p>网址: <a target="_blank" rel="noopener" href="https://ww.xp.cn/">https://ww.xp.cn</a></p>
+<p>推荐软件2: appsrv-win32</p>
+<p>网址: <a target="_blank" rel="noopener" href="http://www.appservnetwork.com/">http://www.appservnetwork.com</a></p>
+<p>linux下:</p>
+<ol>
+<li><p>宝塔</p>
+</li>
+<li><p>(appceh&#x2F;nginx, mysql, php)单独安装</p>
+</li>
+<li><p>phpstudy-linux面板</p>
+</li>
+</ol>
+<h1 id="VSCode"><a href="#VSCode" class="headerlink" title="VSCode"></a>VSCode</h1><h2 id="装饰特效"><a href="#装饰特效" class="headerlink" title="装饰特效"></a>装饰特效</h2><p>安装 Power Mode</p>
+<p>设置中搜索setting.json,添加如下:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br><span class="hljs-attr">&quot;powermode.enabled&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span><br><span class="hljs-attr">&quot;powermode.enableShake&quot;</span> <span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span><br><span class="hljs-attr">&quot;powermode.presets&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;particles&quot;</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="Linux下环境搭建"><a href="#Linux下环境搭建" class="headerlink" title="Linux下环境搭建:"></a>Linux下环境搭建:</h1><p>httpd + php + mysql</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo vim /etc/httpd/conf/httpd.conf<br></code></pre></td></tr></table></figure>
+
+<p>添加php模块到httpd中</p>
+<p>编辑 &#x2F;usr&#x2F;local&#x2F;apache2&#x2F;conf&#x2F;httpd.conf 文件时要注意：</p>
+<p>找到：<br>AddType application&#x2F;x-compress .Z<br>AddType application&#x2F;x-gzip .gz .tgz<br>在后面添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">AddType application/x-httpd-php .php<br>AddType application/x-httpd-php-source .phps<br></code></pre></td></tr></table></figure>
+
+<p>找到： <IfModule dir_module> DirectoryIndex index.html </IfModule><br>添加： </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&lt;IfModule dir_module&gt; DirectoryIndex index.html index.php &lt;/IfModule&gt;<br></code></pre></td></tr></table></figure>
+
+<p>找到： ＃ServerName <a target="_blank" rel="noopener" href="http://www.example.com/">www.example.com:80</a><br>修改为： ServerName 127.0.0.1:80或者ServerName localhost:80 记得要去掉前面的“＃”</p>
+<p>修改默认的Web站点目录</p>
+<p>找到：DocumentRoot “&#x2F;usr&#x2F;local&#x2F;apache2&#x2F;htdocs”<br>修改为：DocumentRoot “&#x2F;home&#x2F;www&#x2F;WebSite” –该目录为自己创建的目录</p>
+<p>找到：&lt;Directory “&#x2F;usr&#x2F;local&#x2F;apache2&#x2F;htdocs”&gt;<br>修改为：&lt;Directory “&#x2F;home&#x2F;www&#x2F;WebSite”&gt;</p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/c36dd3946e74">https://www.jianshu.com/p/c36dd3946e74</a></p>
+<h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker pull nginx<br>docker pull php:fpm<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="指定宿主机目录"><a href="#指定宿主机目录" class="headerlink" title="指定宿主机目录"></a>指定宿主机目录</h3><h3 id="让-nginx-配置挂载宿主机文件"><a href="#让-nginx-配置挂载宿主机文件" class="headerlink" title="让 nginx 配置挂载宿主机文件"></a>让 <code>nginx</code> 配置挂载宿主机文件</h3><p>借助 <code>-v</code> 参数，我们在宿主机新增一个目录存放 <code>nginx</code> 配置，然后指定容器 nginx 配置目录挂载到宿主机<br>在执行命令之前，我们先写好一个配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">server &#123;<br>    root /usr/share/nginx/www;<br>    index  index.html index.php;<br>    server_name localhost;<br>    error_log  /var/log/nginx/error.log;<br>    access_log /var/log/nginx/access.log;<br> <br>    location ~ \.php$ &#123;<br>        fastcgi_pass 127.0.0.1:9000;<br>        fastcgi_index index.php;<br>        include fastcgi_params;<br>        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;<br>        fastcgi_param PATH_INFO $fastcgi_path_info;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>运行</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run \<br>--<span class="hljs-built_in">rm</span> \<br>--name php-nginx \<br>-p 8080:80 \<br>-v /home/i0gan/php/www:/usr/share/nginx/www \<br>-v /home/i0gan/php/conf/nginx:/etc/nginx/conf.d \<br>nginx<br></code></pre></td></tr></table></figure>
+
+
+
+<p>在 www 新增一个 php 文件</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>	<span class="hljs-title function_ invoke__">phpinfo</span>();<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sh">docker run \<br>--<span class="hljs-built_in">rm</span> \<br>--name php-fpm \<br>php:fpm \<br></code></pre></td></tr></table></figure>
+
+
+
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903914211393550">https://juejin.cn/post/6844903914211393550</a></p>
+<h2 id="PHP代码标记"><a href="#PHP代码标记" class="headerlink" title="PHP代码标记"></a>PHP代码标记</h2><p>在php历史发展中，可以使用多种标记来区分php脚本</p>
+<p>asp标记: &lt;% php代码 %&gt;</p>
+<p>短标记: <? php代码 ?></p>
+<p>以上两种已经弃用，如果要使用那么需要在配置文件中开启</p>
+<p>脚本标记: <script language="php"> php代码 </script></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs php+HTML">&lt;html&gt;<br>&lt;body&gt;<br>	&lt;b&gt;<br>		&lt;script language=&quot;php&quot;&gt;<br>		echo &quot;hello world&quot;;<br>		&lt;/script&gt;<br>	&lt;/b&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>标准标记: <?php  php代码?></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs php+HTML">&lt;html&gt;<br>&lt;body&gt;<br>	&lt;b&gt;<br>		&lt;?php<br>		echo(&quot;hello world\n&quot;);<br>		?&gt;<br>        asdfasdfasd<br>	&lt;/b&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br></code></pre></td></tr></table></figure>
+
+<h2 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h2><p>&#x2F;&#x2F;: 后面所跟的内容全部都是注释</p>
+<p>#: 与 &#x2F;&#x2F;一样</p>
+<p>&#x2F;**&#x2F;</p>
+<h2 id="语句分割符"><a href="#语句分割符" class="headerlink" title="语句分割符"></a>语句分割符</h2><p>;</p>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><h3 id="变量的使用"><a href="#变量的使用" class="headerlink" title="变量的使用"></a>变量的使用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">$var; //定义变量<br>$var2 = 1; //定义并赋值<br>unset($var2) // 删除变量<br></code></pre></td></tr></table></figure>
+
+<h3 id="预定义变量"><a href="#预定义变量" class="headerlink" title="预定义变量"></a>预定义变量</h3><p>都是数组</p>
+<p>$_GET</p>
+<p>$_POST</p>
+<p>$_REQUEST</p>
+<p>$_GLOBALS</p>
+<p>$_SERVER</p>
+<p>$_SESSION</p>
+<p>$_COOKIE</p>
+<p>$_ENV</p>
+<p>$_FILES</p>
+<h3 id="可变变量"><a href="#可变变量" class="headerlink" title="可变变量"></a>可变变量</h3><p>如果一个变量保存的值刚好是另一个变量的名字，那么可以直接通过访问一个变量得到另一个变量的值:在变量前面再多加一个$符号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">$a = &#x27;b&#x27;;<br>$b = &#x27;bb&#x27;;<br>echo $$a;<br></code></pre></td></tr></table></figure>
+
+
+
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/02/01/security/ctf/compitation/wp-hws/">← Next HWS PWN WRITE UP</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/01/24/env/docker/docker_con_save/">Docker-镜像以及容器管理 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP%E5%AD%A6%E4%B9%A0"><span class="toc-text">PHP学习</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#About-PHP"><span class="toc-text">About PHP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E4%BB%8B"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%B7%E6%BA%90"><span class="toc-text">起源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%B9%E7%82%B9"><span class="toc-text">特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="toc-text">运行环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E7%BD%91%E7%AB%99"><span class="toc-text">官方网站</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#VSCode"><span class="toc-text">VSCode</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A3%85%E9%A5%B0%E7%89%B9%E6%95%88"><span class="toc-text">装饰特效</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E4%B8%8B%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="toc-text">Linux下环境搭建:</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker"><span class="toc-text">Docker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8C%87%E5%AE%9A%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%9B%AE%E5%BD%95"><span class="toc-text">指定宿主机目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A9-nginx-%E9%85%8D%E7%BD%AE%E6%8C%82%E8%BD%BD%E5%AE%BF%E4%B8%BB%E6%9C%BA%E6%96%87%E4%BB%B6"><span class="toc-text">让 nginx 配置挂载宿主机文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP%E4%BB%A3%E7%A0%81%E6%A0%87%E8%AE%B0"><span class="toc-text">PHP代码标记</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E9%87%8A"><span class="toc-text">注释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%AD%E5%8F%A5%E5%88%86%E5%89%B2%E7%AC%A6"><span class="toc-text">语句分割符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%98%E9%87%8F"><span class="toc-text">变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%98%E9%87%8F%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">变量的使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%84%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="toc-text">预定义变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E5%8F%98%E5%8F%98%E9%87%8F"><span class="toc-text">可变变量</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

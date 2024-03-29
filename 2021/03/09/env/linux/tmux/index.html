@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>tmux 基本命令 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>tmux 基本命令</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-03-09T01:55:25.000Z" id="date"> 2021-03-09</time></div></span><br><span>Last Update: <div class="control"><time datetime="2023-03-15T06:15:19.047Z" id="updated"> 2023-03-15</time></div></span><br><span>Word Count: <div class="control">750</div></span><br><span>Read Time: <div class="control">2 min</div></span></div></div><hr><div id="post-content"><h1 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h1><p>Linux终端共享分屏神器tmux<br>tmux几大特色</p>
+<p>会话与窗口解绑，终端执行的任务不再因为关闭窗口而中断<br>会话共享，tmux的会话可以被多人共享，同时操作，方便异地操作<br>支持窗口被水平垂直任意分割</p>
+<p>开启tmux<br>从终端Terminal进入tmux界面</p>
+<p>tmux<br>先介绍tmux的几个概念session，windows，panel，和prefix</p>
+<p>prefix（前缀键）<br>为了区分输入和快捷键，tmux设置了一个前缀组合键Ctrl+B，按下前缀组合键后松开，再按下快捷键操作，我们将这个组合键称作prefix，尝试使用prefix+%在当前window创建一个panel</p>
+<p>session（会话）<br>新建一个session</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux new -s session_name<br></code></pre></td></tr></table></figure>
+
+
+<p>session_name是自定义的会话的名字，通过tmux命令直接建立的session的名字会默认以数字0,1，…开始命名</p>
+<p>临时退出session<br>临时退出的session会在后台运行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux detach<br></code></pre></td></tr></table></figure>
+
+
+<p>快捷键prefix+d</p>
+<p>回到已存在的session中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux a -t session_name<br></code></pre></td></tr></table></figure>
+
+
+<p>回到上一个使用的session</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux a<br></code></pre></td></tr></table></figure>
+
+
+<p>tip：</p>
+<p>尝试在tmux中执行程序，并利用tmux的detach功能让其在后台运行。<br>尝试在不同电脑上同时连入一个session进行操作<br>查询当前session列表</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux ls<br></code></pre></td></tr></table></figure>
+
+
+<p>以下为我的session列表</p>
+<p>切换session</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux switch -t session_name<br></code></pre></td></tr></table></figure>
+
+
+
+<p>结束session<br>结束当前session<br>快捷键prefix+:，输入命令kill-session</p>
+<p>结束所有session<br>快捷键prefix+:，输入命令kill-server</p>
+<p>结束指定session</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux kill-session -t session_name<br></code></pre></td></tr></table></figure>
+
+<p>windows（窗口）<br>同一个session可以有多个窗口,这些窗口就像多个桌面一样</p>
+<p>新建窗口<br>快捷键prefix + c</p>
+<p>切换窗口<br>切换到下一个窗口<br>快捷键prefix + n</p>
+<p>切换到上一个窗口<br>快捷键prefix + p</p>
+<p>切换到指定窗口<br>快捷键prefix + 窗口编号</p>
+<p>panel（窗格）<br>窗格为我们同时提供了多个界面，方便了需要多个界面同时显示的操作</p>
+<p>创建新的窗格<br>上下分屏</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux split-window<br></code></pre></td></tr></table></figure>
+
+
+<p>快捷键prefix + “</p>
+<p>左右分屏</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tmux split-window<br></code></pre></td></tr></table></figure>
+
+
+<p>快捷键prefix + %</p>
+<p>关闭窗格</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">exit<br></code></pre></td></tr></table></figure>
+
+
+<p>快捷键prefix + x</p>
+<p>切换窗格<br>快捷键prefix，再按↑、↓、←、→键切换</p>
+<p>调整窗格大小<br>快捷键prefix，按住ctrl，同时按↑、↓、←、→键</p>
+<p>查看版本<br>不同的版本，tmux的设置和快捷键可能有所不同</p>
+<p>tmux -V</p>
+<p>切换鼠标模式<br>开启鼠标控制<br>快捷键prefix+:</p>
+<p>输入命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">set mouse on<br></code></pre></td></tr></table></figure>
+
+
+
+<p>关闭鼠标控制<br>快捷键prefix+:</p>
+<p>输入命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">set mouse no<br></code></pre></td></tr></table></figure>
+
+
+
+<p>开启模式	关闭模式<br>鼠标左键	点击可以切换panel	可以选定文本<br>鼠标中键滚轮	滑动可以只针对当前panel	滑动会对当前窗口<br>鼠标右键	无反应	终端的右键选项窗口<br>使用过后明显感觉到，开启模式下，虽然对panel的操作更友好了，但是复制文本的时候就变的麻烦了，只要长按shift键，就会发现鼠标临时回到了关闭模式下的操作。</p>
+<p>tmux美化</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/gpakosz/.tmux">https://github.com/gpakosz/.tmux</a></p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/03/12/school/analog-electronics-technology/">← Next The fundamentals of Analog Electronics Technology</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/03/08/school/d0g3-pwn-3%E9%9D%A2%E4%BB%BB%E5%8A%A1/">D0g3 PWN3面任务.md Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#tmux"><span class="toc-text">tmux</span></a></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

