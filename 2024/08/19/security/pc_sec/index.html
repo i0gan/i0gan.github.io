@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PC安全 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>PC安全</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2024-08-19T14:49:21.000Z" id="date"> 2024-08-19</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-30T12:29:01.110Z" id="updated"> 2024-09-30</time></div></span><br><span>Word Count: <div class="control">744</div></span><br><span>Read Time: <div class="control">2 min</div></span></div></div><hr><div id="post-content"><h1 id="PC安全"><a href="#PC安全" class="headerlink" title="PC安全"></a>PC安全</h1><p>ref: <a target="_blank" rel="noopener" href="https://anticheatexpert.com/#/products/shell-service-pc">https://anticheatexpert.com/#/products/shell-service-pc</a></p>
+<h2 id="TVMP代码加密"><a href="#TVMP代码加密" class="headerlink" title="TVMP代码加密"></a>TVMP代码加密</h2><p>全自研方案，对关键代码逻辑进行加密，避免调试工具还原函数执行逻辑,加密强度灵活可控</p>
+<h2 id="反调试"><a href="#反调试" class="headerlink" title="反调试"></a>反调试</h2><p>严格防控windbg x64dbg、CE等多种调试工具进行动态调试和破解，有效提高动态分析门槛</p>
+<h2 id="反线程注入"><a href="#反线程注入" class="headerlink" title="反线程注入"></a>反线程注入</h2><p>阻止远程线程注入dll到游戏进程。</p>
+<h2 id="反多开"><a href="#反多开" class="headerlink" title="反多开"></a>反多开</h2><p>限制同一PC端上客户端同时开启的数量，有效提升多开小号“薅羊毛”门槛。</p>
+<h2 id="模块绑定"><a href="#模块绑定" class="headerlink" title="模块绑定"></a>模块绑定</h2><p>针对unity类的游戏，加固会将游戏的exe和主逻辑dll进行强绑定，防止安全系统被剥离</p>
+<h2 id="反虚拟机执行环境"><a href="#反虚拟机执行环境" class="headerlink" title="反虚拟机执行环境"></a>反虚拟机执行环境</h2><p>基于本平台样本库，当检测到游戏在虚拟机环境下执行，将立刻弹框闪退</p>
+<h2 id="客户端被调试和篡改"><a href="#客户端被调试和篡改" class="headerlink" title="客户端被调试和篡改"></a>客户端被调试和篡改</h2><h3 id="场景痛点"><a href="#场景痛点" class="headerlink" title="场景痛点"></a>场景痛点</h3><p>客户端拥有游戏的核心代码逻辑，极易被外挂作者调试分析，进而篡改实现外挂功能。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>端游加固可实现对关键代码加密，提升被逆向破解的难度，专家级的反调试技术防止被破坏者分析客户端。</p>
+<h2 id="核心组件被篡改"><a href="#核心组件被篡改" class="headerlink" title="核心组件被篡改"></a>核心组件被篡改</h2><h3 id="场景痛点-1"><a href="#场景痛点-1" class="headerlink" title="场景痛点"></a>场景痛点</h3><p>unity引擎主逻辑dll极易被攻击和篡改，进而带来很大的风险。</p>
+<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><p>端游加固服务拥有业界领先的unity保护方案，可完成对mono和IL2Cpp保护，包含opcode加密、方法加密、字符串加密、metadata加密、动态代码加密等，为unity类游戏提供强大的保护盾。</p>
+<h4 id="虚拟化和混淆设置原则"><a href="#虚拟化和混淆设置原则" class="headerlink" title="虚拟化和混淆设置原则"></a>虚拟化和混淆设置原则</h4><ul>
+<li>函数简单或者调用频率不高，可以设置为虚拟化。</li>
+<li>函数复杂或者调用频率高，可以设置为混淆。</li>
+</ul>
+<p><strong>注意：TVM加密对游戏性能的影响与原函数调用频率相关，通常每秒几十次调用不会对对性能产生较大影响</strong>。</p>
+<h4 id="TVM加密函数选取建议"><a href="#TVM加密函数选取建议" class="headerlink" title="TVM加密函数选取建议"></a>TVM加密函数选取建议</h4><ul>
+<li>和自身保护方案相关函数，例如接入ACE-SDK相关代码所在函数。</li>
+<li>网络协议发送和接收函数及其相关函数。</li>
+<li>碰撞检测相关函数。</li>
+<li>AI处理相关函数。</li>
+<li>资源加解密及其处理相关函数。</li>
+<li>伤害计算相关函数。</li>
+<li>物品处理相关函数（拾取、丢弃、修理等）。</li>
+<li>商店处理相关函数（商店的打开、关闭、物品出售、物品购买等）。</li>
+<li>仓库操作相关函数。</li>
+<li>任务系统相关函数（任务的接受、完成、放弃等）。</li>
+<li>攻击相关函数（普通攻击相关函数、使用技能相关函数）。</li>
+<li>寻路相关函数（走路函数等）。</li>
+<li>角色登录相关函数（角色选择等）。</li>
+<li>NPC交互相关函数。</li>
+</ul>
+<p><strong>注意：比如A函数调用了B函数，B函数重要，A不重要，只需选取B函数。</strong></p>
+<h2 id="VMP"><a href="#VMP" class="headerlink" title="VMP"></a>VMP</h2><p><a target="_blank" rel="noopener" href="https://github.com/lmy375/awesome-vmp">https://github.com/lmy375/awesome-vmp</a></p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2024/08/19/security/crypto/crypto/">← Next 常用的加解密算法</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2024/06/02/car/ez_basic_knowlege/">BMW E90 1JZ (EZ) 基础知识 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PC%E5%AE%89%E5%85%A8"><span class="toc-text">PC安全</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#TVMP%E4%BB%A3%E7%A0%81%E5%8A%A0%E5%AF%86"><span class="toc-text">TVMP代码加密</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="toc-text">反调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E7%BA%BF%E7%A8%8B%E6%B3%A8%E5%85%A5"><span class="toc-text">反线程注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E5%A4%9A%E5%BC%80"><span class="toc-text">反多开</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A8%A1%E5%9D%97%E7%BB%91%E5%AE%9A"><span class="toc-text">模块绑定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8D%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%89%A7%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="toc-text">反虚拟机执行环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%A2%AB%E8%B0%83%E8%AF%95%E5%92%8C%E7%AF%A1%E6%94%B9"><span class="toc-text">客户端被调试和篡改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E7%97%9B%E7%82%B9"><span class="toc-text">场景痛点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-text">解决方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6%E8%A2%AB%E7%AF%A1%E6%94%B9"><span class="toc-text">核心组件被篡改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF%E7%97%9B%E7%82%B9-1"><span class="toc-text">场景痛点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-1"><span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%8C%96%E5%92%8C%E6%B7%B7%E6%B7%86%E8%AE%BE%E7%BD%AE%E5%8E%9F%E5%88%99"><span class="toc-text">虚拟化和混淆设置原则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TVM%E5%8A%A0%E5%AF%86%E5%87%BD%E6%95%B0%E9%80%89%E5%8F%96%E5%BB%BA%E8%AE%AE"><span class="toc-text">TVM加密函数选取建议</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#VMP"><span class="toc-text">VMP</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

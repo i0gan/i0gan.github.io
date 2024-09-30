@@ -1,0 +1,95 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>基于Docker的K8S集群 Kind | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>基于Docker的K8S集群 Kind</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2023-10-15T10:04:47.000Z" id="date"> 2023-10-15</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-19T05:16:01.830Z" id="updated"> 2024-09-19</time></div></span><br><span>Word Count: <div class="control">483</div></span><br><span>Read Time: <div class="control">2 min</div></span></div></div><hr><div id="post-content"><h1 id="基于Docker-的K8S集群-Kind"><a href="#基于Docker-的K8S集群-Kind" class="headerlink" title="基于Docker 的K8S集群 Kind"></a>基于Docker 的K8S集群 Kind</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p><a target="_blank" rel="noopener" href="https://kind.sigs.k8s.io/">https://kind.sigs.k8s.io/</a></p>
+<p>一键安装:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">go install sigs.k8s.io/kind@v0.22.0<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><p>创建默认集群</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kind create cluster<br></code></pre></td></tr></table></figure>
+
+<p>可以用自己的编写配置的集群</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kind create cluster --config kind-example-config.yaml<br></code></pre></td></tr></table></figure>
+
+<p>使用自定义镜像创建集群</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">docker pull kindest/node:v1.25.3<br>kind create cluster --image kindest/node:v1.25.3 --name aio -v 5<br></code></pre></td></tr></table></figure>
+
+<p>查看集群</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kind get clusters<br></code></pre></td></tr></table></figure>
+
+<p>删除集群</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># syntax：kind delete  cluster --name $&#123;clustername&#125;<br>kind delete  cluster --name aio<br></code></pre></td></tr></table></figure>
+
+<h2 id="加载镜像"><a href="#加载镜像" class="headerlink" title="加载镜像"></a>加载镜像</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kind load docker-image my-custom-image-0 my-custom-image-1<br></code></pre></td></tr></table></figure>
+
+<p>这里我加载我自己docker中的镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kind load docker-image i0gan/squick:1.1<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="LB"><a href="#LB" class="headerlink" title="LB"></a>LB</h2><p><a target="_blank" rel="noopener" href="https://kind.sigs.k8s.io/docs/user/loadbalancer/">https://kind.sigs.k8s.io/docs/user/loadbalancer/</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/usage.yaml<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>ref: <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/kubectl/quick-reference/">https://kubernetes.io/docs/reference/kubectl/quick-reference/</a></p>
+<h3 id="查看配置"><a href="#查看配置" class="headerlink" title="查看配置"></a>查看配置</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl config view<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看pods"><a href="#查看pods" class="headerlink" title="查看pods"></a>查看pods</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl get pods --all-namespaces <br></code></pre></td></tr></table></figure>
+
+<p>查看详细的pods</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl get pods -o wide<br></code></pre></td></tr></table></figure>
+
+
+
+<p>watch 某类型的pods</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl get pods --watch -l app=nginx<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="进入pods"><a href="#进入pods" class="headerlink" title="进入pods"></a>进入pods</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl exec --stdin --tty web-1 -- /bin/bash<br><br>kubectl exec --stdin --tty &#123;pod_name&#125; -n &#123;namespace&#125; -- /bin/bash<br></code></pre></td></tr></table></figure>
+
+
+
+<p>获取nodes</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl get nodes -o wide <br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="查看镜像"><a href="#查看镜像" class="headerlink" title="查看镜像"></a>查看镜像</h3><p>在Kubernetes中，要查看Pod中使用的镜像，你可以使用kubectl命令行工具。以下是一个简单的命令，用于列出所有Pods及其镜像：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl get pods -o=jsonpath=&#x27;&#123;.items[*].spec.containers[*].image&#125;&#x27; -A<br></code></pre></td></tr></table></figure>
+
+
+<p>这个命令会输出集群中所有命名空间（-A标志）中所有Pods的容器镜像。</p>
+<p>如果你只想查看特定命名空间中的Pods镜像，可以使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">kubectl get pods -o=jsonpath=&#x27;&#123;.items[*].spec.containers[*].image&#125;&#x27; -n &lt;namespace&gt;<br></code></pre></td></tr></table></figure>
+
+
+
+
+<p>将<namespace>替换为你想要查看的命名空间。</p>
+<p>如果你只想查看单个Pod的镜像，可以使用以下命令：</p>
+<p>kubectl get pod <pod-name> -o&#x3D;jsonpath&#x3D;’{.spec.containers[*].image}’ -n <namespace><br>将<pod-name>和<namespace>替换为相应的Pod名称和命名空间。</p>
+<h3 id="删除资源"><a href="#删除资源" class="headerlink" title="删除资源"></a>删除资源</h3><p>kubectl delete -f master.yaml</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.lixueduan.com/">开发者学习之路-指月小筑(探索云原生)</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/youziguo/article/details/139936146">https://blog.csdn.net/youziguo/article/details/139936146</a></li>
+</ol>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2023/11/15/dev/jenkins/jenkins/">← Next Jenkins 部署</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2023/03/15/dev/k8s/k8s/">K8s入坟 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8EDocker-%E7%9A%84K8S%E9%9B%86%E7%BE%A4-Kind"><span class="toc-text">基于Docker 的K8S集群 Kind</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9B%86%E7%BE%A4"><span class="toc-text">集群</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A0%E8%BD%BD%E9%95%9C%E5%83%8F"><span class="toc-text">加载镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#LB"><span class="toc-text">LB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E9%85%8D%E7%BD%AE"><span class="toc-text">查看配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8Bpods"><span class="toc-text">查看pods</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5pods"><span class="toc-text">进入pods</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E9%95%9C%E5%83%8F"><span class="toc-text">查看镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E8%B5%84%E6%BA%90"><span class="toc-text">删除资源</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-text">参考</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

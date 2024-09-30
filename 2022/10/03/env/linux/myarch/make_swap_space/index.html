@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>制作Linux Swap | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>制作Linux Swap</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2022-10-03T05:25:32.000Z" id="date"> 2022-10-03</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-30T12:59:13.109Z" id="updated"> 2024-09-30</time></div></span><br><span>Word Count: <div class="control">671</div></span><br><span>Read Time: <div class="control">3 min</div></span></div></div><hr><div id="post-content"><h1 id="制作Swap"><a href="#制作Swap" class="headerlink" title="制作Swap"></a>制作Swap</h1><p>ref: <a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/Swap_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)">https://wiki.archlinux.org/title/Swap_(%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87)</a></p>
+<p>这里我要将nvme1n1p6分割32G作为swap</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS<br>sda           8:0    0 931.5G  0 disk <br>├─sda1        8:1    0 467.5G  0 part /run/media/i0gan/mdisk1<br>├─sda2        8:2    0 100.1G  0 part /run/media/i0gan/mdisk2<br>└─sda3        8:3    0 363.9G  0 part /run/media/i0gan/mdisk3<br>nvme1n1     259:0    0 476.9G  0 disk <br>├─nvme1n1p1 259:1    0   260M  0 part <br>├─nvme1n1p2 259:2    0    16M  0 part <br>├─nvme1n1p3 259:3    0   200G  0 part <br>├─nvme1n1p4 259:4    0    64M  0 part /boot/efi<br>├─nvme1n1p5 259:5    0   150G  0 part /<br>└─nvme1n1p6 259:6    0 126.6G  0 part /run/media/i0gan/data<br>nvme0n1     259:7    0 476.9G  0 disk <br>└─nvme0n1p1 259:8    0 476.9G  0 part /run/media/i0gan/windata<br></code></pre></td></tr></table></figure>
+
+
+
+<p>采用fdisk对其进行分割</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo umount /dev/nvme1n1p6<br>sudo fdisk /dev/nvme1n1 <br></code></pre></td></tr></table></figure>
+
+<p>fdisk</p>
+<p>删除最后一个分区</p>
+<p>新建一个32g分区</p>
+<p>新建一个剩余空间的分区，然后写入。</p>
+<p>如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS<br>sda           8:0    0 931.5G  0 disk <br>├─sda1        8:1    0 467.5G  0 part <br>├─sda2        8:2    0 100.1G  0 part <br>└─sda3        8:3    0 363.9G  0 part <br>nvme1n1     259:0    0 476.9G  0 disk <br>├─nvme1n1p1 259:1    0   260M  0 part <br>├─nvme1n1p2 259:2    0    16M  0 part <br>├─nvme1n1p3 259:3    0   200G  0 part <br>├─nvme1n1p4 259:4    0    64M  0 part /boot/efi<br>├─nvme1n1p5 259:5    0   150G  0 part /<br>├─nvme1n1p6 259:6    0    32G  0 part <br>└─nvme1n1p7 259:9    0  94.6G  0 part <br>nvme0n1     259:7    0 476.9G  0 disk <br>└─nvme0n1p1 259:8    0 476.9G  0 part /run/media/i0gan/windata<br></code></pre></td></tr></table></figure>
+
+<p>获取分区uuid</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">sudo blkid<br></code></pre></td></tr></table></figure>
+
+<p>增加挂载，在&#x2F;etc&#x2F;fstab，我增加如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plaintext"># Static information about the filesystems.<br># See fstab(5) for details.<br><br># &lt;file system&gt; &lt;dir&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;pass&gt;<br># /dev/nvme1n1p5<br>UUID=69e9b6fd-9297-4f40-9bac-95927c702a36       /               ext4            rw,relatime     0 1<br><br># /dev/nvme1n1p4<br>UUID=DEAA-48F6          /boot/efi       vfat            rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro        0 2<br><br># /dev/nvme1n1p6 swap<br>UUID=a68cf37c-e7d8-4a45-ab70-fb3d6e9293d3 none swap defaults 0 0<br><br># /dev/nvme1n1p6 data<br>UUID=76ce9d39-7046-40a5-bd35-9ade1311aaf4       /run/media/i0gan/data   ext4    rw,user 0       2<br># /dev/nvme0n1p1 WinData<br>UUID=6E6F0D715669CDCF           /run/media/i0gan/windata        ntfs    rw,user 0       2<br><br></code></pre></td></tr></table></figure>
+
+<p>重启就可以了</p>
+<h2 id="在Ubuntu中不重启情况下-增加swap空间"><a href="#在Ubuntu中不重启情况下-增加swap空间" class="headerlink" title="在Ubuntu中不重启情况下, 增加swap空间"></a>在Ubuntu中不重启情况下, 增加swap空间</h2><p>以上是在arch linux中增加的swap空间，且发生了重启，以下是在ubuntu环境不重启的情况下增加swap空间。</p>
+<ol>
+<li>创建一个swap文件：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo fallocate -l 1G /swapfile  <span class="hljs-comment"># 创建一个1GB大小的swap文件</span><br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>修改文件权限，确保只有root用户可以读写：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo <span class="hljs-built_in">chmod</span> 600 /swapfile<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>把这个文件设置成swap空间：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo mkswap /swapfile<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>启用swap：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo swapon /swapfile<br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>为了让swap设置在重启之后依然有效，需要把它添加到&#x2F;etc&#x2F;fstab文件中：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;/swapfile none swap sw 0 0&#x27;</span> | sudo <span class="hljs-built_in">tee</span> -a /etc/fstab<br></code></pre></td></tr></table></figure>
+
+<p>完成以上步骤后，你就为Ubuntu系统增加了一个1GB大小的swap空间。如果需要增加不同大小的swap，只需要在步骤1中将<code>1G</code>替换为需要的大小即可。</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2022/10/26/dev/language/cpp/%E5%BC%80%E6%BA%90%E6%A1%86%E6%9E%B6%E4%B8%8E%E5%BA%93/">← Next C++ 有哪些值得推荐的c/c++开源框架与库</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2022/09/28/dev/language/go/go%E4%B8%8Ec%E4%BA%92%E7%9B%B8%E8%B0%83%E7%94%A8/">Go与C的互相调用 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%B6%E4%BD%9CSwap"><span class="toc-text">制作Swap</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%A8Ubuntu%E4%B8%AD%E4%B8%8D%E9%87%8D%E5%90%AF%E6%83%85%E5%86%B5%E4%B8%8B-%E5%A2%9E%E5%8A%A0swap%E7%A9%BA%E9%97%B4"><span class="toc-text">在Ubuntu中不重启情况下, 增加swap空间</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

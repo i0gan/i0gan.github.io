@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>DNF外挂对抗学习记录 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>DNF外挂对抗学习记录</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2024-08-20T05:34:21.000Z" id="date"> 2024-08-20</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-30T12:43:50.096Z" id="updated"> 2024-09-30</time></div></span><br><span>Word Count: <div class="control">1.5k</div></span><br><span>Read Time: <div class="control">5 min</div></span></div></div><hr><div id="post-content"><h1 id="DNF外挂对抗"><a href="#DNF外挂对抗" class="headerlink" title="DNF外挂对抗"></a>DNF外挂对抗</h1><p>ref: <a target="_blank" rel="noopener" href="https://km.woa.com/articles/show/532979?kmref=search&amp;from_page=1&amp;no=5">https://km.woa.com/articles/show/532979?kmref=search&amp;from_page=1&amp;no=5</a></p>
+<p>DNF 是恶意漏洞的重灾区<br>卡概率，中彩票。 发放奖励BUG<br>拍卖行复制物品<br>无中生有，拍卖行上架的BUG<br>退出卡奖励，领取和发放BUG</p>
+<h2 id="DNF外挂"><a href="#DNF外挂" class="headerlink" title="DNF外挂"></a>DNF外挂</h2><p>通用外挂<br>硬件外挂<br>定制外挂</p>
+<h2 id="通用外挂"><a href="#通用外挂" class="headerlink" title="通用外挂"></a>通用外挂</h2><h3 id="通用外挂-1"><a href="#通用外挂-1" class="headerlink" title="通用外挂"></a>通用外挂</h3><p>调试器（OD、Ollydbug），静态分析（IDA、）CE，协议抓包，模拟按键，变速器</p>
+<p>多变种下的共性特诊之CE工具<br>共性特征：程序窗口整体布局<br>找共性的维度。</p>
+<h4 id="按键精灵"><a href="#按键精灵" class="headerlink" title="按键精灵"></a>按键精灵</h4><p>Q语言开发，（VB script 脚本开发）基于Com插件功能开发实现。<br>分析Com调用合法性判断，找打如下特征。</p>
+<p>PE文件头初始化。<br>初始化 + 0x40 未kernel32的模块地址<br>+0x44 为 GetProcAddress地址</p>
+<p>相关环境变量的初始化<br>CQMEngine<br>CQMEngineHost</p>
+<p>通用外挂：模拟按键检测的对抗思考<br>对抗思路：输入源+行为结果<br>对抗难点：输入源绕过门槛较低</p>
+<h3 id="DNF工作室挂一栏"><a href="#DNF工作室挂一栏" class="headerlink" title="DNF工作室挂一栏"></a>DNF工作室挂一栏</h3><p>特诊检测：特殊软件，如答题IP、虚拟机。<br>功能检测：模拟按键，截图。<br>行为检测：机器聚集，行为聚集等模型，如局域网机器。</p>
+<p>验证码作为工作室打金对抗门槛手段之一，运营上钓鱼执法。<br>以前是采用验证码方式，但外挂会截屏识别，后续 采用了扫码人脸识别，关联到自然人，认证成本大，外挂难绕过。</p>
+<p>通用外挂小结<br>趋势：</p>
+<ol>
+<li>外挂技术获取渠道越来越广，外挂工具不是难事。</li>
+<li>工具自身也是一个平台，外挂开发门槛低。</li>
+<li>多款工具相互间形成工具链。</li>
+</ol>
+<p>风险：</p>
+<ol>
+<li>单款工具多变种，特诊覆盖全有挑战。</li>
+<li>外挂平台化，传播风险大。</li>
+</ol>
+<p>应对：</p>
+<ol>
+<li>技术方案：监控多维度、门槛有深度</li>
+<li>打击方式：定制-功能-通用相互结合</li>
+</ol>
+<h2 id="外挂硬件化趋势"><a href="#外挂硬件化趋势" class="headerlink" title="外挂硬件化趋势"></a>外挂硬件化趋势</h2><p>在DNF、CF等十多年老业务上面临了纯硬件外挂新挑战。<br>已有安全方案无法覆盖，并有迅速发展的趋势（同步器，录制器，鼠标宏，单片机）形成了一条完整的硬件外挂黑产产业链。</p>
+<p>同步器硬件特征：<br>键盘和鼠标硬件ID中的PID和VID相同。<br>鼠标移动的特诊：系统底层URB的数据包，从包内容和正常USB键盘输入一致，不过鼠标输入还是有些差异性。</p>
+<p>MOUSE_MOVE， WM_IMPUT、Direct Input这几个输入的区别。</p>
+<p>使用了绝对坐标，而正常鼠标使用了相对坐标。<br>同步器相对位移最小粒度较大，最小Delta&#x3D;52，正常鼠标位移量为1。</p>
+<p>背景：<br>同步器恶意产出20%+，严重影响正常的经济系统。</p>
+<p>目标：1. 减少对正常玩家的影响，2. 增加同步器的成本。<br>思路：</p>
+<ol>
+<li>把相同变成不同，塞入随机因子，让相同输入随机起来。（角色出生坐标，BOSS的最终房间，副本当中怪物出生坐标）</li>
+</ol>
+<h2 id="脱机外挂"><a href="#脱机外挂" class="headerlink" title="脱机外挂"></a>脱机外挂</h2><p>脱机外挂分为 全脱机和半脱机外挂。</p>
+<p>全脱机外挂可以完全独立游戏客户端运行起来。直接发包给服务器。</p>
+<p>动&amp;静对抗：每个数据包中的附加数据可以实现每个包加解密使用不同的处理<br>动态协议加密。<br>优势：运营成本低，千人千面<br>劣势：有性能损耗，配置协议ID</p>
+<p>静态源码乱序：攻击者需要重新分析协议字段含义，来模拟和正常游戏的逻辑交互。如一个月换一次字段顺序。<br>优势：逆向成本高，性能较好<br>劣势：随版本发布，对抗周期不可控</p>
+<h2 id="半脱机外挂"><a href="#半脱机外挂" class="headerlink" title="半脱机外挂"></a>半脱机外挂</h2><p>外挂自组包调用游戏函数发包</p>
+<p>检测方法：检测堆栈函数名称是否合法。<br>缺陷：堆栈调用检测被通过秒该游戏代码进行函数调用绕过。<br>考虑触发时机：Msg（Timer）、Thread。</p>
+<p>改进方法：单线程划分游戏时间片，进行堆栈调用检测。</p>
+<p>对比常规的堆栈调用检测，在非游戏逻辑时间周期内，进行非法游戏函数调用检测，性能更优，效果更佳。</p>
+<h2 id="定制外挂"><a href="#定制外挂" class="headerlink" title="定制外挂"></a>定制外挂</h2><p>DNF 全屏攻击</p>
+<p>实现方式：</p>
+<ol>
+<li><p>碰撞修改，通过修改碰撞逻辑代码，一次伤害多个怪承伤。</p>
+</li>
+<li><p>模型修改，修改人物模型。</p>
+</li>
+<li><p>吸怪类型，修改怪物坐标，聚集到一起，造成伤害。</p>
+</li>
+<li><p>全屏效果类型，释放1个和N个效果，对对多个怪物造成伤害。</p>
+</li>
+</ol>
+<p>日常对抗流程：</p>
+<p>外挂输入：<br>样本测试驱动<br>自身数据驱动<br>客户需求驱动</p>
+<p>外挂分析：<br>外挂功能分析<br>游戏行为分析<br>过方案分析</p>
+<p>外挂对抗：<br>方案设计<br>策略调整<br>对抗打击</p>
+<p>反补外挂监控发现。</p>
+<p>实现方式一览：</p>
+<p>CALL函数<br>主线程劫持CALL，注入CALL，R0CALL<br>秒改CALL<br>模拟发包</p>
+<p>改代码：<br>模块划分：游戏模块、系统模块、方案模块、驱动模块。<br>修改方式：秒改代码，劫持修改代码，动态修改代码。</p>
+<p>读写数据<br>数据类型：全局数据，动态数据，运行期数据（virtab，站数据）<br>修改方式：秒改数据，锁定数据，数据异常</p>
+<p>改游戏资源<br>静态文件（输入源）-》加载到内存（数据）-》使用时机点（实时数据）。</p>
+<p>协议攻击：<br>修改协议内容<br>协议重发<br>协议拦截感知</p>
+<p>基于游戏逻辑的分析思路：<br>开挂前采样，开挂中抓现行，开挂后，黑白校验。</p>
+<p>旁路逻辑：</p>
+<p>从游戏样本分析：<br>1、感知增强，读取数据截图（OCR）<br>2、输入增强，模拟输入</p>
+<p>基于旁路逻辑<br>进程外：协议、资源、跨进程读取<br>进程内：引擎、脚本、进程内读取。</p>
+<p>从游戏游戏分析<br>谁读取了我，反向验证<br>访问断点<br>修改输入验证。</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2024/08/20/security/dll_inject/">← Next DLL注入</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2024/08/20/security/virtual_env_check/">虚拟机环境检测 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#DNF%E5%A4%96%E6%8C%82%E5%AF%B9%E6%8A%97"><span class="toc-text">DNF外挂对抗</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#DNF%E5%A4%96%E6%8C%82"><span class="toc-text">DNF外挂</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E5%A4%96%E6%8C%82"><span class="toc-text">通用外挂</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E5%A4%96%E6%8C%82-1"><span class="toc-text">通用外挂</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8C%89%E9%94%AE%E7%B2%BE%E7%81%B5"><span class="toc-text">按键精灵</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DNF%E5%B7%A5%E4%BD%9C%E5%AE%A4%E6%8C%82%E4%B8%80%E6%A0%8F"><span class="toc-text">DNF工作室挂一栏</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E6%8C%82%E7%A1%AC%E4%BB%B6%E5%8C%96%E8%B6%8B%E5%8A%BF"><span class="toc-text">外挂硬件化趋势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%84%B1%E6%9C%BA%E5%A4%96%E6%8C%82"><span class="toc-text">脱机外挂</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%8A%E8%84%B1%E6%9C%BA%E5%A4%96%E6%8C%82"><span class="toc-text">半脱机外挂</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9A%E5%88%B6%E5%A4%96%E6%8C%82"><span class="toc-text">定制外挂</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

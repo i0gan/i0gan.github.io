@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>常用的加解密算法 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>常用的加解密算法</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2024-08-19T14:56:47.000Z" id="date"> 2024-08-19</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-30T12:55:30.395Z" id="updated"> 2024-09-30</time></div></span><br><span>Word Count: <div class="control">823</div></span><br><span>Read Time: <div class="control">3 min</div></span></div></div><hr><div id="post-content"><h1 id="常用的加解密算法"><a href="#常用的加解密算法" class="headerlink" title="常用的加解密算法"></a>常用的加解密算法</h1><h2 id="ECC"><a href="#ECC" class="headerlink" title="ECC"></a>ECC</h2><p>考虑如下等式：K&#x3D;kG [其中 K,G为Ep(a,b)上的点，k为小于n（n是点G的阶）的整数]，不难发现，给定k和G，根据加法法则，计算K很容易；但给定K和G，求k就相对困难了。这就是椭圆曲线加密算法采用的难题，我们把点G称为基点（base point）。</p>
+<p>椭圆曲线在代数上的表示是下面这个方程： y2 &#x3D; x3 + ax + b 其中，a &#x3D; 0, b &#x3D; 7 (比特币系统所使用的版本)，它的图形如下：</p>
+<h3 id="加解密流程"><a href="#加解密流程" class="headerlink" title="加解密流程"></a>加解密流程</h3><blockquote>
+<p>1、用户A选定一条椭圆曲线Ep(a,b)，并取椭圆曲线上一点，作为基点G。 </p>
+<p>2、用户A选择一个私有密钥k，并生成公开密钥K&#x3D;kG。</p>
+<p>3、用户A将Ep(a,b)和点K，G传给用户B。 </p>
+<p>4、用户B接到信息后 ，将待传输的明文编码到Ep(a,b)上一点M（编码方法很多，这里不作讨论），并产生一个随机整数r。 </p>
+<p>5、用户B计算点C1&#x3D;M+rK；C2&#x3D;rG。 </p>
+<p>6、用户B将C1、C2传给用户A。</p>
+<p>7、用户A接到信息后，计算C1-kC2，结果就是点M。因为 C1-kC2&#x3D;M+rK-k(rG)&#x3D;M+rK-r(kG)&#x3D;M, 再对点M进行解码就可以得到明文。</p>
+</blockquote>
+<h3 id="签名过程"><a href="#签名过程" class="headerlink" title="签名过程"></a>签名过程</h3><p>1、选择一条椭圆曲线Ep(a,b)，和基点G；</p>
+<p>2、选择私有密钥k（k&lt;n，n为G的阶），利用基点G计算公开密钥K&#x3D;kG； </p>
+<p>3、产生一个随机整数r（r&lt;n），计算点R&#x3D;rG； </p>
+<p>4、将原数据和点R的坐标值x,y作为参数，计算SHA1做为hash，即Hash&#x3D;SHA1(原数据,x,y)； </p>
+<p>5、计算s≡r - Hash * k (mod n) 6、r和s做为签名值，如果r和s其中一个为0，重新从第3步开始执行</p>
+<blockquote>
+<p> 验证过程如下： </p>
+<p>1、接受方在收到消息(m)和签名值(r,s)后，进行以下运算 </p>
+<p>2、计算：sG+H(m)K&#x3D;(x1,y1), r1≡ x1 mod p。 </p>
+<p>3、验证等式：r1 ≡ r mod p。 </p>
+<p>4、如果等式成立，接受签名，否则签名无效。</p>
+</blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1141115">https://cloud.tencent.com/developer/article/1141115</a></p>
+<h2 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h2><h3 id="RSA算法原理"><a href="#RSA算法原理" class="headerlink" title="RSA算法原理"></a>RSA算法原理</h3><ul>
+<li>RSA定理：若P和Q是两个相异质数，另有正整数D和E，其中E的值与</li>
+<li>(P-1)(Q-1)的值互质，并使得DE%(P-1)(Q-1)&#x3D;1，有正整数M，且M&lt;PQ，设：</li>
+<li>C&#x3D;ME%PQ，B&#x3D;CD%PQ，则有M&#x3D;B。</li>
+</ul>
+<p><strong>生成公钥和密钥</strong></p>
+<ul>
+<li>随意选择两个大的素数P和Q，且P不等于Q</li>
+<li>令N&#x3D;PQ</li>
+<li>令T&#x3D;(P-1)(Q-1)</li>
+<li>选择一个整数E，作为一个密钥，使E与T互质(即E与T的最大公约数为1)，且E必须小于T</li>
+<li>由公式DE%T&#x3D;1，计算得到D的值，作为另一密钥</li>
+<li>将(N，E)作为公钥，(N，D)作为私钥，当然也可互换。</li>
+</ul>
+<p><strong>用公钥加密信息</strong></p>
+<ul>
+<li>发送方收到公钥(N，E)后，通过公钥对数据进行加密，操作如下：</li>
+<li>明文：M</li>
+<li>加密：ME%N&#x3D;C</li>
+<li>密文：C</li>
+</ul>
+<p><strong>用私钥解密信息</strong></p>
+<ul>
+<li>接收方收到密文C后，通过私钥(N，D)进行解密，得到明文M，操作如下：</li>
+<li>密文：C</li>
+<li>解密：CD%N&#x3D;M</li>
+<li>明文：M</li>
+</ul>
+<h2 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h2><h2 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h2><div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2024/08/19/security/fps_sec/">← Next FPS端游对抗</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2024/08/19/security/pc_sec/">PC安全 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E5%8A%A0%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95"><span class="toc-text">常用的加解密算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ECC"><span class="toc-text">ECC</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A0%E8%A7%A3%E5%AF%86%E6%B5%81%E7%A8%8B"><span class="toc-text">加解密流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AD%BE%E5%90%8D%E8%BF%87%E7%A8%8B"><span class="toc-text">签名过程</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RSA"><span class="toc-text">RSA</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RSA%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="toc-text">RSA算法原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AES"><span class="toc-text">AES</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DES"><span class="toc-text">DES</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>FPS端游对抗 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>FPS端游对抗</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2024-08-19T15:02:21.000Z" id="date"> 2024-08-19</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-30T12:46:55.710Z" id="updated"> 2024-09-30</time></div></span><br><span>Word Count: <div class="control">984</div></span><br><span>Read Time: <div class="control">3 min</div></span></div></div><hr><div id="post-content"><h1 id="FPS端游对抗"><a href="#FPS端游对抗" class="headerlink" title="FPS端游对抗"></a>FPS端游对抗</h1><p>课程链接：<a target="_blank" rel="noopener" href="https://km.woa.com/group/3292/videos/show/17794?kmref=search&amp;from_page=1&amp;no=2">https://km.woa.com/group/3292/videos/show/17794?kmref=search&amp;from_page=1&amp;no=2</a></p>
+<p>内容</p>
+<p>自瞄透视对抗的难点</p>
+<p>自瞄原理及对应解决</p>
+<p>透视原理及对应解决</p>
+<p>给游戏开发侧的建议</p>
+<h2 id="云游戏的FPS"><a href="#云游戏的FPS" class="headerlink" title="云游戏的FPS"></a>云游戏的FPS</h2><h3 id="自瞄外挂原理"><a href="#自瞄外挂原理" class="headerlink" title="自瞄外挂原理"></a>自瞄外挂原理</h3><p>截图 + 模拟输入</p>
+<h3 id="透视外挂原理"><a href="#透视外挂原理" class="headerlink" title="透视外挂原理"></a>透视外挂原理</h3><p>声源定位 + 标记</p>
+<h2 id="自瞄的基本原理"><a href="#自瞄的基本原理" class="headerlink" title="自瞄的基本原理"></a>自瞄的基本原理</h2><p>朝向数值修改自瞄（简称 朝向自瞄）</p>
+<p>原理：直接修改游戏的Rotation相关的数值，达到自动瞄准的目的。</p>
+<p>模拟鼠标操作自瞄（简称 模拟自瞄）</p>
+<p>原理：模拟鼠标输入，辅助瞄准目标</p>
+<p>前提：获取敌人屏幕坐标</p>
+<p>可通过世界坐标转换</p>
+<p>可图像识别标记</p>
+<p>模拟自瞄比朝向自瞄更难以对抗</p>
+<h3 id="近期趋势"><a href="#近期趋势" class="headerlink" title="近期趋势"></a>近期趋势</h3><p>鼠标宏：可以自定义脚本去协助输入。</p>
+<p>单片机：与鼠标类似，单独一个设备插到电脑上去协助。</p>
+<p>DeepFake：通过图像识别抓特征。</p>
+<h3 id="自瞄IPO解决方案-1"><a href="#自瞄IPO解决方案-1" class="headerlink" title="自瞄IPO解决方案 1"></a>自瞄IPO解决方案 1</h3><p>IPO简介</p>
+<p>输入-中间过程-输出</p>
+<p>作弊的本质就是差异，IPO就是分析和发现差异在哪里。</p>
+<h3 id="自瞄IPO解决方案2"><a href="#自瞄IPO解决方案2" class="headerlink" title="自瞄IPO解决方案2"></a>自瞄IPO解决方案2</h3><h4 id="O层方案-ShadowRotation方案原理介绍"><a href="#O层方案-ShadowRotation方案原理介绍" class="headerlink" title="O层方案 - ShadowRotation方案原理介绍"></a>O层方案 - ShadowRotation方案原理介绍</h4><p>检测朝向自瞄</p>
+<p>游戏写 -&gt; 加密备份</p>
+<p>游戏读 -&gt; 解密对比</p>
+<p>优势：能够取得很好的打击效果。对加密算法调整，对攻击者的制作出来的外挂可快速失效。</p>
+<p>劣势：需要对保护的数据进行编写，成本比较大。对游戏要有理解。</p>
+<h3 id="自瞄IPO解决方案3"><a href="#自瞄IPO解决方案3" class="headerlink" title="自瞄IPO解决方案3"></a>自瞄IPO解决方案3</h3><p>O层方案-RotationPool方案原理介绍</p>
+<p>朝向池</p>
+<p>红名-&gt; 开枪-&gt; 命中 -&gt; 击杀</p>
+<p>记录朝向：试试全量采集玩家的朝向数据，保存在朝向池中。</p>
+<p>标记关键点：记录关键事件点：包括红名，开枪，命中，击杀等</p>
+<p>处理上报数据：根据记录的关键事件点的间隔获取一个序列的朝向数据</p>
+<p>后台判断：根据上报的数据还原开枪前的朝向变化的轨迹，明显的突变意味着作弊的可能性更高。</p>
+<h3 id="自瞄IPO解决方案4"><a href="#自瞄IPO解决方案4" class="headerlink" title="自瞄IPO解决方案4"></a>自瞄IPO解决方案4</h3><p>DeltaRotation方案原理介绍</p>
+<p>帧1：当前帧的朝向值 + 朝向变化量 &#x3D; 下一帧预期朝向值 （拿到鼠标输入数据，预测下一帧的朝向值）</p>
+<p>帧2：当前帧的朝向值 + 朝向变化量 &#x3D; 下一帧预期朝向值</p>
+<p>优势：简单</p>
+<p>缺陷：对性能影响比较大。</p>
+<h3 id="自瞄IPO解决方案5"><a href="#自瞄IPO解决方案5" class="headerlink" title="自瞄IPO解决方案5"></a>自瞄IPO解决方案5</h3><p>RawData方案原理介绍</p>
+<p>通过客户端采集数据，后台对输入数据进行分析，区分正常数据还是异常数据。</p>
+<p>数据源：鼠标移动变化量，鼠标按键数据。</p>
+<p>时机点：玩家击杀时机。</p>
+<h2 id="透视基本原理"><a href="#透视基本原理" class="headerlink" title="透视基本原理"></a>透视基本原理</h2><h3 id="渲染透视"><a href="#渲染透视" class="headerlink" title="渲染透视"></a>渲染透视</h3><p>典型的外挂名称：人物透视，D3D Wall Hack</p>
+<p>SetRanderState()</p>
+<h3 id="标记透视"><a href="#标记透视" class="headerlink" title="标记透视"></a>标记透视</h3><p>典型的外挂名称：方框透视，ESP WallHack</p>
+<p>获取坐标，画框 （游戏世界坐标，游戏声音系统）</p>
+<p>区别：通过渲染API更改值，让人物在渲染处理上优先展示，标记透视是需要读游戏数据</p>
+<h3 id="近期趋势-1"><a href="#近期趋势-1" class="headerlink" title="近期趋势"></a>近期趋势</h3><p>分屏透视</p>
+<p>网络层数据劫持</p>
+<p>DMA硬件直读</p>
+<p>声波雷达</p>
+<h3 id="解决方案1"><a href="#解决方案1" class="headerlink" title="解决方案1"></a>解决方案1</h3><p>坐标加密</p>
+<p>与透视中的类似</p>
+<h3 id="解决方案2"><a href="#解决方案2" class="headerlink" title="解决方案2"></a>解决方案2</h3><p>Game -&gt; D3D Runtime -&gt; WDDM -&gt; SoftWapl driver -&gt; GPU</p>
+<p>在 CMDBUF 中检测异常。</p>
+<p>CommandBUffer</p>
+<p>通过指令序列发现渲染磊透视异常。</p>
+<p>特殊指令频次异常</p>
+<p>特殊指令序列异常</p>
+<p>不能很好解决跨屏的透视外挂。</p>
+<h4 id="解决方案3"><a href="#解决方案3" class="headerlink" title="解决方案3"></a>解决方案3</h4><p>基于Replay的行为模型</p>
+<p>蚕食： 一定是，一定不是</p>
+<p>九宫格：与蚕食的结合</p>
+<p>钓鱼：小战场vs大战场</p>
+<h2 id="给游戏开发侧的建议"><a href="#给游戏开发侧的建议" class="headerlink" title="给游戏开发侧的建议"></a>给游戏开发侧的建议</h2><p>Replay数据流</p>
+<p>能够通过数据流进行数据分析。</p>
+<h2 id="断点"><a href="#断点" class="headerlink" title="断点"></a>断点</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41988448/article/details/119565618">https://blog.csdn.net/qq_41988448/article/details/119565618</a></p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2024/08/20/security/virtual_env_check/">← Next 虚拟机环境检测</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2024/08/19/security/crypto/crypto/">常用的加解密算法 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#FPS%E7%AB%AF%E6%B8%B8%E5%AF%B9%E6%8A%97"><span class="toc-text">FPS端游对抗</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%91%E6%B8%B8%E6%88%8F%E7%9A%84FPS"><span class="toc-text">云游戏的FPS</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9E%84%E5%A4%96%E6%8C%82%E5%8E%9F%E7%90%86"><span class="toc-text">自瞄外挂原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%8F%E8%A7%86%E5%A4%96%E6%8C%82%E5%8E%9F%E7%90%86"><span class="toc-text">透视外挂原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E7%9E%84%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-text">自瞄的基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%91%E6%9C%9F%E8%B6%8B%E5%8A%BF"><span class="toc-text">近期趋势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9E%84IPO%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-1"><span class="toc-text">自瞄IPO解决方案 1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9E%84IPO%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%882"><span class="toc-text">自瞄IPO解决方案2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#O%E5%B1%82%E6%96%B9%E6%A1%88-ShadowRotation%E6%96%B9%E6%A1%88%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D"><span class="toc-text">O层方案 - ShadowRotation方案原理介绍</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9E%84IPO%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%883"><span class="toc-text">自瞄IPO解决方案3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9E%84IPO%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%884"><span class="toc-text">自瞄IPO解决方案4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E7%9E%84IPO%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%885"><span class="toc-text">自瞄IPO解决方案5</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%8F%E8%A7%86%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-text">透视基本原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E9%80%8F%E8%A7%86"><span class="toc-text">渲染透视</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E8%AE%B0%E9%80%8F%E8%A7%86"><span class="toc-text">标记透视</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%91%E6%9C%9F%E8%B6%8B%E5%8A%BF-1"><span class="toc-text">近期趋势</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%881"><span class="toc-text">解决方案1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%882"><span class="toc-text">解决方案2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%883"><span class="toc-text">解决方案3</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%99%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91%E4%BE%A7%E7%9A%84%E5%BB%BA%E8%AE%AE"><span class="toc-text">给游戏开发侧的建议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%AD%E7%82%B9"><span class="toc-text">断点</span></a></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>

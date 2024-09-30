@@ -1,0 +1,360 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>虚拟机环境检测 | I0gan's blog</title><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script>var config = {"root":"/","path":"search.json"}</script><script src="//unpkg.com/mermaid@8.13.5/dist/mermaid.min.js"></script><script>mermaid.initialize({
+ startOnLoad: true
+ , theme: 'dark'
+});</script><link rel="stylesheet" href="/css/arknights.css"><link rel="stylesheet" href="//unpkg.com/@highlightjs/cdn-assets@11.4.0/styles/atom-one-dark-reasonable.min.css"><style>@font-face {
+ font-family: BenderLight;
+ src: local('Bender'), url("/font/BenderLight.ttf");
+}
+@font-face {
+ font-family: 'JetBrains Mono';
+ src: local('JetBrains Mono'), url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+}</style><meta name="generator" content="Hexo 6.3.0"></head><body style="background-image:url(/img/bg.jpg);"><main><header class="closed"><nav><div class="navBtn"><i class="navBtnIcon"><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span><span class="navBtnIconBar"></span></i></div><ol class="navContent"><li class="navItem" id="search-header"><span class="navItemTitle"><input autocomplete="off" autocorrect="off" autocapitalize="none" placeholder="Search" spellcheck="false" maxlength="50" type="text" id="search-input"></span></li><li class="navItem"><a class="navBlock" href="/"><span class="navItemTitle">Home</span></a></li><li class="navItem"><a class="navBlock" href="/about/"><span class="navItemTitle">About</span></a></li><li class="navItem" matchdata="categories,tags"><a class="navBlock" href="/archives/"><span class="navItemTitle">Archives</span></a></li><li class="navItem"><a class="navBlock" href="/shell/"><span class="navItemTitle">Shell</span></a></li></ol></nav><div class="search-popup"><div id="search-result"></div></div></header><article><div id="post-bg"><div id="post-title"><h1>虚拟机环境检测</h1><div id="post-info"><span>First Post: <div class="control"><time datetime="2024-08-20T05:28:21.000Z" id="date"> 2024-08-20</time></div></span><br><span>Last Update: <div class="control"><time datetime="2024-09-30T12:22:10.626Z" id="updated"> 2024-09-30</time></div></span><br><span>Word Count: <div class="control">3.2k</div></span><br><span>Read Time: <div class="control">12 min</div></span></div></div><hr><div id="post-content"><h1 id="虚拟机检测技术及绕过方法"><a href="#虚拟机检测技术及绕过方法" class="headerlink" title="虚拟机检测技术及绕过方法"></a>虚拟机检测技术及绕过方法</h1><p>ref: <a target="_blank" rel="noopener" href="https://km.woa.com/articles/show/471394?kmref=search&amp;from_page=1&amp;no=1">https://km.woa.com/articles/show/471394?kmref=search&amp;from_page=1&amp;no=1</a></p>
+<h3 id="0x00-虚拟化技术概述"><a href="#0x00-虚拟化技术概述" class="headerlink" title="0x00 虚拟化技术概述"></a>0x00 虚拟化技术概述</h3><p>目前我们的操作系统大多都是基于x86架构，它设计为直接运行在硬件设备上的系统。内核可以直接访问硬件和内存，它使用特权指令、中断等完成需要Ring0级权限的操作，而Ring3层应用想执行一些高权限的操作如读写磁盘等就需要执行系统调用，从Ring3切换到Ring0，操作完成后再切换到Ring3。</p>
+<p>由于宿主机系统运行在Ring0，所以虚拟出来的客户机系统就不能再运行在Ring0了，但客户机系统无法感知这一点，当执行到某些高权限操作时因为没有权限就会导致执行出错。CPU的机制使客户机操作系统执行特权指令时会触发异常，因此通过客户机系统访问硬件的实现原理不同，虚拟化技术又分为三种：全虚拟化、半虚拟化和硬件辅助的半虚拟化。</p>
+<ul>
+<li>全虚拟化：hypervisor[<a target="_blank" rel="noopener" href="https://km.woa.com/articles/show/471394?kmref=search&from_page=1&no=1#fn:1">1]</a>捕获异常，在异常处理中进行指令翻译和模拟，处理执行完成后再返回。这种方式实现的虚拟化可以最佳兼容客户机操作系统，但由于每一条指令都需要进行翻译，导致性能十分低下，常见的VMware Workstation、QEMU就是利用这种方式实现；</li>
+<li>半虚拟化：修改客户机操作系统，替换掉不能虚拟的指令，通过hypercall直接和底层虚拟化管理程序通信，相比全虚拟化大大提高了效率，像XEN就是这种半虚拟化的方式实现，由于这种方式要修改客户机操作系统，所以不能虚拟化Windows系统；</li>
+<li>硬件辅助的虚拟化：客户机操作系统运行在非root模式下，而hypervisor运行在root模式下，CPU在遇到特权指令时就转到root模式下执行，它需要在两种模式之间切换，会有一定的开销但性能接近半虚拟化。其特性决定它需要CPU支持虚拟化技术，常见的VMware ESXi、Microsoft Hyper-v和KVM等就是这种方式实现。</li>
+</ul>
+<h3 id="0x01-常见的虚拟机检测方法"><a href="#0x01-常见的虚拟机检测方法" class="headerlink" title="0x01 常见的虚拟机检测方法"></a>0x01 常见的虚拟机检测方法</h3><p>目前检测虚拟机的方式主要可分为两个大类：基于特殊指令的检测和基于虚拟机特征的检测。</p>
+<h4 id="特殊指令"><a href="#特殊指令" class="headerlink" title="特殊指令"></a>特殊指令</h4><p>在x86体系架构中，某些获取硬件信息的指令执行时并不产生异常，如cpuid、sidt、sgdt及sldt等指令。为了避免全虚拟化带来的性能损失，VMware等虚拟机允许特定指令在没有正确虚拟化的前提下执行，这就导致这些指令在物理机和虚拟机下的执行结果不一致，利用这点可以检测程序是否在虚拟机中运行。</p>
+<h5 id="cpuid指令"><a href="#cpuid指令" class="headerlink" title="cpuid指令"></a>cpuid指令</h5><p>cupid指令通常用来获取CPU信息，其隐式参数为EAX(或ECX)寄存器，该参数指示指令完成的功能（Intel最新术语称之为CPUID Leaf，以下称之为功能号），指令执行完成后返回结果存放在EAX、EBX、ECX和EDX四个寄存器中。</p>
+<p>cpuid常用的功能号：</p>
+<table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th align="center">功能号(EAX)</th>
+<th align="center">功能描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">0x00000000</td>
+<td align="center">返回cpu供应商签名信息，始终为GenuineIntel</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">0x00000001</td>
+<td align="center">返回cpu系列型号等特征信息</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">0x40000000-0x4FFFFFFF</td>
+<td align="center">无效功能号，一般用于其他厂商定制软件使用</td>
+</tr>
+</tbody></table>
+<p>检测虚拟机常用到的功能号就是0x01和0x40000000，更详细的功能号说明参考芯片手册：<a target="_blank" rel="noopener" href="https://software.intel.com/content/www/us/en/develop/download/intel-64-and-ia-32-architectures-sdm-combined-volumes-2a-2b-2c-and-2d-instruction-set-reference-a-z.html">Intel® 64 and IA-32 Architectures Software Developer’s Manual Volume 2 (2A, 2B &amp; 2C): Instruction Set Reference, A-Z</a></p>
+<p>Intel和AMD保留cpuid功能号0x40000000~0x400000FF提供给hypervisor使用，以下是hypervisor的CPUID接口规范部分内容 (参考<a target="_blank" rel="noopener" href="https://github.com/fffaraz/Etcetera/blob/master/cpp/cpuid.h">cpuid.h</a>)：</p>
+<table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th align="center">功能号</th>
+<th align="center">返回值描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">0x01</td>
+<td align="center">ECX第31位指示当前hypervisor，虚拟cpu该值设置为1，物理cpu则设置为0</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">0x40000000</td>
+<td align="center">hypervisor支持的最大功能号和供应商签名信息</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">0x40000001 - 0x4000000F</td>
+<td align="center">特定功能号，含义取决于hypervisor支持的最大功能号</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">0x40000010 - 0x400000FF</td>
+<td align="center">通用功能号，保留给不同虚拟机厂商使用</td>
+</tr>
+</tbody></table>
+<p>常见供应商签名特征：</p>
+<table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th align="center">虚拟机类型</th>
+<th align="center">签名信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">VMware</td>
+<td align="center">“VMwareVMware”</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">KVM</td>
+<td align="center">“KVMKVMKVM\0\0\0”</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">Microsoft Hyper-V</td>
+<td align="center">“Microsoft Hv”</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">Xen</td>
+<td align="center">“XenVMMXenVMM”</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">VirtualBox</td>
+<td align="center">“VBoxVBoxVBox”</td>
+</tr>
+</tbody></table>
+<p>hypervisor检测cpuid功能号为0x01时ECX第31位是否为1：(电脑上打开了hyper-v或其他虚拟化软件，都会被检测出hypervisor)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">1.</span> #include &lt;intrin.<span class="hljs-property">h</span>&gt;<br><span class="hljs-number">2.</span> bool <span class="hljs-title function_">cpuid_is_hypervisor</span>()<br><span class="hljs-number">3.</span> &#123;<br><span class="hljs-number">4.</span>     int <span class="hljs-title class_">CPUInfo</span>[<span class="hljs-number">4</span>] = &#123; -<span class="hljs-number">1</span> &#125;;<br><span class="hljs-number">5.</span><br><span class="hljs-number">6.</span>     <span class="hljs-comment">/* Query hypervisor precense using CPUID (EAX=1), BIT 31 in ECX */</span><br><span class="hljs-number">7.</span>     <span class="hljs-title function_">__cpuid</span>(<span class="hljs-title class_">CPUInfo</span>, <span class="hljs-number">1</span>);<br><span class="hljs-number">8.</span>     <span class="hljs-keyword">if</span> ((<span class="hljs-title class_">CPUInfo</span>[<span class="hljs-number">2</span>] &gt;&gt; <span class="hljs-number">31</span>) &amp; <span class="hljs-number">1</span>)<br><span class="hljs-number">9.</span>         <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br><span class="hljs-number">10.</span>     <span class="hljs-keyword">else</span><br><span class="hljs-number">11.</span>         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br><span class="hljs-number">12.</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>获取hypervisor供应商签名信息：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">1.</span> wstring <span class="hljs-title function_">cpuid_hypervisor_vendor</span>()<br><span class="hljs-number">2.</span> &#123;<br><span class="hljs-number">3.</span>     int <span class="hljs-title class_">CPUInfo</span>[<span class="hljs-number">4</span>] = &#123; -<span class="hljs-number">1</span> &#125;;<br><span class="hljs-number">4.</span>     char szHypervisorVendor[<span class="hljs-number">0x40</span>];<br><span class="hljs-number">5.</span>     wstring vendor;<br><span class="hljs-number">6.</span><br><span class="hljs-number">7.</span>     <span class="hljs-title function_">__cpuid</span>(<span class="hljs-title class_">CPUInfo</span>, <span class="hljs-number">0x40000000</span>);<br><span class="hljs-number">8.</span>     <span class="hljs-title function_">memset</span>(szHypervisorVendor, <span class="hljs-number">0</span>, <span class="hljs-title function_">sizeof</span>(szHypervisorVendor));<br><span class="hljs-number">9.</span>     <span class="hljs-title function_">memcpy</span>(szHypervisorVendor, <span class="hljs-title class_">CPUInfo</span> + <span class="hljs-number">1</span>, <span class="hljs-number">12</span>);<br><span class="hljs-number">10</span><br><span class="hljs-number">11</span>     vendor = <span class="hljs-title function_">ascii_to_wide_str</span>(szHypervisorVendor);<br><span class="hljs-number">12</span>     <span class="hljs-keyword">return</span> vendor;<br><span class="hljs-number">13</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="in指令"><a href="#in指令" class="headerlink" title="in指令"></a>in指令</h5><p>in指令检测主要针对VMware，VMware通过查询特定的IO端口（0x5658）判断软件是否运行在虚拟机中。 在端口0x5658上执行IN指令并传入以下参数</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">EAX = 0x564D5868 (VMware hypervisor魔术值VMXh)<br>EBX = 0xFFFFFFFF (UINT_MAX)<br>ECX = 0xA        (0xA:获取VMWare版本命令, 0x14:获取内存大小)<br>EDX = 0x5658     (hypervisor端口号)<br></code></pre></td></tr></table></figure>
+
+<p>VMware执行完该指令后会修改EBX寄存器的值为0x564D5868，通过判断该数值可检测是否为虚拟机。</p>
+<p>检测代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">1.</span> bool <span class="hljs-title function_">vmware_io</span>()<br><span class="hljs-number">2.</span> &#123;<br><span class="hljs-number">3.</span>     bool bFound = <span class="hljs-literal">true</span>;<br><span class="hljs-number">4.</span>     __try<br><span class="hljs-number">5.</span>     &#123;<br><span class="hljs-number">6.</span>         __asm<br><span class="hljs-number">7.</span>         &#123;<br><span class="hljs-number">8.</span>             push   edx<br><span class="hljs-number">9.</span>             push   ecx<br><span class="hljs-number">10</span>             push   ebx<br><span class="hljs-number">11</span>             mov    eax, <span class="hljs-string">&#x27;VMXh&#x27;</span><br><span class="hljs-number">12</span>             mov    ebx, <span class="hljs-number">0</span><br><span class="hljs-number">13</span>             mov    ecx, <span class="hljs-number">10</span><br><span class="hljs-number">14</span>             mov    edx, <span class="hljs-string">&#x27;VX&#x27;</span><br><span class="hljs-number">15</span>             <span class="hljs-keyword">in</span>     eax, dx<br><span class="hljs-number">16</span>             cmp    ebx, <span class="hljs-string">&#x27;VMXh&#x27;</span><br><span class="hljs-number">17</span>             setz[bFound]<br><span class="hljs-number">18</span>             pop    ebx<br><span class="hljs-number">19</span>             pop    ecx<br><span class="hljs-number">20</span>             pop    edx<br><span class="hljs-number">21</span>         &#125;<br><span class="hljs-number">22</span>     &#125;<br><span class="hljs-number">23</span>     __except (<span class="hljs-variable constant_">EXCEPTION_EXECUTE_HANDLER</span>)<br><span class="hljs-number">24</span>     &#123;<br><span class="hljs-number">25</span>         bFound = <span class="hljs-literal">false</span>;<br><span class="hljs-number">26</span>     &#125;<br><span class="hljs-number">27</span>     <span class="hljs-keyword">return</span> bFound;<br><span class="hljs-number">28</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<h5 id="sidt、sgdt和sldt指令"><a href="#sidt、sgdt和sldt指令" class="headerlink" title="sidt、sgdt和sldt指令"></a>sidt、sgdt和sldt指令</h5><p>在保护模式下有3个很重要的系统表：全局描述符表GDT、局部描述符表LDT和中断描述符表IDT，这些表包含段描述符，它描述一个段的大小、地址及权限等各种信息。 sidt、sgdt和sldt指令能读取这些表并存入特定的地址中，可以根据物理机和虚拟机中这些表地址的差异性来区分当前环境为实体机还是虚拟机。</p>
+<blockquote>
+<p>通常物理机中LDT为0，IDT为0x80xxxxxx，而虚拟机中LDT不为0，IDT为0xFFxxxxxx。</p>
+</blockquote>
+<p>检测LDT：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">1.</span> bool <span class="hljs-title function_">ldt_check</span>()<br><span class="hljs-number">2.</span> &#123;<br><span class="hljs-number">3.</span>     unsigned short ldt_addr = <span class="hljs-number">0</span>;<br><span class="hljs-number">4.</span>     unsigned char ldtr[<span class="hljs-number">2</span>];<br><span class="hljs-number">5.</span><br><span class="hljs-number">6.</span>     _asm sldt ldtr<br><span class="hljs-number">7.</span>     ldt_addr = *((unsigned short *)&amp;ldtr);<br><span class="hljs-number">8.</span>     <span class="hljs-keyword">return</span> ldt_addr != <span class="hljs-number">0x00000000</span>;<br><span class="hljs-number">9.</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<p>检测GDT：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">1.</span> bool <span class="hljs-title function_">gdt_check</span>()<br><span class="hljs-number">2.</span> &#123;<br><span class="hljs-number">3.</span>     unsigned int gdt_addr = <span class="hljs-number">0</span>;<br><span class="hljs-number">4.</span>     unsigned char gdtr[<span class="hljs-number">6</span>];<br><span class="hljs-number">5.</span><br><span class="hljs-number">6.</span>     _asm sgdt gdtr<br><span class="hljs-number">7.</span>     gdt_addr = *((unsigned int *)&amp;gdtr[<span class="hljs-number">2</span>]);<br><span class="hljs-number">8.</span>     <span class="hljs-keyword">return</span> (gdt_addr &gt;&gt; <span class="hljs-number">24</span>) == <span class="hljs-number">0xff</span>;<br><span class="hljs-number">9.</span> &#125;<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>不过VMware经过这么多的版本更迭早已对这些地方打了补丁，低版本的虚拟机还能生效，高版本的都把这些表补丁模拟成真机地址了。</p>
+</blockquote>
+<h4 id="硬件信息、注册表、服务等其他特征"><a href="#硬件信息、注册表、服务等其他特征" class="headerlink" title="硬件信息、注册表、服务等其他特征"></a>硬件信息、注册表、服务等其他特征</h4><p>虚拟机和物理机的硬件存在差异，物理机更多样化，而虚拟机往往呈现一定的规律性。主机型号、磁盘名称、MAC地址及注册表等等软硬件通常包含比较明显的特征，如虚拟机的MAC地址的前面几位通常表示网络适配器的供应商，通过检索网卡MAC地址可以判断是否为虚拟机。</p>
+<p>常见MAC前缀对应的供应商：</p>
+<table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th align="center">MAC前缀</th>
+<th align="center">供应商</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td align="center">08:00:27</td>
+<td align="center">VirtualBox</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td align="center">52:54:00</td>
+<td align="center">QEMU</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td align="center">00:16:3E</td>
+<td align="center">Xen</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td align="center">00:50:56</td>
+<td align="center">VMware</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td align="center">00:05:69</td>
+<td align="center">VMware</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td align="center">00:0C:29</td>
+<td align="center">VMware</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td align="center">00:1C:14</td>
+<td align="center">VMware</td>
+</tr>
+</tbody></table>
+<p>MAC地址、注册表、服务名等信息可以通过多种方式查询到，如Windows API、WMI及SystemFirmwareTable等方式。(篇幅原因就不展开赘述了，更详细的特征及检测方法可参考github开源项目：<a target="_blank" rel="noopener" href="https://github.com/LordNoteworthy/al-khaser">https://github.com/LordNoteworthy/al-khaser</a>)</p>
+<p>常用的绕过方式：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>检测方法</th>
+<th>绕过方式</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VMware</td>
+<td>KVM</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>cupid</td>
+<td>修改vmx配置cpuid.v0</td>
+<td>源码patch</td>
+</tr>
+<tr>
+<td>2</td>
+<td>in</td>
+<td>修改vmx配置backdoor</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>sldt</td>
+<td>关闭VMware加速</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>sidt、sgdt和str等</td>
+<td>指令Nop&#x2F;动态patch</td>
+<td>-</td>
+</tr>
+<tr>
+<td>5</td>
+<td>硬件信息</td>
+<td>驱动过滤</td>
+<td>源码patch</td>
+</tr>
+</tbody></table>
+<p><em>(具体操作参考下文绕过VMP反虚拟机的部分)</em></p>
+<h2 id="第二部分-几种常见保护软件反虚拟机检测及绕过方法"><a href="#第二部分-几种常见保护软件反虚拟机检测及绕过方法" class="headerlink" title="第二部分 几种常见保护软件反虚拟机检测及绕过方法"></a>第二部分 几种常见保护软件反虚拟机检测及绕过方法</h2><blockquote>
+<p>本节主要分析常见如VMProtect、Themida及Enigma等保护软件反虚拟机检测及绕过方法。</p>
+</blockquote>
+<p>目前市面上主流的几款保护软件中VMProtect对虚拟机的检测强度最大，尤其对于VMware。</p>
+<h3 id="VMProtect"><a href="#VMProtect" class="headerlink" title="VMProtect"></a>VMProtect</h3><p>以下表格是VMP各版本主要的检测方法及绕过方式。</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>版本</th>
+<th>检测方式</th>
+<th>绕过方式</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VMware</td>
+<td>KVM</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>2.0~3.0</td>
+<td>cpuid</td>
+<td>配置hypervisor.cpuid.v0 &#x3D; “FALSE”</td>
+<td>源码patch</td>
+</tr>
+<tr>
+<td>in</td>
+<td>配置monitor_control.restrict_backdoor &#x3D; “TRUE”</td>
+<td>源码patch</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>3.0+</td>
+<td>cupid+in+VMware特征</td>
+<td>修改vmx配置+驱动</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<ul>
+<li>VMP 2.0到3.0版本：<ul>
+<li>主要通过cpuid和in指令来检测虚拟机，对于VMware workstation，修改虚拟.vmx配置文件，向其中添加以下两条配置即可绕过检测：<br><code>monitor_control.restrict_backdoor = &quot;TRUE&quot; // 过掉in指令检测</code><br><code>hypervisor.cpuid.v0 = &quot;FALSE&quot; // 过掉cpuid检测</code></li>
+</ul>
+</li>
+<li>VMP 3.0+版本：<ul>
+<li>在前面版本的基础上增加了对硬件信息的检测，配合驱动<a target="_blank" rel="noopener" href="https://github.com/hzqst/VmwareHardenedLoader">VmwareHardenedLoader</a>可过掉对VMware的检测</li>
+<li>该驱动通过hook tSystemFirmwareTable动态修改虚拟机的硬件信息，过滤掉BIOS、电源等设备中包含VMware和Virtual的特征</li>
+</ul>
+</li>
+<li>对于KVM虚拟机：<ul>
+<li>通过对QEMU源码进行Patch，修改其中cpuid指令的返回值以及KVM相关的特征可以VMP2.0以上的反检测</li>
+<li>实测主要对cpu.c和kvm.c这两个文件中cpuid指令的执行结果和KVM相关的字符串特征进行补丁就可以绕过：</li>
+</ul>
+</li>
+</ul>
+<h3 id="Themida、Enigma和Winlicense"><a href="#Themida、Enigma和Winlicense" class="headerlink" title="Themida、Enigma和Winlicense"></a>Themida、Enigma和Winlicense</h3><p>这几种保护软件对于虚拟机的检测手段较少，部分版本甚至可以在VMware和KVM虚拟机里面直接运行，无额外的虚拟机检测手段，基本上进行简单配置即可实现绕过，VMware和KVM虚拟机的测试情况如下。</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>名称</th>
+<th>检测手段</th>
+<th>绕过方法</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VMware</td>
+<td>KVM</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>Themida 2.3.7</td>
+<td>cupid</td>
+<td>修改.vmx配置</td>
+<td>源码patch</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Themida 2.4+</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Winlicense 2.4.6</td>
+<td>-</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Enigma 6.0</td>
+<td>cupid</td>
+<td>修改.vmx配置</td>
+<td>源码patch</td>
+</tr>
+</tbody></table>
+<h2 id="后记：KVM反虚拟机之单步异常与eip"><a href="#后记：KVM反虚拟机之单步异常与eip" class="headerlink" title="后记：KVM反虚拟机之单步异常与eip"></a>后记：KVM反虚拟机之单步异常与eip</h2><h3 id="问题与现象"><a href="#问题与现象" class="headerlink" title="问题与现象"></a>问题与现象</h3><p>在分析绕过KVM虚拟机时，对源码进行Patch后依然不能绕过VMP的虚拟机检测，分析发现在vmp执行cpuid检测代码的地方有这么一段代码<code>(这是vmp2.12版本的代码，其余版本可能有差异但功能类似)</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-number">1.</span> 9D       popfd<br><span class="hljs-number">2.</span> 0F <span class="hljs-variable constant_">A2</span>    cpuid<br><span class="hljs-number">3.</span> <span class="hljs-number">90</span>       nop<br><span class="hljs-number">4.</span> <span class="hljs-number">60</span>       pushad<br></code></pre></td></tr></table></figure>
+
+<p>在cpuid处下断点后会进入单步异常，正常情况下触发单步异常后，eip会指向下一条指令nop，在KVM虚拟机中触发单步异常后eip却指向pushad。</p>
+<p>分析异常处理函数发现VMP判断如果触发异常时eip指向pushad，则检测到虚拟机，如果eip指向nop，则未检测到虚拟机。</p>
+<h3 id="原理与解决"><a href="#原理与解决" class="headerlink" title="原理与解决"></a>原理与解决</h3><p>通过google发现这是一个古老的问题，根本原因是旧版本的虚拟机内核处理cpuid指令bug，导致同一段代码在虚拟机和物理机上有不同的表现。</p>
+<p>VM会将CPU分为ROOT和NON-ROOT两种模式，一般的虚拟机都运行在NON-ROOT模式，但cpuid属于特权指令，执行时无条件进入ROOT模式。ROOT状态下，hypervisor模拟cpuid执行，指令执行后eip会加2（cpuid机器码为0F A2占2个字节）。</p>
+<p>看一段检测虚拟机的代码:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-number">1.</span>  <span class="hljs-type">int</span> <span class="hljs-title function_">filter</span><span class="hljs-params">(EXCEPTION_POINTERS * pException, <span class="hljs-type">bool</span> *p_found )</span> &#123;<br><span class="hljs-number">2.</span>      <span class="hljs-keyword">if</span>(*(BYTE*)pException-&gt;ContextRecord-&gt;Eip == <span class="hljs-number">0x90</span>) &#123;<br><span class="hljs-number">3.</span>          *p_found = <span class="hljs-literal">false</span>;<br><span class="hljs-number">4.</span>      &#125;<br><span class="hljs-number">5.</span>      <span class="hljs-keyword">return</span> EXCEPTION_EXECUTE_HANDLER;<br><span class="hljs-number">6.</span>  &#125;<br><span class="hljs-number">7</span><br><span class="hljs-number">8.</span>  <span class="hljs-type">bool</span> <span class="hljs-title function_">test</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-number">9.</span>      <span class="hljs-type">bool</span> b_found = <span class="hljs-literal">true</span>;<br><span class="hljs-number">10.</span>     __try &#123;<br><span class="hljs-number">11.</span>         __asm &#123;<br><span class="hljs-number">12.</span>             mov eax, <span class="hljs-number">0x12345678</span><br><span class="hljs-number">13.</span>             pushfd;<br><span class="hljs-number">14.</span>             or DWORD ptr [esp], <span class="hljs-number">0x100</span>;<br><span class="hljs-number">15.</span>             popfd;<br><span class="hljs-number">16.</span>             cpuid;<br><span class="hljs-number">17.</span>             nop;<br><span class="hljs-number">18.</span>             <span class="hljs-type">int</span> <span class="hljs-number">3</span>;<br><span class="hljs-number">19.</span>         &#125;<br><span class="hljs-number">20.</span>     &#125;<br><span class="hljs-number">21.</span>     __except(filter(GetExceptionInformation(), &amp;b_found ));<br><span class="hljs-number">22.</span>     <span class="hljs-keyword">return</span> b_found;<br><span class="hljs-number">23.</span> &#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<p>上面的test函数在虚拟机中运行会返回true，在物理机上运行会返回false。</p>
+<p>正常情况下，检测代码执行到cpuid指令时EFLAGS的TF标记位为1即触发单步异常，物理机中单步异常后eip会指向nop的地址，而在虚拟机中cpuid模拟执行完将eip+2会指向int 3的地址，所以可以在异常处理函数中判断单步异常时eip指向的是nop还是int 3确定是否为虚拟机。</p>
+<p>VirtualBox和QEMU均有此问题。不过Linux内核在5.3+版本已修复，使用Linux5.3以上版本可避免出现该问题，相关<a target="_blank" rel="noopener" href="https://github.com/torvalds/linux/commit/75ee23b30dc712d80d2421a9a547e7ab6e379b44">issue</a>；但VirtualBox似乎还未修复完全，相关<a target="_blank" rel="noopener" href="https://www.virtualbox.org/ticket/17961">issue</a>。</p>
+<div id="paginator"></div></div><div id="post-footer"><div id="pages"><div id="footer-link" style="right: calc(50% - 1px);order: 1;border-right: 1px solid #fe2;padding-left: unset;max-width: calc(50% - 4px);"><a href="/2024/08/20/security/dnf_sec/">← Next DNF外挂对抗学习记录</a></div><div id="footer-link" style="left: 50%;order: 0;border-left: 1px solid #fe2;padding-right: unset;max-width: calc(50% - 5px);"><a href="/2024/08/19/security/fps_sec/">FPS端游对抗 Prev →</a></div></div></div><details id="reward"><summary>打赏点小钱</summary><div id="alipay"><span>支付宝 | Alipay</span><br><img src="/img/Alipay.png"></div><div id="wechat"><span>微信 | WeChat</span><br><img src="/img/WeChat.png"></div></details><div id="Valine"></div></div><div id="bottom-btn"><a id="to-index" href="#toc-div" title="index">≡</a><a id="to-top" onClick="scrolls.scrolltop();" title="to top" style="opacity: 0; display: none;">∧</a></div></article><aside><div id="aside-top"><div id="about"><a href="/" id="logo"><img src="/images/header.jpg" alt="Logo"></a><h1 id="Dr"><a target="_blank" rel="noopener" href="https://github.com/i0gan">I0gan</a></h1><div id="description"></div></div><div id="aside-block"><div id="toc-div"><h1>INDEX</h1><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A3%80%E6%B5%8B%E6%8A%80%E6%9C%AF%E5%8F%8A%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95"><span class="toc-text">虚拟机检测技术及绕过方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x00-%E8%99%9A%E6%8B%9F%E5%8C%96%E6%8A%80%E6%9C%AF%E6%A6%82%E8%BF%B0"><span class="toc-text">0x00 虚拟化技术概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x01-%E5%B8%B8%E8%A7%81%E7%9A%84%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A3%80%E6%B5%8B%E6%96%B9%E6%B3%95"><span class="toc-text">0x01 常见的虚拟机检测方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E6%AE%8A%E6%8C%87%E4%BB%A4"><span class="toc-text">特殊指令</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#cpuid%E6%8C%87%E4%BB%A4"><span class="toc-text">cpuid指令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#in%E6%8C%87%E4%BB%A4"><span class="toc-text">in指令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#sidt%E3%80%81sgdt%E5%92%8Csldt%E6%8C%87%E4%BB%A4"><span class="toc-text">sidt、sgdt和sldt指令</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E4%BF%A1%E6%81%AF%E3%80%81%E6%B3%A8%E5%86%8C%E8%A1%A8%E3%80%81%E6%9C%8D%E5%8A%A1%E7%AD%89%E5%85%B6%E4%BB%96%E7%89%B9%E5%BE%81"><span class="toc-text">硬件信息、注册表、服务等其他特征</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86-%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E4%BF%9D%E6%8A%A4%E8%BD%AF%E4%BB%B6%E5%8F%8D%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A3%80%E6%B5%8B%E5%8F%8A%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95"><span class="toc-text">第二部分 几种常见保护软件反虚拟机检测及绕过方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#VMProtect"><span class="toc-text">VMProtect</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Themida%E3%80%81Enigma%E5%92%8CWinlicense"><span class="toc-text">Themida、Enigma和Winlicense</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E8%AE%B0%EF%BC%9AKVM%E5%8F%8D%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B9%8B%E5%8D%95%E6%AD%A5%E5%BC%82%E5%B8%B8%E4%B8%8Eeip"><span class="toc-text">后记：KVM反虚拟机之单步异常与eip</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E4%B8%8E%E7%8E%B0%E8%B1%A1"><span class="toc-text">问题与现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E7%90%86%E4%B8%8E%E8%A7%A3%E5%86%B3"><span class="toc-text">原理与解决</span></a></li></ol></li></ol></li></ol></div></div></div><footer><nobr><span class="text-title">ICP</span><a class="text-content" target="_blank" rel="noopener" href="https://beian.miit.gov.cn/">沪ICP备2021037250号-1  </a></nobr><nobr><span class="text-title">©</span><span class="text-content">2022 by i0gan</span></nobr><br></footer></aside></main><canvas id="canvas-dust"></canvas><div id="cursor-container"><div id="cursor-outer"></div><div id="cursor-effect"></div></div><script src="/js/search.js"></script><script class="pjax-js">reset=_=>{new Valine({
+ el: '#Valine'
+ , appId: 'TzNey4n3v0Sx6vdBbytYLoH9-gzGzoHsz'
+ , appKey: 'GIXXrK9zLxt0bZLww1hte0Oq' , placeholder: '此条评论委托企鹅物流发送'
+});code.findCode();mermaid.init(undefined, ('.mermaid'));}</script><script src="//unpkg.com/@highlightjs/cdn-assets@11.4.0/highlight.min.js"></script><script src="/js/arknights.js"></script><script>window.addEventListener("load",()=>{reset()})</script></body></html>
